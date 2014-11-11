@@ -10,7 +10,9 @@ var
 
 	app = express(),
 	server = http.Server(app),
-	io = socketio(server);
+	io = socketio(server),
+
+	socketsPerRoom = [];
 
 app.use(morgan('dev'))
 
@@ -22,10 +24,39 @@ app.use(less('./public', {
 
 app.use(serveStatic('./public'))
 
-//io.set('heartbeat interval', 5);
+app.use('/status', function(req, res) {
+	var room = req.url.substr(1);
+	res.json(
+		(room in socketsPerRoom) && (socketsPerRoom[room].length > 0)
+	);
+});
 
 io.sockets.on('connection', function (socket) {
-	socket.emit('welcome', { foo: 'bar' });
+	var joinedRoom;
+
+	console.log('connection', socket.id, 'from', socket.conn.remoteAddress);
+	socket.on('join', function(room) {
+		console.log('socket joined room', room);
+		joinedRoom = room;
+
+		if(!socketsPerRoom[joinedRoom])
+			socketsPerRoom[joinedRoom] = [];
+
+		socketsPerRoom[joinedRoom].push(socket);
+	});
+
+	socket.on('disconnect', function() {
+		console.log('disconnection of', socket.id, 'from room', joinedRoom);
+
+		if(socketsPerRoom[joinedRoom]) {
+			socketsPerRoom[joinedRoom].splice(socketsPerRoom.indexOf(socket), 1);
+			console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom);
+		}
+	});
+
+	socket.on('line', function(line) {
+		console.log(socket.id, 'sent line for room', joinedRoom, ':', line);
+	});
 });
 
 console.log('starting http/socket-server on port', config.port);
