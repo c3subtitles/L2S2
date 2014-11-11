@@ -1,0 +1,96 @@
+@dark: #333;
+@medium: #666;
+@header: 35px;
+@footer: 35px;
+
+body {
+	background-color: white;
+	color: black;
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+header {
+	background-color: @dark;
+	text-align: center;
+	padding: 2px 0 7px 0;
+	height: @header;
+
+	h1 {
+		margin: 0;
+		padding: 0;
+		color: white;
+	}
+}
+
+nav {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 10;
+	background-color: fade(@dark, 70%);
+
+	section {
+		position: absolute;
+		margin-top: @header;
+		z-index: 20;
+
+		top: 10%;
+		right: 10%;
+		left: 10%;
+		bottom: 10%;
+		box-sizing: border-box;
+
+		border-radius: 20px;
+		padding: 40px 80px;
+
+		background-color: white;
+		color: @dark;
+
+		a {
+			width: 49.5%;
+			margin-bottom: 1%;
+			float: left;
+			background-color: @medium;
+
+			text-align: center;
+			padding: 50px;
+			box-sizing: border-box;
+
+			text-decoration: none;
+			font-size: 50px;
+
+			&:nth-child(2n) {
+				margin-right: 1%;
+			}
+
+			color: white;
+		}
+	}
+}
+
+main {
+	position: absolute;
+	top: @header;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background-color: green;
+	padding-bottom: 30px;
+	overflow-y: scroll;
+	overflow-x: visible;
+
+	input {
+		display: block;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		box-sizing: border-box;
+		height: 30px;
+	}
+
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Live-Subtitles-Test-Backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node backend"
+  },
+  "dependencies": {
+    "async": "*",
+    "socket.io": "*",
+
+    "express": "*",
+    "morgan": "*",
+    "serve-static": "*",
+    "less-middleware": "*"
+  }
+}
