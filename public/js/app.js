@@ -1,6 +1,6 @@
 $(function() {
 	var
-		socket = io('http://localhost:33133'),
+		socket = io(window.location.protocol+'//'+window.location.host),
 		$nav = $('nav'),
 		$disconnect = $('.disconnect'),
 		$ul = $('main ul'),
