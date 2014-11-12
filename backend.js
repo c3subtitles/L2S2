@@ -1,4 +1,6 @@
 var
+	fs = require('fs'),
+	path = require('path'),
 	config = require('./config'),
 
 	express = require('express'),
@@ -12,7 +14,8 @@ var
 	server = http.Server(app),
 	io = socketio(server),
 
-	socketsPerRoom = [];
+	socketsPerRoom = {},
+	logfilePerRoom = {};
 
 app.use(morgan('dev'))
 
@@ -36,6 +39,9 @@ io.sockets.on('connection', function (socket) {
 
 	console.log('connection', socket.id, 'from', socket.conn.remoteAddress);
 	socket.on('join', function(room) {
+		// clean name
+		room = room.replace(/[^a-zA-Z0-9]/g, '-');
+
 		console.log('socket joined room', room);
 		joinedRoom = room;
 
@@ -43,14 +49,28 @@ io.sockets.on('connection', function (socket) {
 			socketsPerRoom[joinedRoom] = [];
 
 		socketsPerRoom[joinedRoom].push(socket);
+		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom);
+
+		if(!logfilePerRoom[joinedRoom]) {
+			console.log('opening logfile for room', joinedRoom);
+			logfilePerRoom[joinedRoom] = fs.createWriteStream(
+				path.join('./public/logs/', joinedRoom+'.txt'),
+				{ flags: 'a', encoding: 'utf8' }
+			);
+		}
 	});
 
 	socket.on('disconnect', function() {
 		console.log('disconnection of', socket.id, 'from room', joinedRoom);
 
-		if(socketsPerRoom[joinedRoom]) {
-			socketsPerRoom[joinedRoom].splice(socketsPerRoom.indexOf(socket), 1);
-			console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom);
+		socketsPerRoom[joinedRoom].splice(socketsPerRoom[joinedRoom].indexOf(socket), 1);
+		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom);
+
+		if(socketsPerRoom[joinedRoom].length == 0)
+		{
+			console.log('closing logfile for room', joinedRoom);
+			logfilePerRoom[joinedRoom].close();
+			delete logfilePerRoom[joinedRoom];
 		}
 	});
 
@@ -62,7 +82,11 @@ io.sockets.on('connection', function (socket) {
 			itersocket.emit('line', stamp, line);
 		});
 
-		//filesPerRoom[joinedRoom].write(stamp+"\t"+line);
+		if(logfilePerRoom[joinedRoom] && logfilePerRoom[joinedRoom] !== true)
+		{
+			line = line.replace("\n", "\\n").replace("\r", "\\r");
+			logfilePerRoom[joinedRoom].write(stamp+"\t"+line+"\n", 'utf8');
+		}
 	});
 });
 
