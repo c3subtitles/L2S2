@@ -55,7 +55,14 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('line', function(line) {
-		console.log(socket.id, 'sent line for room', joinedRoom, ':', line);
+		console.log('line from', socket.id, 'for room', joinedRoom, ':', line);
+
+		var stamp = Date.now();
+		socketsPerRoom[joinedRoom].forEach(function(itersocket) {
+			itersocket.emit('line', stamp, line);
+		});
+
+		//filesPerRoom[joinedRoom].write(stamp+"\t"+line);
 	});
 });
 
