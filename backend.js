@@ -65,6 +65,10 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect', function() {
+		if(!joinedRoom) {
+			console.log('disconnection of', socket.id);
+			return;
+		}
 		console.log('disconnection of', socket.id, 'from room', joinedRoom);
 
 		socketsPerRoom[joinedRoom].splice(socketsPerRoom[joinedRoom].indexOf(socket), 1);
