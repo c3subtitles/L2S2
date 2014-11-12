@@ -55,4 +55,8 @@ $(function() {
 		socket.emit('line', $input.val());
 		$input.val('').focus();
 	});
+
+	$input.on('blur', function() {
+		$input.focus();
+	});
 });
