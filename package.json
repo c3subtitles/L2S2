@@ -12,6 +12,7 @@
     "express": "*",
     "morgan": "*",
     "serve-static": "*",
+    "serve-index": "*",
     "less-middleware": "*"
   }
 }

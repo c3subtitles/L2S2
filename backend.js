@@ -5,6 +5,7 @@ var
 
 	express = require('express'),
 	morgan = require('morgan'),
+	serveIndex = require('serve-index'),
 	serveStatic = require('serve-static'),
 	socketio = require('socket.io'),
 	http = require('http'),
@@ -25,6 +26,9 @@ app.use(less('./public', {
 	}
 }))
 
+app.use('/logs', serveIndex('./public/logs', {
+	view: 'details'
+}))
 app.use(serveStatic('./public'))
 
 app.use('/status', function(req, res) {
