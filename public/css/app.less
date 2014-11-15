@@ -2,6 +2,11 @@
 @medium: #666;
 @header: 45px;
 
+.box-sizing() {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
 body {
 	background-color: white;
 	color: black;
@@ -32,6 +37,10 @@ nav {
 	z-index: 10;
 	background-color: fade(@dark, 70%);
 
+	&.error {
+		background-color: fade(red, 70%);
+	}
+
 	section {
 		position: absolute;
 		margin-top: @header;
@@ -41,7 +50,7 @@ nav {
 		right: 10%;
 		left: 10%;
 		bottom: 10%;
-		box-sizing: border-box;
+		.box-sizing();
 
 		border-radius: 20px;
 		padding: 40px 80px;
@@ -49,24 +58,44 @@ nav {
 		background-color: white;
 		color: @dark;
 
+		form {
+			margin: 20px 0;
+			padding: 20px;
+			background-color: @medium;
+			overflow: hidden;
+			label {
+				color: white;
+				margin-right: 30px;
+			}
+		}
+
 		a {
-			width: 49.5%;
+			width: (100-3)/4%;
 			margin-bottom: 1%;
 			float: left;
 			background-color: @medium;
+			color: black;
+			opacity: 0.25;
+			cursor: default;
 
 			text-align: center;
 			padding: 50px;
-			box-sizing: border-box;
+			.box-sizing();
 
 			text-decoration: none;
 			font-size: 50px;
+			margin-right: 1%;
 
-			&:nth-child(2n) {
-				margin-right: 1%;
+			&:last-child {
+				margin-right: 0;
 			}
 
-			color: white;
+			&.active {
+				//display: block;
+				color: white;
+				opacity: 1;
+				cursor: pointer;
+			}
 		}
 	}
 }
@@ -88,7 +117,7 @@ main {
 		bottom: 0;
 		left: 0;
 		width: 100%;
-		box-sizing: border-box;
+		.box-sizing();
 		height: 30px;
 
 		font-size: 120%;

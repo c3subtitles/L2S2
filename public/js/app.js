@@ -10,14 +10,48 @@ $(function() {
 		$input = $('main input'),
 		room;
 
+	// user/pass interaction
+	$('nav input[name=username]').focus();
+	$nav.on('keyup', 'input', function() {
+		var lengths = $nav
+			.find('input')
+			.map(function() { return $(this).val().length })
+			.toArray();
+
+		console.log(lengths);
+		$nav
+			.find('section a')
+			.toggleClass('active', lengths.indexOf(0) === -1)
+
+	}).find('input').first().trigger('keydown');
+
 	// joining
-	$nav.on('click', 'section a', function() {
+	$nav.on('click', 'section a', function(e) {
+		e.preventDefault();
 		var $a = $(this);
+
+		if(!$a.hasClass('active')) return;
+
 		room = $a.data('target');
 
-		socket.emit('join', room);
-		$nav.css('display', 'none');
-		$input.focus();
+		socket.emit(
+			'join',
+			room,
+			$('nav input[name=username]').val(),
+			$('nav input[name=password]').val(),
+			function(success) {
+				if(!success)
+				{
+					$nav.addClass('error');
+					setTimeout(function() { $nav.removeClass('error'); }, 500);
+					return;
+				}
+
+				$nav.css('display', 'none');
+				$input.focus();
+			}
+		);
+
 	});
 
 	// disconnect/reconnect

@@ -1,0 +1,4 @@
+{
+	"peter":    { "password": "peter", "color": "blue" },
+	"percidae": { "password": "percidae", "color": "green", "admin": true }
+}
