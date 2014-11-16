@@ -40,8 +40,8 @@ $(function() {
 
 		var
 			room = $a.data('target'),
-			username = $('nav input[name=username]').val(),
-			password = $('nav input[name=password]').val();
+			username = $('nav input.username').val(),
+			password = $('nav input.password').val();
 
 		// emit join-login command
 		socket.emit(
@@ -69,6 +69,8 @@ $(function() {
 				updateWritersList();
 
 				$nav.css('display', 'none');
+				$('header h2').text($a.text());
+				$('header .manage').text(username);
 				$input.focus();
 			}
 		);

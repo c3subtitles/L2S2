@@ -20,13 +20,42 @@ header {
 	text-align: center;
 	padding: 2px 0 7px 0;
 	height: @header;
+	position: relative;
 	.box-sizing();
 
 	h1 {
+		position: absolute;
+		left: 10px;
+
 		margin: 0;
 		padding: 0;
 		color: white;
 	}
+
+	h2 {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+
+		margin: 0;
+		padding: 0;
+
+		color: white;
+		text-align: center;
+
+		line-height: @header;
+	}
+
+	.manage {
+		position: absolute;
+		right: 10px;
+
+		line-height: 40px;
+
+		color: white;
+	}
+
 }
 
 nav {
