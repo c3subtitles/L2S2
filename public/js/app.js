@@ -7,7 +7,7 @@ $(function() {
 		$lineTpl = $log.find('li.template')
 			.removeClass('template')
 			.detach(),
-		$input = $('main input'),
+		$input = $('main > input'),
 
 		// system state
 		state = {
@@ -29,7 +29,7 @@ $(function() {
 			.find('section a')
 			.toggleClass('active', lengths.indexOf(0) === -1)
 
-	}).find('input').first().trigger('keydown');
+	}).find('input').first().trigger('keyup');
 
 	// joining
 	$nav.on('click', 'section a', function(e) {
