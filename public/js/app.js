@@ -8,7 +8,15 @@ $(function() {
 			.removeClass('template')
 			.detach(),
 		$input = $('main input'),
-		room;
+
+		// system state
+		state = {
+			room: null,
+			username: null,
+			password: null,
+			settings: {},
+			writers: []
+		};
 
 	// user/pass interaction
 	$('nav input[name=username]').focus();
@@ -18,7 +26,6 @@ $(function() {
 			.map(function() { return $(this).val().length })
 			.toArray();
 
-		console.log(lengths);
 		$nav
 			.find('section a')
 			.toggleClass('active', lengths.indexOf(0) === -1)
@@ -32,20 +39,30 @@ $(function() {
 
 		if(!$a.hasClass('active')) return;
 
-		room = $a.data('target');
+		state.room = $a.data('target');
+		state.username = $('nav input[name=username]').val();
+		state.password = $('nav input[name=password]').val();
 
+		// emit join-login command
 		socket.emit(
 			'join',
-			room,
-			$('nav input[name=username]').val(),
-			$('nav input[name=password]').val(),
-			function(success) {
+			state.room,
+			state.username,
+			state.password,
+
+			// acknowledgement
+			function(success, settings, writers) {
+				// login-error
 				if(!success)
 				{
 					$nav.addClass('error');
 					setTimeout(function() { $nav.removeClass('error'); }, 500);
 					return;
 				}
+
+				// login-success
+				state.settings = settings;
+				state.writers = writers;
 
 				$nav.css('display', 'none');
 				$input.focus();
@@ -64,7 +81,12 @@ $(function() {
 
 		if(room) {
 			// re-join
-			socket.emit('join', room);
+			socket.emit(
+				'join',
+				state.room,
+				state.username,
+				state.password
+			);
 		}
 	});
 
@@ -83,7 +105,7 @@ $(function() {
 
 	// sending
 	$input.on('keypress', function(e) {
-		if(e.which != 13)
+		if(e.which != 13 /* ENTER */)
 			return;
 
 		socket.emit('line', $input.val());
