@@ -75,6 +75,7 @@ function aggregateWritersSettings(room) {
 	writersPerRoom[room].forEach(function(writer) {
 		var settings = extend({}, users[writer]);
 		delete settings.password;
+		settings.cnt = writersSettings[writer] ? writersSettings[writer].cnt+1 : 1;
 
 		writersSettings[writer] = settings;
 	});

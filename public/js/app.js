@@ -179,7 +179,11 @@ $(function() {
 		for(writer in state.writers)
 		{
 			$('<li>')
-				.text(writer + (state.writers[writer].admin ? ' (*)' : '') )
+				.text([
+					writer,
+					(state.writers[writer].admin ? '*' : ''),
+					(state.writers[writer].cnt > 1 ? ' ×'+state.writers[writer].cnt : '')
+				].join(''))
 				.css('color', state.writers[writer].color || 'black')
 				.appendTo($ul);
 		}
