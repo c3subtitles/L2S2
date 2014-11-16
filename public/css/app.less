@@ -141,7 +141,7 @@ main {
 	.part {
 		position: absolute;
 		top: 0;
-		height: 100%;
+		bottom: 30px;
 		margin: 0;
 		.box-sizing();
 	}
@@ -182,6 +182,10 @@ main {
 		background-color: lighten(green, 60%);
 		width: 20%;
 		left: 80%;
+
+		> label {
+			display: block;
+		}
 	}
 
 	> input {

@@ -113,9 +113,14 @@ $(function() {
 
 		var $partline = $log.find('li.partline').last();
 		if($partline.length > 0)
+		{
 			$line.insertBefore($partline);
+		}
 		else
+		{
 			$line.appendTo($log);
+			$log.scrollTo($line);
+		}
 	});
 
 	// receiving
@@ -130,6 +135,8 @@ $(function() {
 				.attr('data-socketid', socketid)
 				.css('color', state.writers[writer].color || 'black')
 				.appendTo($log);
+
+			$log.scrollTo($line);
 		}
 
 		$line
