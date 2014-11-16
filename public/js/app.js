@@ -101,7 +101,9 @@ $(function() {
 		var $line = $lineTpl
 			.clone()
 			.find('strong')
-				.text(stamp)
+				.text(
+					moment(stamp).format('dd, HH:mm:ss.SSS')
+				)
 			.end()
 			.find('span')
 				.text(text)
@@ -125,10 +127,7 @@ $(function() {
 				.addClass('partline')
 				.attr('data-socketid', socketid)
 				.css('color', state.writers[writer].color || 'black')
-				.appendTo($log)
-				.find('strong')
-					.text('')
-				.end()
+				.appendTo($log);
 		}
 
 		$line
