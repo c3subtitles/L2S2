@@ -3,8 +3,8 @@ $(function() {
 		socket = io(window.location.protocol+'//'+window.location.host),
 		$nav = $('nav'),
 		$disconnect = $('.disconnect'),
-		$ul = $('main ul'),
-		$lineTpl = $ul.find('li.template')
+		$log = $('main ul.log'),
+		$lineTpl = $log.find('li.template')
 			.removeClass('template')
 			.detach(),
 		$input = $('main input'),
@@ -14,7 +14,6 @@ $(function() {
 			room: null,
 			username: null,
 			password: null,
-			settings: {},
 			writers: []
 		};
 
@@ -39,19 +38,20 @@ $(function() {
 
 		if(!$a.hasClass('active')) return;
 
-		state.room = $a.data('target');
-		state.username = $('nav input[name=username]').val();
-		state.password = $('nav input[name=password]').val();
+		var
+			room = $a.data('target'),
+			username = $('nav input[name=username]').val(),
+			password = $('nav input[name=password]').val();
 
 		// emit join-login command
 		socket.emit(
 			'join',
-			state.room,
-			state.username,
-			state.password,
+			room,
+			username,
+			password,
 
 			// acknowledgement
-			function(success, settings, writers) {
+			function(success, writers) {
 				// login-error
 				if(!success)
 				{
@@ -61,8 +61,12 @@ $(function() {
 				}
 
 				// login-success
-				state.settings = settings;
+				state.room = room;
+				state.username = username;
+				state.password = password;
 				state.writers = writers;
+
+				updateWritersList();
 
 				$nav.css('display', 'none');
 				$input.focus();
@@ -79,7 +83,7 @@ $(function() {
 	socket.on('connect', function() {
 		$disconnect.css('display', 'none');
 
-		if(room) {
+		if(state.room) {
 			// re-join
 			socket.emit(
 				'join',
@@ -100,7 +104,7 @@ $(function() {
 			.find('span')
 				.text(text)
 			.end()
-			.appendTo($ul);
+			.appendTo($log);
 	});
 
 	// sending
@@ -115,4 +119,23 @@ $(function() {
 	$input.on('blur', function() {
 		$input.focus();
 	});
+
+	// writers-list change
+	socket.on('writers', function(writers) {
+		state.writers = writers;
+		updateWritersList();
+	});
+
+
+	function updateWritersList()
+	{
+		var $ul = $('.writers').empty();
+		for(writer in state.writers)
+		{
+			$('<li>')
+				.text(writer + (state.writers[writer].admin ? ' (*)' : '') )
+				.css('color', state.writers[writer].color || 'black')
+				.appendTo($ul);
+		}
+	}
 });

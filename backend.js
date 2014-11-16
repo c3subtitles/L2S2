@@ -11,6 +11,7 @@ var
 	socketio = require('socket.io'),
 	http = require('http'),
 	less = require('less-middleware'),
+	extend = require('util')._extend,
 
 	app = express(),
 	server = http.Server(app),
@@ -48,7 +49,7 @@ app.get('/status', function(req, res) {
 		// number of connected sockets per room
 		'socketsPerRoom': socketsPerRoom.map(function(socketlist) {return socketlist.length }),
 
-		// number of writers per room
+		// names of writers per room
 		'writersPerRoom': writersPerRoom,
 
 		// receiced number of lines per roomm
@@ -63,6 +64,22 @@ app.get('/status/:room', function(req, res) {
 		(room in socketsPerRoom) && (socketsPerRoom[room].length > 0)
 	);
 });
+
+// format an object consisting of all writers in the keys and
+// the settings from users.json (minus password) in the value
+// the result-object does only contain one item per user, even
+// if the user has joined multiple times. its perfectly suitable
+// for submitting it to the client for displaying
+function aggregateWritersSettings(room) {
+	var writersSettings = {};
+	writersPerRoom[room].forEach(function(writer) {
+		var settings = extend({}, users[writer]);
+		delete settings.password;
+
+		writersSettings[writer] = settings;
+	});
+	return writersSettings;
+}
 
 // serve socket-connections ;)
 io.sockets.on('connection', function (socket) {
@@ -111,14 +128,17 @@ io.sockets.on('connection', function (socket) {
 				writersPerRoom[room].push(joinedName);
 				console.log('now', writersPerRoom[room].length, 'writers in room', room, ':', writersPerRoom[room]);
 
-				// craft a version of the current user settings, suitable or sending
+				// craft a version of the users settings, suitable for sending
 				// to the client as initial statement
-				var settings = users[joinedName];
-				delete settings.password;
-				settings.writersInRoom = writersPerRoom[room];
+				var writersSettings = aggregateWritersSettings(room);
 
 				// if a callback was requested, call back :)
-				if(cb) cb(true, settings);
+				if(cb) cb(true, writersSettings);
+
+				// emit a line-event with text & stamp to all sockets in that room
+				if(socketsPerRoom[room]) socketsPerRoom[room].forEach(function(itersocket) {
+					itersocket.emit('writers', writersSettings);
+				});
 			}
 
 			// the user wanted to authenticate but didn't succeed
@@ -182,6 +202,17 @@ io.sockets.on('connection', function (socket) {
 		// remove the users socket from the list of sockets for that room
 		socketsPerRoom[joinedRoom].splice(socketsPerRoom[joinedRoom].indexOf(socket), 1);
 		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom);
+
+
+		// craft a version of the users settings, suitable for sending
+		// to the client as initial statement
+		var writersSettings = aggregateWritersSettings(joinedRoom);
+
+		// emit a line-event with text & stamp to the remaining sockets in that room
+		if(socketsPerRoom[joinedRoom]) socketsPerRoom[joinedRoom].forEach(function(itersocket) {
+			itersocket.emit('writers', writersSettings);
+		});
+
 
 		// if there is no writer for that room left
 		if(writersPerRoom[joinedRoom].length == 0)

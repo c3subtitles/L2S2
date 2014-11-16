@@ -20,6 +20,7 @@ header {
 	text-align: center;
 	padding: 2px 0 7px 0;
 	height: @header;
+	.box-sizing();
 
 	h1 {
 		margin: 0;
@@ -106,10 +107,34 @@ main {
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	background-color: #ffffed;
 	padding-bottom: 30px;
 	overflow-y: scroll;
 	overflow-x: visible;
+
+	.part {
+		position: absolute;
+		top: 0;
+		height: 100%;
+		margin: 0;
+	}
+
+	.log {
+		background-color: lighten(blue, 40%);
+		width: 60%;
+		left: 0;
+	}
+
+	.writers {
+		background-color: lighten(red, 40%);
+		width: 20%;
+		left: 60%;
+	}
+
+	.hints {
+		background-color: lighten(green, 40%);
+		width: 20%;
+		left: 80%;
+	}
 
 	input {
 		display: block;
@@ -126,7 +151,6 @@ main {
 		border-top: 1px solid black;
 		background-color: white;
 	}
-
 }
 
 .disconnect {
