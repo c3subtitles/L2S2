@@ -240,7 +240,7 @@ io.sockets.on('connection', function (socket) {
 
 		// emit a line-event with text & stamp to all sockets in that room
 		socketsPerRoom[joinedRoom].forEach(function(itersocket) {
-			itersocket.emit('line', stamp, line);
+			itersocket.emit('line', stamp, line, joinedName, socket.id);
 		});
 
 		// increment statistics counter
@@ -251,6 +251,17 @@ io.sockets.on('connection', function (socket) {
 
 		// write a line into the logfile
 		logfilePerRoom[joinedRoom].write(stamp+"\t"+line+"\n", 'utf8');
+	});
+
+	// received a partitial line from a socket
+	socket.on('partline', function(partline) {
+		// sending partlines is not allowed for none-authorized users
+		if(!joinedName) return;
+
+		// emit a line-event with text & stamp to all sockets in that room
+		socketsPerRoom[joinedRoom].forEach(function(itersocket) {
+			itersocket.emit('partline', partline, joinedName, socket.id);
+		});
 	});
 });
 

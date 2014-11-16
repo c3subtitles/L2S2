@@ -95,25 +95,63 @@ $(function() {
 	});
 
 	// receiving
-	socket.on('line', function(stamp, text) {
-		$lineTpl
+	socket.on('line', function(stamp, text, writer, socketid) {
+		$log.find('.partline[data-socketid='+socketid+']').remove();
+
+		var $line = $lineTpl
 			.clone()
 			.find('strong')
 				.text(stamp)
 			.end()
 			.find('span')
 				.text(text)
-			.end()
-			.appendTo($log);
+			.end();
+
+		var $partline = $log.find('li.partline').last();
+		if($partline.length > 0)
+			$line.insertBefore($partline);
+		else
+			$line.appendTo($log);
+	});
+
+	// receiving
+	socket.on('partline', function(text, writer, socketid) {
+		var $line = $log.find('.partline[data-socketid='+socketid+']');
+
+		if($line.length == 0)
+		{
+			$line = $lineTpl
+				.clone()
+				.addClass('partline')
+				.attr('data-socketid', socketid)
+				.css('color', state.writers[writer].color || 'black')
+				.appendTo($log)
+				.find('strong')
+					.text('')
+				.end()
+		}
+
+		$line
+			.find('span')
+			.text(text)
 	});
 
 	// sending
+	var preVal = '';
 	$input.on('keypress', function(e) {
 		if(e.which != 13 /* ENTER */)
 			return;
 
 		socket.emit('line', $input.val());
 		$input.val('').focus();
+		preVal = '';
+	}).on('keyup', function(e) {
+		var val = $input.val();
+		if(val != preVal)
+		{
+			socket.emit('partline', val);
+			preVal = val;
+		}
 	});
 
 	$input.on('blur', function() {
