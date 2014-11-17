@@ -157,8 +157,19 @@ $(function() {
 		var val = $input.val();
 		if(val != preVal)
 		{
-			socket.emit('partline', val);
 			preVal = val;
+
+			$('input.shortcut').each(function() {
+				val = val.replace(this.name, this.value);
+				val = val.replace(this.name.toLowerCase(), this.value);
+			});
+
+			if(val != preVal)
+			{
+				$input.val(val)
+			}
+
+			socket.emit('partline', val);
 		}
 	});
 
