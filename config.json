@@ -1,3 +1,6 @@
 {
-	"port": 33133
+	"port": 33133,
+
+	"fahrplan": "http://events.ccc.de/congress/2013/Fahrplan/schedule.json",
+	"fahrplanTTL": 600000
 }

@@ -20,7 +20,8 @@ var
 	socketsPerRoom = {},
 	writersPerRoom = {},
 	linesPerRoom = {},
-	logfilePerRoom = {};
+	logfilePerRoom = {},
+	fahrplan = null;
 
 // load some small helpers, like an oject-map call
 require('./lib/helper')
@@ -64,6 +65,75 @@ app.get('/status/:room', function(req, res) {
 		(room in socketsPerRoom) && (socketsPerRoom[room].length > 0)
 	);
 });
+
+app.get('/current-talk/:room', function(req, res) {
+	if(!fahrplan)
+		return res.end('early bird');
+
+	var
+		now = new Date(),
+		days = fahrplan['schedule']['conference']['days'];
+
+	for (var i = 0; i < days.length; i++) {
+		var
+			day = days[i],
+			day_start = new Date(day.day_start),
+			day_end = new Date(day.day_end);
+
+		if(day_start > now || day_end < now)
+			continue;
+		
+		if(!day.rooms[req.params.room])
+			continue;
+
+		var talks = day.rooms[req.params.room];
+		for (var i = 0; i < talks.length; i++) {
+			var
+				talk = talks[i],
+				parts = talk.duration.split(':');
+				duration = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+				start = new Date(talk.date),
+				end = new Date(start.getTime() + duration*60*1000);
+
+			if(start > now || end < now)
+				continue;
+
+			talk.now = now.getTime();
+			return res.json(talk);
+		};
+	}
+
+	return res.json(null);
+});
+
+function fetchFahrplan() {
+	console.log('updating fahrplan from', config.fahrplan);
+	http.get(config.fahrplan, function(res) {
+
+		var data = '';
+		res.setEncoding('utf-8');
+		res.on("data", function(chunk) {
+			data += chunk;
+		})
+		res.on('end', function() {
+			setTimeout(fetchFahrplan, config.fahrplanTTL);
+
+			console.log('got updated version of', data.length, 'bytes');
+
+			var newFahrplan = JSON.parse(data)
+			if(!newFahrplan)
+				return console.log('updated is not valid JSON, resheduling - keeping old version');
+
+			fahrplan = newFahrplan;
+		});
+	}).on('error', function(e) {
+		return console.log('fahrplan-update returned error:', err.message, '- keeping old version');
+		setTimeout(fetchFahrplan, config.fahrplanTTL);
+	});
+
+}
+fetchFahrplan();
+
 
 // format an object consisting of all writers in the keys and
 // the settings from users.json (minus password) in the value

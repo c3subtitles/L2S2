@@ -173,6 +173,40 @@ $(function() {
 		}
 	});
 
+	$('a.load-hints').on('click', function() {
+		var $shortcuts = $('main .hints input:enabled');
+
+		$.ajax({
+			url: '/current-talk/'+state.room,
+			dataType: 'json',
+			success: function(talk) {
+				if(!talk)
+				{
+					$('main .hints').addClass('error');
+					setTimeout(function() { $('main .hints').removeClass('error'); }, 500);
+				}
+
+				for (var i = 0; i < Math.min(10, talk.persons.length); i++) {
+					$shortcuts.get(i).value = talk.persons[i].full_public_name;
+				};
+
+				$lineTpl
+					.clone()
+					.addClass('note')
+					.find('strong')
+						.text(
+							moment(talk.now).format('dd, HH:mm:ss.SSS')
+						)
+					.end()
+					.find('span')
+						.text('Fahrplan: Current Talk is '+talk.title+' in '+talk.language)
+					.end()
+					.appendTo($log);
+			}
+		});
+	});
+
+	// focus tracking
 	$('main').on('click', function(e) {
 		if(!$(e.target).is('input:enabled'))
 			$input.focus();
