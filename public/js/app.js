@@ -173,8 +173,9 @@ $(function() {
 		}
 	});
 
-	$input.on('blur', function() {
-		$input.focus();
+	$('main').on('click', function(e) {
+		if(!$(e.target).is('input:enabled'))
+			$input.focus();
 	});
 
 	// writers-list change
