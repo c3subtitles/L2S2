@@ -39,7 +39,7 @@ $(function() {
 		if(!$a.hasClass('active')) return;
 
 		var
-			room = $a.data('target'),
+			room = $a.text(),
 			username = $('nav input.username').val(),
 			password = $('nav input.password').val();
 

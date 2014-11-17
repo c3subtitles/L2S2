@@ -106,7 +106,7 @@ io.sockets.on('connection', function (socket) {
 	// join a room, possibly identify as a user is 
 	socket.on('join', function(room, username, password, cb) {
 		// clean name - to be sure we're not hacked that easy
-		room = room.replace(/[^a-zA-Z0-9]/g, '-');
+		room = room.replace(/[^a-zA-Z0-9 ]/g, '-');
 
 		// if username and password is provided
 		if(username && password)
