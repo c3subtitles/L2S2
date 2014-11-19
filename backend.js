@@ -327,13 +327,89 @@ io.sockets.on('connection', function (socket) {
 
 	// received a partitial line from a socket
 	socket.on('partline', function(partline) {
-		// sending partlines is not allowed for none-authorized users
-		if(!joinedName) return;
+		// sending partlines is not allowed for non-authorized users
+		if(!joinedName)
+			return;
 
 		// emit a line-event with text & stamp to all sockets in that room
 		socketsPerRoom[joinedRoom].forEach(function(itersocket) {
 			itersocket.emit('partline', partline, joinedName, socket.id);
 		});
+	});
+
+	function usersWithoutPasswords() {
+		return users.map(function(user) {
+			var newUser = clone(user);
+			delete newUser.password;
+			return newUser;
+		});
+	}
+
+	socket.on('usermgmt', function(task, cb) {
+		// sending lines is not allowed for non-authorized users
+		if(!joinedName)
+			return;
+
+		// sending lines is not allowed for non-admin users
+		if(!users[joinedName].admin)
+			return;
+
+		console.log('sending usermgmt-list to', joinedName);
+		if(!task)
+			return cb(usersWithoutPasswords());
+
+		if(task.delete)
+		{
+			if(task.username == joinedName)
+			{
+				console.log('NOT allowing user', task.username, 'to delete himself');
+				return cb(false);
+			}
+
+			console.log('deleting user', task.username, 'on behalf of', joinedName);
+			delete users[task.username];
+		}
+		else {
+			if(users[task.username]) {
+				var user = users[task.username];
+
+				if(joinedName == task.username && user.admin && !task.admin)
+				{
+					console.log('NOT allowing user', joinedName, 'to revoke his/her own admin rights');
+					delete task.admin;
+				}
+
+				if(!task.password)
+					delete task.password;
+
+				var
+					user = extend(user, task),
+					username = task.username;
+
+				delete user.username;
+				console.log('modifying user', username, 'on behalf of', joinedName, 'to', user);
+				users[username] = user;
+			}
+			else {
+				if(!task.password)
+				{
+					console.log('NOT creating user without password');
+					return cb(false);
+				}
+				var username = task.username;
+				delete task.username;
+				console.log('creating user', username, 'on behalf of', joinedName, 'as', task);
+				users[username] = task;
+			}
+
+		}
+
+		console.log('saving new version of users.js');
+		var s = fs.createWriteStream('users.json', {encoding: 'utf-8'})
+		s.write(JSON.stringify(users, null, "\t"))
+		s.end()
+
+		return cb(usersWithoutPasswords());
 	});
 });
 

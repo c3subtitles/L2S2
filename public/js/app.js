@@ -2,6 +2,7 @@ $(function() {
 	var
 		socket = io(window.location.protocol+'//'+window.location.host),
 		$nav = $('nav'),
+		$login = $('nav .login'),
 		$disconnect = $('.disconnect'),
 		$log = $('main ul.log'),
 		$lineTpl = $log.find('li.template')
@@ -17,22 +18,32 @@ $(function() {
 			writers: []
 		};
 
+	$.fn.serializeObject = function() {
+		var object = {};
+
+		$.each($(this).serializeArray(), function(idx, field) {
+			object[field.name] = field.value || '';
+		});
+
+		return object;
+	}
+
 	// user/pass interaction
-	$('nav input[name=username]').focus();
+	$login.find('input.username').focus();
 	$nav.on('keyup', 'input', function() {
-		var lengths = $nav
+		var lengths = $login
 			.find('input')
 			.map(function() { return $(this).val().length })
 			.toArray();
 
-		$nav
-			.find('section a')
+		$login
+			.find('a')
 			.toggleClass('active', lengths.indexOf(0) === -1)
 
 	}).find('input').first().trigger('keyup');
 
 	// joining
-	$nav.on('click', 'section a', function(e) {
+	$login.on('click', 'a', function(e) {
 		e.preventDefault();
 		var $a = $(this);
 
@@ -40,8 +51,8 @@ $(function() {
 
 		var
 			room = $a.text(),
-			username = $('nav input.username').val(),
-			password = $('nav input.password').val();
+			username = $login.find('input.username').val(),
+			password = $login.find('input.password').val();
 
 		// emit join-login command
 		socket.emit(
@@ -68,9 +79,17 @@ $(function() {
 
 				updateWritersList();
 
-				$nav.css('display', 'none');
+				$nav.hide();
+
+				// header setup
 				$('header h2').text($a.text());
-				$('header .manage').text(username);
+				$('header .manage')
+					.find('.username')
+						.text(username)
+					.end()
+					.find('a')
+						.toggleClass('visible', !!writers[username].admin)
+
 				$input.focus();
 			}
 		);
@@ -79,11 +98,11 @@ $(function() {
 
 	// disconnect/reconnect
 	socket.on('disconnect', function() {
-		$disconnect.css('display', 'block');
+		$disconnect.show();
 	});
 
 	socket.on('connect', function() {
-		$disconnect.css('display', 'none');
+		$disconnect.hide();
 
 		if(state.room) {
 			// re-join
@@ -173,6 +192,7 @@ $(function() {
 		}
 	});
 
+	// shortcut updating
 	$('a.load-hints').on('click', function() {
 		var $shortcuts = $('main .hints input:enabled');
 
@@ -206,6 +226,105 @@ $(function() {
 		});
 	});
 
+	$('header a.domanage').on('click', function() {
+		$nav
+			.show()
+			.find('section')
+				.hide();
+
+		var
+			$usermgmt = $nav.find('section.usermgmt'),
+			$userul = $usermgmt.find('ul.users'),
+			$tpl = $userul.find('> li.template')
+				.detach()
+				.removeClass('template');
+
+		function updateUsermgmtList(userlist) {
+			$userul.empty();
+			for(user in userlist)
+			{
+				$tpl
+					.clone()
+					.find('a')
+						.text(user)
+					.end()
+					.find('strong')
+						.toggle(!!userlist[user].admin)
+					.end()
+					.appendTo($userul);
+			}
+		}
+
+		socket.emit('usermgmt', null, function(userlist) {
+			state.userlist = userlist;
+			updateUsermgmtList(userlist);
+
+			$usermgmt.show();
+		});
+
+		$usermgmt.on('click', 'ul.users a', function(e) {
+			e.preventDefault();
+			var user = $(this).text();
+			$usermgmt
+				.find('input[name=username]')
+					.val(user)
+				.end()
+				.find('input[name=admin]')
+					.prop('checked', !!state.userlist[user].admin)
+				.end()
+				.find('input[name=color]')
+					.val(state.userlist[user].color || 'black');
+		}).on('click', 'button', function(e) {
+			e.preventDefault();
+			var
+				$btn = $(this),
+				cmd = $btn.closest('form').serializeObject();
+
+			if($btn.hasClass('delete'))
+				cmd['delete'] = true;
+
+			cmd.admin = (cmd.admin == '1');
+
+			socket.emit('usermgmt', cmd, function(userlist) {
+				console.log(userlist);
+				if(!userlist)
+				{
+					$nav.addClass('error');
+					return setTimeout(function() { $nav.removeClass('error'); }, 500);
+				}
+
+				state.userlist = userlist;
+				updateUsermgmtList(userlist);
+				$usermgmt
+					.find('input:text')
+						.val('')
+					.end()
+					.find('input:checkbox')
+						.prop('checked', false);
+
+					$nav.addClass('success');
+					return setTimeout(function() { $nav.removeClass('success'); }, 500);
+			});
+		}).on('click', '.close', function(e) {
+			e.preventDefault();
+			$nav.hide();
+		});
+
+		var $color = $usermgmt.find('input[name=color]').ColorPicker({
+			onChange: function(hsb, hex, rgb) {
+				$color.val('#'+hex);
+			},
+			onSubmit: function(hsb, hex, rgb) {
+				$color.ColorPickerHide();
+			},
+			onBeforeShow: function () {
+				$(this).ColorPickerSetColor(this.value);
+			}
+		}).on('keyup', function(){
+			$(this).ColorPickerSetColor(this.value);
+		});
+	});
+
 	// focus tracking
 	$('main').on('click', function(e) {
 		if(!$(e.target).is('input:enabled'))
@@ -217,7 +336,6 @@ $(function() {
 		state.writers = writers;
 		updateWritersList();
 	});
-
 
 	function updateWritersList()
 	{

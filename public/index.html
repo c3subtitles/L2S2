@@ -10,6 +10,7 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/js/libs/jquery-1.11.1.min.js"></script>
 		<script src="/js/libs/jquery.scrollTo.min.js"></script>
+		<script src="/js/libs/colorpicker.js"></script>
 		<script src="/js/libs/moment.min.js"></script>
 		<script src="/js/app.js"></script>
 	</head>
@@ -19,11 +20,14 @@
 		<header>
 			<h1>31C3 Subtitling</h1>
 			<h2></h2>
-			<div class="manage"></div>
+			<div class="manage">
+				<span class="username"></span>
+				<a href="#" class="domanage">[manage users]</a>
+			</div>
 		</header>
 
 		<nav>
-			<section>
+			<section class="login">
 				<h2>Writers Lounge</h2>
 				<p>Everything you write here will be <strong>directly visible</strong> on the Streaming-Frontend. You are also granting permissions for your work to be <strong>published under CC-BY-SA 3.0</strong>. Be aware of that!</p>
 
@@ -40,6 +44,49 @@
 				<a href="#saal2">Saal 2<i></i></a>
 				<a href="#saal6">Saal 6<i></i></a>
 				<a href="#saalg">Saal G<i></i></a>
+			</section>
+
+			<section class="usermgmt">
+				<a href="#" class="close">×</a>
+				<h2>List of Users</h2>
+				<ul class="users">
+					<li class="template">
+						<a href="#">user</a>
+						<strong>(admin)</strong>
+					</li>
+				</ul>
+
+				<h2>Add or Change user</h2>
+				<form action="/users/change" method="POST">
+					<label>Username:
+						<input name="username" />
+					</label>
+					<br />
+					<label>Password:
+						<input name="password" />
+						(leave empty to keep password while modifying)
+					</label>
+					<br />
+					<label>
+						<input name="admin" type="checkbox" value="1" />
+						Admin
+					</label>
+					<br />
+					<label>Color:
+						<input name="color" />
+					</label>
+					<br />
+					<button type="submit" class="save">Go! Go! Go Subbing!</button>
+				</form>
+
+				<h2>Delete user</h2>
+				<form action="/users/delete" method="POST">
+					<label>Username:
+						<input name="username" />
+					</label>
+					<br />
+					<button type="submit" class="delete">Go! Go! Go Home!</button>
+				</form>
 			</section>
 		</nav>
 

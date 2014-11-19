@@ -54,6 +54,12 @@ header {
 		line-height: 40px;
 
 		color: white;
+
+		a {
+			display: none;
+			color: white;
+		}
+		a.visible { display: inline; }
 	}
 
 }
@@ -88,6 +94,10 @@ nav {
 		background-color: white;
 		color: @dark;
 
+		overflow-y: auto;
+	}
+
+	section.login {
 		form {
 			margin: 20px 0;
 			padding: 20px;
@@ -125,6 +135,31 @@ nav {
 				color: white;
 				opacity: 1;
 				cursor: pointer;
+			}
+		}
+	}
+
+	section.usermgmt {
+		display: none;
+
+		.close {
+			position: absolute;
+			top: 0;
+			right: 0;
+
+			width: 40px;
+			height: 40px;
+			line-height: 40px;
+
+			background-color: black;
+			color: white;
+			text-decoration: none;
+			font-size: 40px;
+
+			text-align: center;
+
+			&:hover {
+				color: red;
 			}
 		}
 	}
@@ -229,4 +264,9 @@ main {
 	font-size: 30px;
 	color: white;
 	text-shadow: 0px 0px 15px black;
+}
+
+@import 'libs/colorpicker.less';
+.colorpicker {
+	z-index: 5000;
 }
