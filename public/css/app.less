@@ -214,10 +214,16 @@ main {
 	}
 
 	.hints {
+		overflow-y: auto;
 		background-color: lighten(green, 60%);
 
 		&.error {
 			background-color: lighten(red, 20%);
+		}
+
+		a {
+			margin-bottom: 5px;
+			display: block;
 		}
 
 		padding: 10px;
