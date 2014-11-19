@@ -115,7 +115,7 @@ $(function() {
 	});
 
 	// receiving
-	socket.on('line', function(stamp, text, writer, socketid) {
+	socket.on('line', function(stamp, text, duration, writer, socketid) {
 		$log.find('.partline[data-socketid='+socketid+']').remove();
 
 		var $line = $lineTpl
@@ -166,6 +166,9 @@ $(function() {
 	var preVal = '';
 	$input.on('keypress', function(e) {
 		if(e.which != 13 /* ENTER */)
+			return;
+
+		if($input.val() == '' /* EMPTY */)
 			return;
 
 		socket.emit('line', $input.val());
@@ -225,18 +228,20 @@ $(function() {
 		});
 	});
 
+
+
+	var
+		$usermgmt = $nav.find('section.usermgmt'),
+		$userul = $usermgmt.find('ul.users'),
+		$tpl = $userul.find('> li.template')
+			.detach()
+			.removeClass('template');
+
 	$('header a.domanage').on('click', function() {
 		$nav
 			.show()
 			.find('section')
 				.hide();
-
-		var
-			$usermgmt = $nav.find('section.usermgmt'),
-			$userul = $usermgmt.find('ul.users'),
-			$tpl = $userul.find('> li.template')
-				.detach()
-				.removeClass('template');
 
 		function updateUsermgmtList(userlist) {
 			$userul.empty();

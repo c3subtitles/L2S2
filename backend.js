@@ -39,13 +39,21 @@ app.use(less('./public', {
 	}
 }))
 
+// serve ui files
+app.get('/', function(req, res) {
+	res.sendFile(path.join(__dirname, 'public/read.html'))
+})
+app.get('/write', function(req, res) {
+	res.sendFile(path.join(__dirname, 'public/write.html'))
+})
+app.get('/tech', function(req, res) {
+	res.sendFile(path.join(__dirname, 'public/tech.html'))
+})
+
 // enable directory-indexes for the logs-folder
 app.use('/logs', serveIndex('./public/logs', {
 	view: 'details'
 }))
-
-// enable serving the public filder
-app.use(serveStatic('./public'))
 
 // serve a generic /status call
 app.get('/status', function(req, res) {
@@ -109,6 +117,9 @@ app.get('/current-talk/:room', function(req, res) {
 
 	return res.json(null);
 });
+
+// enable serving the public filder
+app.use(serveStatic('./public'))
 
 function fetchFahrplan() {
 	console.log('updating fahrplan from', config.fahrplan);
@@ -321,6 +332,10 @@ io.sockets.on('connection', function (socket) {
 	});
 
 
+	function calculateDisplayDuration(line) {
+		var words = (line.match(/ /g) || []).length;
+		return 2 + words * 1.5;
+	}
 
 	// received a line from a socket
 	socket.on('line', function(line) {
@@ -335,7 +350,7 @@ io.sockets.on('connection', function (socket) {
 
 		// emit a line-event with text & stamp to all sockets in that room
 		socketsPerRoom[joinedRoom].forEach(function(itersocket) {
-			itersocket.emit('line', stamp, line, joinedName, socket.id);
+			itersocket.emit('line', stamp, line, calculateDisplayDuration(line), joinedName, socket.id);
 		});
 
 		// increment statistics counter
