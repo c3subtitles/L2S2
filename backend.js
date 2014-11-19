@@ -302,8 +302,9 @@ io.sockets.on('connection', function (socket) {
 
 	// received a line from a socket
 	socket.on('line', function(line) {
-		// sending lines is not allowed for none-authorized users
-		if(!joinedName) return;
+		// sending lines is not allowed for non-authorized users
+		if(!joinedName)
+			return;
 
 		console.log('line from', socket.id, 'for room', joinedRoom, ':', line);
 
