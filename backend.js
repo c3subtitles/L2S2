@@ -12,6 +12,7 @@ var
 	http = require('http'),
 	less = require('less-middleware'),
 	extend = require('util')._extend,
+	clone = function(o) { return extend({}, o); },
 
 	app = express(),
 	server = http.Server(app),
@@ -143,7 +144,7 @@ fetchFahrplan();
 function aggregateWritersSettings(room) {
 	var writersSettings = {};
 	writersPerRoom[room].forEach(function(writer) {
-		var settings = extend({}, users[writer]);
+		var settings = clone(users[writer]);
 		delete settings.password;
 		settings.cnt = writersSettings[writer] ? writersSettings[writer].cnt+1 : 1;
 
