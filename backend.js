@@ -30,7 +30,7 @@ var
 require('./lib/helper')
 
 // enable http requests logging
-app.use(morgan('dev'))
+//app.use(morgan('dev'))
 
 // enable less-compiler for all less-files in public
 app.use(less('./public', {
