@@ -157,7 +157,7 @@ fetchFahrplan();
 // for submitting it to the client for displaying
 function aggregateWritersSettings(room) {
 	var writersSettings = {};
-	writersPerRoom[room].forEach(function(writer) {
+	if(writersPerRoom[room]) writersPerRoom[room].forEach(function(writer) {
 		var settings = clone(users[writer]);
 		delete settings.password;
 		settings.cnt = writersSettings[writer] ? writersSettings[writer].cnt+1 : 1;
@@ -224,10 +224,26 @@ io.sockets.on('connection', function (socket) {
 				if(adminlockPerRoom[room])
 					socket.emit('adminlock', adminlockPerRoom[room].name);
 
-				console.log('informing all sockets about new writers', adminlockPerRoom[joinedRoom]);
+				console.log('informing all writersockets about new writers');
 				if(writersocketsPerRoom[room]) writersocketsPerRoom[room].forEach(function(itersocket) {
 					itersocket.emit('writers', writersSettings);
 				});
+
+				if(!writersocketsPerRoom[room])
+					writersocketsPerRoom[room] = [];
+
+				writersocketsPerRoom[room].push(socket);
+
+				// if no logfile for the room is opened yet
+				if(!logfilePerRoom[room])
+				{
+					// open a room-logfile
+					console.log('opening logfile for room', room);
+					logfilePerRoom[room] = fs.createWriteStream(
+						path.join('./public/logs/', room+'.txt'),
+						{ flags: 'a', encoding: 'utf8' }
+					);
+				}
 			}
 
 			// the user wanted to authenticate but didn't succeed
@@ -250,27 +266,12 @@ io.sockets.on('connection', function (socket) {
 		if(!socketsPerRoom[joinedRoom])
 			socketsPerRoom[joinedRoom] = [];
 
-		if(!writersocketsPerRoom[joinedRoom])
-			writersocketsPerRoom[joinedRoom] = [];
-
 		if(!linesPerRoom[joinedRoom])
 			linesPerRoom[joinedRoom] = 0;
 
 		// add the socket to the per-room distribution list
 		socketsPerRoom[joinedRoom].push(socket);
-		writersocketsPerRoom[joinedRoom].push(socket);
-		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom, '(', writersocketsPerRoom[joinedRoom].length, ' writer sockets)');
-
-		// if no logfile for the room is opened yet
-		if(!logfilePerRoom[joinedRoom])
-		{
-			// open a room-logfile
-			console.log('opening logfile for room', joinedRoom);
-			logfilePerRoom[joinedRoom] = fs.createWriteStream(
-				path.join('./public/logs/', joinedRoom+'.txt'),
-				{ flags: 'a', encoding: 'utf8' }
-			);
-		}
+		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom, '(', writersocketsPerRoom[joinedRoom] ? writersocketsPerRoom[joinedRoom].length : 0, ' writer sockets)');
 	});
 
 	// on socket-disconnect
@@ -294,8 +295,10 @@ io.sockets.on('connection', function (socket) {
 
 		// remove the users socket from the list of sockets for that room
 		socketsPerRoom[joinedRoom].splice(socketsPerRoom[joinedRoom].indexOf(socket), 1);
-		writersocketsPerRoom[joinedRoom].splice(writersocketsPerRoom[joinedRoom].indexOf(socket), 1);
-		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom, '(', writersocketsPerRoom[joinedRoom].length, ' writer sockets)');
+		if(writersocketsPerRoom[joinedRoom] && writersocketsPerRoom[joinedRoom].indexOf(socket) > -1)
+			writersocketsPerRoom[joinedRoom].splice(writersocketsPerRoom[joinedRoom].indexOf(socket), 1);
+
+		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom, '(', writersocketsPerRoom[joinedRoom] ? writersocketsPerRoom[joinedRoom].length : 0, ' writer sockets)');
 
 
 		// craft a version of the users settings, suitable for sending
@@ -309,7 +312,7 @@ io.sockets.on('connection', function (socket) {
 
 
 		// if there is no writer for that room left
-		if(writersPerRoom[joinedRoom].length == 0)
+		if(logfilePerRoom[joinedRoom] && writersPerRoom[joinedRoom] && writersPerRoom[joinedRoom].length == 0)
 		{
 			// close the logfile
 			console.log('closing logfile for room', joinedRoom);
