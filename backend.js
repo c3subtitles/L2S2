@@ -128,7 +128,7 @@ function fetchFahrplan() {
 			fahrplan = newFahrplan;
 		});
 	}).on('error', function(e) {
-		return console.log('fahrplan-update returned error:', err.message, '- keeping old version');
+		return console.log('fahrplan-update returned error:', e.message, '- keeping old version');
 		setTimeout(fetchFahrplan, config.fahrplanTTL);
 	});
 
