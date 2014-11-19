@@ -67,8 +67,7 @@ $(function() {
 				if(!success)
 				{
 					$nav.addClass('error');
-					setTimeout(function() { $nav.removeClass('error'); }, 500);
-					return;
+					return setTimeout(function() { $nav.removeClass('error'); }, 500);
 				}
 
 				// login-success
@@ -325,6 +324,24 @@ $(function() {
 		});
 	});
 
+	$('header a.dolock').on('click', function() {
+		var dolock = !$log.hasClass('locked')
+		$(this).text(dolock ? '[unlock room]' : '[lock room]');
+
+		socket.emit(
+			dolock ? 'adminlock' : 'adminunlock',
+			function(success) {
+				if(success) {
+					$log.toggleClass('locked', dolock);
+				}
+				else {
+					$log.addClass('error');
+					return setTimeout(function() { $log.removeClass('error'); }, 500);
+				}
+			}
+		);
+	});
+
 	// focus tracking
 	$('main').on('click', function(e) {
 		if(!$(e.target).is('input:enabled'))
@@ -335,6 +352,23 @@ $(function() {
 	socket.on('writers', function(writers) {
 		state.writers = writers;
 		updateWritersList();
+	});
+
+	socket.on('adminlock', function(name) {
+		$nav
+			.show()
+			.find('section')
+				.hide()
+			.end()
+			.find('section.lock')
+				.show()
+				.find('.name')
+					.text(name);
+	});
+
+
+	socket.on('adminunlock', function(name) {
+		$nav.hide();
 	});
 
 	function updateWritersList()

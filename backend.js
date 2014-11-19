@@ -19,9 +19,11 @@ var
 	io = socketio(server),
 
 	socketsPerRoom = {},
+	writersocketsPerRoom = {},
 	writersPerRoom = {},
 	linesPerRoom = {},
 	logfilePerRoom = {},
+	adminlockPerRoom = {},
 	fahrplan = null;
 
 // load some small helpers, like an oject-map call
@@ -50,6 +52,7 @@ app.get('/status', function(req, res) {
 	res.json({
 		// number of connected sockets per room
 		'socketsPerRoom': socketsPerRoom.map(function(socketlist) {return socketlist.length }),
+		'writersocketsPerRoom': writersocketsPerRoom.map(function(socketlist) {return socketlist.length }),
 
 		// names of writers per room
 		'writersPerRoom': writersPerRoom,
@@ -63,7 +66,7 @@ app.get('/status', function(req, res) {
 app.get('/status/:room', function(req, res) {
 	var room = req.params.room;
 	res.json(
-		(room in socketsPerRoom) && (socketsPerRoom[room].length > 0)
+		(room in writersocketsPerRoom) && (writersocketsPerRoom[room].length > 0)
 	);
 });
 
@@ -207,8 +210,11 @@ io.sockets.on('connection', function (socket) {
 				// if a callback was requested, call back :)
 				if(cb) cb(true, writersSettings);
 
-				// emit a line-event with text & stamp to all sockets in that room
-				if(socketsPerRoom[room]) socketsPerRoom[room].forEach(function(itersocket) {
+				if(adminlockPerRoom[room])
+					socket.emit('adminlock', adminlockPerRoom[room].name);
+
+				console.log('informing all sockets about new writers', adminlockPerRoom[joinedRoom]);
+				if(writersocketsPerRoom[room]) writersocketsPerRoom[room].forEach(function(itersocket) {
 					itersocket.emit('writers', writersSettings);
 				});
 			}
@@ -233,12 +239,16 @@ io.sockets.on('connection', function (socket) {
 		if(!socketsPerRoom[joinedRoom])
 			socketsPerRoom[joinedRoom] = [];
 
+		if(!writersocketsPerRoom[joinedRoom])
+			writersocketsPerRoom[joinedRoom] = [];
+
 		if(!linesPerRoom[joinedRoom])
 			linesPerRoom[joinedRoom] = 0;
 
 		// add the socket to the per-room distribution list
 		socketsPerRoom[joinedRoom].push(socket);
-		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom);
+		writersocketsPerRoom[joinedRoom].push(socket);
+		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom, '(', writersocketsPerRoom[joinedRoom].length, ' writer sockets)');
 
 		// if no logfile for the room is opened yet
 		if(!logfilePerRoom[joinedRoom])
@@ -273,7 +283,8 @@ io.sockets.on('connection', function (socket) {
 
 		// remove the users socket from the list of sockets for that room
 		socketsPerRoom[joinedRoom].splice(socketsPerRoom[joinedRoom].indexOf(socket), 1);
-		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom);
+		writersocketsPerRoom[joinedRoom].splice(writersocketsPerRoom[joinedRoom].indexOf(socket), 1);
+		console.log('now', socketsPerRoom[joinedRoom].length, 'sockets in room', joinedRoom, '(', writersocketsPerRoom[joinedRoom].length, ' writer sockets)');
 
 
 		// craft a version of the users settings, suitable for sending
@@ -281,7 +292,7 @@ io.sockets.on('connection', function (socket) {
 		var writersSettings = aggregateWritersSettings(joinedRoom);
 
 		// emit a line-event with text & stamp to the remaining sockets in that room
-		if(socketsPerRoom[joinedRoom]) socketsPerRoom[joinedRoom].forEach(function(itersocket) {
+		if(writersocketsPerRoom[joinedRoom]) writersocketsPerRoom[joinedRoom].forEach(function(itersocket) {
 			itersocket.emit('writers', writersSettings);
 		});
 
@@ -295,6 +306,17 @@ io.sockets.on('connection', function (socket) {
 
 			// and remove the reference to the stale write-stream
 			delete logfilePerRoom[joinedRoom];
+		}
+
+		// if this user had locked the room - unlock it
+		if(adminlockPerRoom[joinedRoom] && adminlockPerRoom[joinedRoom].id == socket.id)
+		{
+			console.log('this user had locked the room', joinedRoom, '- unlocking it');
+			delete adminlockPerRoom[joinedRoom];
+
+			writersocketsPerRoom[joinedRoom].forEach(function(itersocket) {
+				itersocket.emit('adminunlock');
+			});
 		}
 	});
 
@@ -333,10 +355,65 @@ io.sockets.on('connection', function (socket) {
 			return;
 
 		// emit a line-event with text & stamp to all sockets in that room
-		socketsPerRoom[joinedRoom].forEach(function(itersocket) {
+		writersocketsPerRoom[joinedRoom].forEach(function(itersocket) {
 			itersocket.emit('partline', partline, joinedName, socket.id);
 		});
 	});
+
+	socket.on('adminlock', function(cb) {
+		// locking is not allowed for non-authorized users
+		if(!joinedName)
+			return;
+
+		// locking is not allowed for non-admin users
+		if(!users[joinedName].admin)
+			return;
+
+		if(adminlockPerRoom[joinedRoom])
+		{
+			console.log('room', joinedRoom, 'already locked by socket', adminlockPerRoom[joinedRoom]);
+			return cb(false);
+		}
+
+		console.log('locking room', joinedRoom, ' for socket', adminlockPerRoom[joinedRoom], '(username', joinedName, ')');
+		adminlockPerRoom[joinedRoom] = {
+			id: socket.id,
+			name: joinedName
+		}
+
+		writersocketsPerRoom[joinedRoom].forEach(function(itersocket) {
+			if(itersocket == socket)
+				return;
+
+			itersocket.emit('adminlock', joinedName);
+		});
+
+		return cb(true);
+	});
+
+	socket.on('adminunlock', function(cb)
+	{
+		if(!adminlockPerRoom[joinedRoom] || adminlockPerRoom[joinedRoom].id != socket.id)
+		{
+			console.log('room', joinedRoom, 'not locked or locked by a different socket, NOT unlocking');
+			return cb(false);
+		}
+
+		writersocketsPerRoom[joinedRoom].forEach(function(itersocket) {
+			if(itersocket == socket)
+				return;
+
+			itersocket.emit('adminunlock');
+		});
+		delete adminlockPerRoom[joinedRoom];
+
+		return cb(true);
+	});
+
+
+
+
+
 
 	function usersWithoutPasswords() {
 		return users.map(function(user) {
