@@ -157,6 +157,8 @@ $(function() {
 			$log.scrollTop($log.height());
 		}
 
+		$line.toggleClass('first', !$line.prev().hasClass('partline'));
+
 		$line
 			.find('span')
 			.text(text)
