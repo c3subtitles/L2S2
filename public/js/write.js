@@ -215,6 +215,13 @@ $(function() {
 					$shortcuts.get(i).value = talk.persons[i].full_public_name;
 				};
 
+				$('main .shortcuts input.shortcut.fixed').each(function() {
+					if(!$(this).data('de'))
+						$(this).data('de', $(this).val());
+
+					$(this).val($(this).data(talk.language))
+				});
+
 				$lineTpl
 					.clone()
 					.addClass('note')
