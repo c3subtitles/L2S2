@@ -137,8 +137,9 @@ $(function() {
 		else
 		{
 			$line.appendTo($log);
-			$log.scrollTop($log.height());
 		}
+
+		$log.scrollTop($log.height());
 	});
 
 	// receiving
@@ -153,8 +154,6 @@ $(function() {
 				.attr('data-socketid', socketid)
 				.css('color', state.writers[writer].color || 'black')
 				.appendTo($log);
-
-			$log.scrollTop($log.height());
 		}
 
 		$line.toggleClass('first', !$line.prev().hasClass('partline'));
@@ -162,6 +161,8 @@ $(function() {
 		$line
 			.find('span')
 			.text(text)
+
+		$log.scrollTop($log.height());
 	});
 
 	// sending
