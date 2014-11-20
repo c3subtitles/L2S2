@@ -226,7 +226,7 @@ io.sockets.on('connection', function (socket) {
 				// register username as a writer
 				rooms[room].writerSockets.push(socket);
 				joinedRoom = room;
-				console.log('now', rooms[room].writerSockets.length, 'writers in room', room);
+				console.log('now', rooms[room].publicSockets.length, 'read-only sockets in room', joinedRoom, '(', rooms[room].writerSockets.length, ' writer sockets)');
 
 				// craft a version of the users settings, suitable for sending
 				// to the client as initial statement
