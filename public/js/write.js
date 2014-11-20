@@ -198,7 +198,8 @@ $(function() {
 	});
 
 	// shortcut updating
-	$('a.load-shortcuts').on('click', function() {
+	$('a.load-shortcuts').on('click', function(e) {
+		e.preventDefault();
 		var $shortcuts = $('main .shortcuts input:enabled');
 
 		$.ajax({
