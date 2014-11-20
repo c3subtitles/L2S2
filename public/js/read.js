@@ -9,7 +9,7 @@ $(function() {
 		$('main').show();
 	});
 
-	socket.on('line', function(stamp, line, duration, writer, socketid) {
+	socket.on('line', function(stamp, line, duration) {
 		pushLine(stamp, line, duration);
 	});
 

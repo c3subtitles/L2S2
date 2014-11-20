@@ -115,7 +115,7 @@ $(function() {
 	});
 
 	// receiving
-	socket.on('line', function(stamp, text, duration, writer, socketid) {
+	socket.on('line', function(stamp, text, writer, socketid) {
 		$log.find('.partline[data-socketid='+socketid+']').remove();
 
 		var $line = $lineTpl
