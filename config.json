@@ -2,5 +2,6 @@
 	"port": 33133,
 
 	"fahrplan": "http://events.ccc.de/congress/2013/Fahrplan/schedule.json",
-	"fahrplanTTL": 600000
+	"fahrplanTTL": 600000,
+	"fahrplanSimulate": "2013-12-27T18:00:00"
 }

@@ -85,7 +85,7 @@ app.get('/current-talk/:room', function(req, res) {
 		return res.end('early bird');
 
 	var
-		now = new Date(),
+		now = config.fahrplanSimulate ? new Date(config.fahrplanSimulate) : new Date(),
 		days = fahrplan['schedule']['conference']['days'];
 
 	for (var i = 0; i < days.length; i++) {
