@@ -195,8 +195,8 @@ $(function() {
 	});
 
 	// shortcut updating
-	$('a.load-hints').on('click', function() {
-		var $shortcuts = $('main .hints input:enabled');
+	$('a.load-shortcuts').on('click', function() {
+		var $shortcuts = $('main .shortcuts input:enabled');
 
 		$.ajax({
 			url: '/current-talk/'+state.room,
@@ -204,8 +204,8 @@ $(function() {
 			success: function(talk) {
 				if(!talk)
 				{
-					$('main .hints').addClass('error');
-					setTimeout(function() { $('main .hints').removeClass('error'); }, 500);
+					$('main .shortcuts').addClass('error');
+					setTimeout(function() { $('main .shortcuts').removeClass('error'); }, 500);
 				}
 
 				for (var i = 0; i < Math.min(10, talk.persons.length); i++) {
