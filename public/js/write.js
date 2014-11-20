@@ -137,7 +137,7 @@ $(function() {
 		else
 		{
 			$line.appendTo($log);
-			$log.scrollTo($line);
+			$log.scrollTop($log.height());
 		}
 	});
 
@@ -154,7 +154,7 @@ $(function() {
 				.css('color', state.writers[writer].color || 'black')
 				.appendTo($log);
 
-			$log.scrollTo($line);
+			$log.scrollTop($log.height());
 		}
 
 		$line
