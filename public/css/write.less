@@ -195,6 +195,10 @@ main {
 	.log {
 		background-color: lighten(yellow, 50%);
 
+		@media screen and (max-width: 1200px) {
+			width: 50%;
+		}
+
 		&.locked {
 			background-image: url(/img/lock.png);
 			background-repeat: no-repeat;
@@ -231,26 +235,32 @@ main {
 
 	.writers {
 		background-color: lighten(red, 40%);
-		width: 20%;
 		left: 60%;
+		width: 20%;
+
+		@media screen and (max-width: 1200px) {
+			left: 50%;
+			width: 20%;
+		}
 
 		padding: 0;
 
 		overflow-y: scroll;
 		overflow-x: visible;
+
+		.instant {
+			font-size: 230%;
+			text-align: center;
+			background: black;
+			color: white;
+			margin: 0;
+			padding: 0;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+		}
 	}
 
-	.instant {
-		font-size: 230%;
-		text-align: center;
-		background: black;
-		color: white;
-		margin: 0;
-		padding: 0;
-		position: absolute;
-		bottom: 0;
-		left: 0;
-	}
 
 	.shortcuts {
 		overflow-y: auto;
@@ -267,8 +277,13 @@ main {
 
 		padding: 10px;
 
-		width: 20%;
 		left: 80%;
+		width: 20%;
+
+		@media screen and (max-width: 1200px) {
+			left: 70%;
+			width: 30%;
+		}
 
 		> label {
 			display: block;
