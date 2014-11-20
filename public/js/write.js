@@ -139,7 +139,7 @@ $(function() {
 			$line.appendTo($log);
 		}
 
-		$log.scrollTop($log.height());
+		$log.scrollTop($log.prop('scrollHeight'));
 	});
 
 	// receiving
@@ -162,7 +162,7 @@ $(function() {
 			.find('span')
 			.text(text)
 
-		$log.scrollTop($log.height());
+		$log.scrollTop($log.prop('scrollHeight'));
 	});
 
 	// sending
