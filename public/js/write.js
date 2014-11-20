@@ -378,7 +378,7 @@ $(function() {
 
 	function updateWritersList()
 	{
-		var $ul = $('.writers').empty();
+		var $ul = $('.writers > ul').empty();
 		for(writer in state.writers)
 		{
 			$('<li>')
