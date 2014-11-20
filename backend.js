@@ -240,9 +240,6 @@ io.sockets.on('connection', function (socket) {
 
 				console.log('informing all writersockets about new writers');
 				rooms[room].writerSockets.forEach(function(itersocket) {
-					if(itersocket == socket)
-						return;
-
 					itersocket.emit('writers', writersSettings);
 				});
 
