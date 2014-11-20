@@ -191,6 +191,7 @@ io.sockets.on('connection', function (socket) {
 		// own line and partline events
 		joinedName;
 
+	var partlineStamp = null;
 	console.log('connection', socket.id, 'from', socket.conn.remoteAddress);
 
 	// join a room, possibly identify as a user is 
@@ -349,7 +350,9 @@ io.sockets.on('connection', function (socket) {
 		console.log('line from', socket.id, 'for room', joinedRoom, ':', line);
 
 		// stamp it
-		var stamp = Date.now();
+		if(partlineStamp) console.log('using existing partlineStamp', partlineStamp, 'to stamp the line');
+		var stamp = partlineStamp || Date.now();
+		partlineStamp = null;
 
 		// emit a line-event with text & stamp to all sockets in that room
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
@@ -377,6 +380,17 @@ io.sockets.on('connection', function (socket) {
 		// sending partlines is not allowed for non-authorized users
 		if(!joinedName)
 			return;
+
+		if(partline.length == 0)
+		{
+			partlineStamp = null;
+			console.log('partline got empty from', socket.id, '- unsetting partlineStamp');
+		}
+		else if(!partlineStamp)
+		{
+			partlineStamp = Date.now();
+			console.log('registering partlineStamp', partlineStamp, 'for', socket.id);
+		}
 
 		// emit a line-event with text & stamp to all sockets in that room
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
