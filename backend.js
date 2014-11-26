@@ -40,6 +40,9 @@ app.use(less('./public', {
 app.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public/read.html'))
 })
+app.get('/beamer', function(req, res) {
+	res.sendFile(path.join(__dirname, 'public/beamer.html'))
+})
 app.get('/write', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public/write.html'))
 })
