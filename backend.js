@@ -531,4 +531,4 @@ io.sockets.on('connection', function (socket) {
 
 // listen for connections
 console.log('starting http/socket-server on port', config.port);
-server.listen(config.port)
+server.listen(config.port, '::')
