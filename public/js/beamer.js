@@ -33,12 +33,22 @@ $(function() {
 
 
 	// presentation specific
+	var hideTimeout;
 	function pushLine(stamp, line, duration) {
 		$('h1').animate({opacity: 0}, 200, function() {
-			$(this)
+			var $el = $(this);
+			$el
 				.text(line)
 				.autoScale()
 				.animate({opacity: 1}, 200);
+
+			if(hideTimeout) clearTimeout(hideTimeout);
+			hideTimeout = setTimeout(function() {
+				$el.animate({opacity: 0}, 200)
+				clearTimeout(hideTimeout);
+				hideTimeout = null;
+			}, duration*1000);
+
 		});
 	}
 });
