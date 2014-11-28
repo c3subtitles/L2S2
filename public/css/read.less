@@ -12,6 +12,7 @@ html, body {
 	padding: 0;
 
 	overflow: hidden;
+	font-family: sans-serif;
 }
 
 nav {
@@ -26,6 +27,10 @@ nav {
 			text-align: center;
 			cursor: pointer;
 			font-size: 350%;
+
+			@media screen and (max-width: 768px) {
+				font-size: 250%;
+			}
 
 			&:hover {
 				background-color: black;
@@ -65,7 +70,7 @@ main {
 		.line { height: 49%; }
 		.line3 { display: none; }
 	}
-	@media screen and (max-width: 512px) {
+	@media screen and (max-width: 300px) {
 		.line { height: 100%; }
 		.line2, .line3 { display: none; }
 	}

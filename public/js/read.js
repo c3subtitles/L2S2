@@ -64,7 +64,7 @@ $(function() {
 		$lines.first().text(line).autoScale();
 	}
 
-	$(window).on('resize', function() {
+	$(window).on('orientationchange resize', function() {
 		$lines.autoScale();
 	});
 });
