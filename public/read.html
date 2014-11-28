@@ -9,8 +9,9 @@
 
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/js/libs/jquery-1.11.1.min.js"></script>
-		<script src="/js/libs/jquery.scrollTo.min.js"></script>
 		<script src="/js/read.js"></script>
+
+		<meta name="viewport" content="width=1024" />
 	</head>
 
 	<body>
@@ -36,9 +37,19 @@
 				Maybe no-one is currently writing Live-Subtitles
 			</span>
 
-			<h1>Line 1</h1>
-			<h2>Line 2</h2>
-			<h3>Line 3</h3>
+			<div class="line">
+				<h3></h3>
+			</div>
+			<div class="line">
+				<h2></h2>
+			</div>
+			<div class="line">
+				<h1></h1>
+			</div>
 		</main>
+
+		<section class="disconnect">
+			Help! Connection lost.
+		</section>
 	</body>
 </html>
