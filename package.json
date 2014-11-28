@@ -13,6 +13,8 @@
     "morgan": "*",
     "serve-static": "*",
     "serve-index": "*",
-    "less-middleware": "*"
+    "less-middleware": "*",
+
+    "socket.io-client": "*"
   }
 }
