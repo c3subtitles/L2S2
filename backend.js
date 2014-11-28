@@ -46,9 +46,6 @@ app.get('/beamer', function(req, res) {
 app.get('/write', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public/write.html'))
 })
-app.get('/tech', function(req, res) {
-	res.sendFile(path.join(__dirname, 'public/tech.html'))
-})
 
 // enable directory-indexes for the logs-folder
 app.use('/logs', serveIndex('./public/logs', {
