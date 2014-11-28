@@ -1,5 +1,4 @@
-// TODO: evaluate breakpoints
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
 	.github-ribbon {
 		display: none;
 	}
@@ -62,9 +61,13 @@ main {
 	h2 { color: lighten(black, 30%); }
 	h3 { color: lighten(black, 60%); }
 
-	// TODO: evaluate breakpoints
-	@media screen and (max-width: 600px) {
-		h3 { display: none; }
+	@media screen and (max-width: 768px) {
+		.line { height: 49%; }
+		.line3 { display: none; }
+	}
+	@media screen and (max-width: 512px) {
+		.line { height: 100%; }
+		.line2, .line3 { display: none; }
 	}
 }
 
