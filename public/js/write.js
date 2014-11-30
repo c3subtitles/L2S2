@@ -197,6 +197,10 @@ $(function() {
 		}
 	});
 
+	setInterval(function() {
+		$input.trigger('keyup');
+	}, 500);
+
 	// shortcut updating
 	$('a.load-shortcuts').on('click', function(e) {
 		e.preventDefault();
