@@ -66,6 +66,9 @@ app.get('/status', function(req, res) {
 			// locked-state
 			'adminlock': room.adminlock,
 
+			// room with speech recognition
+			'speechlock': room.speechlock,
+
 			// receiced number of lines per roomm
 			'statistics': room.statistics,
 		}
@@ -204,6 +207,7 @@ io.sockets.on('connection', function (socket) {
 			writerSockets: [],
 			logfile: null,
 			adminlock: null,
+			speechlock: null,
 			statistics: {
 				linesWritten: 0,
 				linesServed: 0
@@ -211,13 +215,11 @@ io.sockets.on('connection', function (socket) {
 		};
 
 		// if username and password is provided
-		if(username && password)
-		{
+		if(username && password) {
 			console.log('socket', socket.id, 'tries to authenticate as', username);
 
 			// check if the password correct
-			if(users[username] && users[username].password == password)
-			{
+			if(users[username] && users[username].password == password) {
 				console.log('socket', socket.id, 'is now authenticated as', username);
 
 				// register that the socket successfully authenticated as user
@@ -239,6 +241,9 @@ io.sockets.on('connection', function (socket) {
 				if(rooms[room].adminlock)
 					socket.emit('adminlock', rooms[room].adminlock.name);
 
+				if(rooms[room].speechlock)
+					socket.emit('speechlock', rooms[room].speechlock.name);
+
 				console.log('informing all writersockets about new writers');
 				rooms[room].writerSockets.forEach(function(itersocket) {
 					itersocket.emit('writers', writersSettings);
@@ -256,10 +261,7 @@ io.sockets.on('connection', function (socket) {
 				}
 
 				return;
-			}
-
-			// the user wanted to authenticate but didn't succeed
-			else {
+			} else { // the user wanted to authenticate but didn't succeed
 				console.log('socket', socket.id, 'faild to authenticate as', username);
 
 				// callback with a fail-flag
@@ -283,8 +285,7 @@ io.sockets.on('connection', function (socket) {
 	// on socket-disconnect
 	socket.on('disconnect', function() {
 		// if the user has not yet joined a room
-		if(!joinedRoom)
-		{
+		if(!joinedRoom) {
 			// just let it go
 			console.log('disconnection of', socket.id);
 			return;
@@ -293,8 +294,7 @@ io.sockets.on('connection', function (socket) {
 		console.log('disconnection of', socket.id, 'from room', joinedRoom);
 
 		// if the user was not authenticated
-		if(!joinedName)
-		{
+		if(!joinedName) {
 			// remove the socket from the public list of that room
 			rooms[joinedRoom].publicSockets.splice(rooms[joinedRoom].publicSockets.indexOf(socket), 1);
 			console.log('now', rooms[joinedRoom].publicSockets.length, 'read-only sockets in room', joinedRoom, '(', rooms[joinedRoom].writerSockets.length, ' writer sockets)');
@@ -315,8 +315,7 @@ io.sockets.on('connection', function (socket) {
 		});
 
 		// if there is no writer for that room left
-		if(rooms[joinedRoom].logfile && rooms[joinedRoom].writerSockets.length == 0)
-		{
+		if(rooms[joinedRoom].logfile && rooms[joinedRoom].writerSockets.length == 0) {
 			// close the logfile
 			console.log('closing logfile for room', joinedRoom);
 			rooms[joinedRoom].logfile.close();
@@ -324,13 +323,23 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		// if this user had locked the room - unlock it
-		if(rooms[joinedRoom].adminlock && rooms[joinedRoom].adminlock.id == socket.id)
-		{
+		if(rooms[joinedRoom].adminlock && rooms[joinedRoom].adminlock.id == socket.id) {
 			console.log('this user had locked the room', joinedRoom, '- unlocking it');
 			rooms[joinedRoom].adminlock = null;
 
 			rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
 				itersocket.emit('adminunlock');
+			});
+		}
+		
+		// if this user had locked the room - unlock it
+		if(rooms[joinedRoom].speechlock && rooms[joinedRoom].speechlock.id == socket.id)
+		{
+			console.log('this user had locked the room', joinedRoom, '- unlocking it');
+			rooms[joinedRoom].speechlock = null;
+
+			rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+				itersocket.emit('speechunlock');
 			});
 		}
 	});
@@ -350,7 +359,8 @@ io.sockets.on('connection', function (socket) {
 		console.log('line from', socket.id, 'for room', joinedRoom, ':', line);
 
 		// stamp it
-		if(partlineStamp) console.log('using existing partlineStamp', partlineStamp, 'to stamp the line');
+		if(partlineStamp)
+			console.log('using existing partlineStamp', partlineStamp, 'to stamp the line');
 		var stamp = partlineStamp || Date.now();
 		partlineStamp = null;
 
@@ -381,13 +391,10 @@ io.sockets.on('connection', function (socket) {
 		if(!joinedName)
 			return;
 
-		if(partline.length == 0)
-		{
+		if(partline.length == 0) {
 			partlineStamp = null;
 			console.log('partline got empty from', socket.id, '- unsetting partlineStamp');
-		}
-		else if(!partlineStamp)
-		{
+		} else if(!partlineStamp) {
 			partlineStamp = Date.now();
 			console.log('registering partlineStamp', partlineStamp, 'for', socket.id);
 		}
@@ -407,8 +414,7 @@ io.sockets.on('connection', function (socket) {
 		if(!users[joinedName].admin)
 			return;
 
-		if(rooms[joinedRoom].adminlock)
-		{
+		if(rooms[joinedRoom].adminlock) {
 			console.log('room', joinedRoom, 'already locked by', rooms[joinedRoom].adminlock.name);
 			return cb(false);
 		}
@@ -429,10 +435,8 @@ io.sockets.on('connection', function (socket) {
 		return cb(true);
 	});
 
-	socket.on('adminunlock', function(cb)
-	{
-		if(!rooms[joinedRoom].adminlock || rooms[joinedRoom].adminlock.id != socket.id)
-		{
+	socket.on('adminunlock', function(cb) {
+		if(!rooms[joinedRoom].adminlock || rooms[joinedRoom].adminlock.id != socket.id) {
 			console.log('room', joinedRoom, 'not locked or locked by a different socket, NOT unlocking');
 			return cb(false);
 		}
@@ -448,10 +452,52 @@ io.sockets.on('connection', function (socket) {
 		return cb(true);
 	});
 
+	socket.on('speechlock', function(cb) {
+		// locking is not allowed for non-authorized users
+		if(!joinedName)
+			return;
 
+		// locking is not allowed for non-admin users
+		if(!users[joinedName].admin)
+			return;
 
+		if(rooms[joinedRoom].speechlock) {
+			console.log('room', joinedRoom, 'already locked by', rooms[joinedRoom].speechlock.name);
+			return cb(false);
+		}
+	
+		console.log('locking room', joinedRoom, 'for username', joinedName);
+		rooms[joinedRoom].speechlock = {
+			id: socket.id,
+			name: joinedName
+		}
+	
+		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+			if(itersocket == socket)
+				return;
+	
+			itersocket.emit('speechlock', joinedName);
+		});
+	
+		return cb(true);
+	});
 
+	socket.on('speechunlock', function(cb) {
+		if(!rooms[joinedRoom].speechlock || rooms[joinedRoom].speechlock.id != socket.id) {
+			console.log('room', joinedRoom, 'not locked or locked by a different socket, NOT unlocking');
+			return cb(false);
+		}
 
+		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+			if(itersocket == socket)
+				return;
+
+			itersocket.emit('speechunlock');
+		});
+		rooms[joinedRoom].speechlock = null;
+
+		return cb(true);
+	});
 
 	function usersWithoutPasswords() {
 		return users.map(function(user) {
@@ -474,23 +520,19 @@ io.sockets.on('connection', function (socket) {
 		if(!task)
 			return cb(usersWithoutPasswords());
 
-		if(task.delete)
-		{
-			if(task.username == joinedName)
-			{
+		if(task.delete) {
+			if(task.username == joinedName) {
 				console.log('NOT allowing user', task.username, 'to delete himself');
 				return cb(false);
 			}
 
 			console.log('deleting user', task.username, 'on behalf of', joinedName);
 			delete users[task.username];
-		}
-		else {
+		} else {
 			if(users[task.username]) {
 				var user = users[task.username];
 
-				if(joinedName == task.username && user.admin && !task.admin)
-				{
+				if(joinedName == task.username && user.admin && !task.admin) {
 					console.log('NOT allowing user', joinedName, 'to revoke his/her own admin rights');
 					delete task.admin;
 				}
@@ -505,10 +547,8 @@ io.sockets.on('connection', function (socket) {
 				delete user.username;
 				console.log('modifying user', username, 'on behalf of', joinedName, 'to', user);
 				users[username] = user;
-			}
-			else {
-				if(!task.password)
-				{
+			} else {
+				if(!task.password) {
 					console.log('NOT creating user without password');
 					return cb(false);
 				}

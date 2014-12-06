@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 
-		<title>31C3 Subtitling</title>
+		<title>31C3 Subtitling Writing UI</title>
 
 		<link href="/css/write.css" rel="stylesheet">
 
@@ -17,12 +17,13 @@
 	<body>
 
 		<header>
-			<h1>31C3 Subtitling</h1>
+			<h1>31C3 Subtitling Writing UI</h1>
 			<h2></h2>
 			<div class="manage">
 				<span class="username"></span>
 				<a href="#" class="domanage">[manage users]</a>
 				<a href="#" class="dolock">[lock room]</a>
+				<a href="#" class="dospeech">[lock for speech recognition]</a>
 			</div>
 		</header>
 
@@ -70,6 +71,11 @@
 					<label>
 						<input name="admin" type="checkbox" value="1" />
 						Admin
+					</label>
+					<br />
+					<label>
+						<input name="speech" type="checkbox" value="1" />
+						Speech recognition
 					</label>
 					<br />
 					<label>Color:

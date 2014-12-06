@@ -130,12 +130,9 @@ $(function() {
 			.end();
 
 		var $partline = $log.find('li.partline').last();
-		if($partline.length > 0)
-		{
+		if($partline.length > 0) {
 			$line.insertBefore($partline);
-		}
-		else
-		{
+		} else {
 			$line.appendTo($log);
 		}
 
@@ -146,8 +143,7 @@ $(function() {
 	socket.on('partline', function(text, writer, socketid) {
 		var $line = $log.find('.partline[data-socketid='+socketid+']');
 
-		if($line.length == 0)
-		{
+		if($line.length == 0) {
 			$line = $lineTpl
 				.clone()
 				.addClass('partline')
@@ -179,8 +175,7 @@ $(function() {
 		preVal = '';
 	}).on('keyup', function(e) {
 		var val = $input.val();
-		if(val != preVal)
-		{
+		if(val != preVal) {
 			preVal = val;
 
 			$('input.shortcut').each(function() {
@@ -188,8 +183,7 @@ $(function() {
 				val = val.replace(this.name.toLowerCase(), this.value);
 			});
 
-			if(val != preVal)
-			{
+			if(val != preVal) {
 				$input.val(val)
 			}
 
@@ -210,8 +204,7 @@ $(function() {
 			url: '/current-talk/'+state.room,
 			dataType: 'json',
 			success: function(talk) {
-				if(!talk)
-				{
+				if(!talk) {
 					$('main .shortcuts').addClass('error');
 					setTimeout(function() { $('main .shortcuts').removeClass('error'); }, 500);
 				}
@@ -260,8 +253,7 @@ $(function() {
 
 		function updateUsermgmtList(userlist) {
 			$userul.empty();
-			for(user in userlist)
-			{
+			for(user in userlist) {
 				$tpl
 					.clone()
 					.find('a')
@@ -291,6 +283,9 @@ $(function() {
 				.find('input[name=admin]')
 					.prop('checked', !!state.userlist[user].admin)
 				.end()
+				.find('input[name=speech]')
+					.prop('checked', !!state.userlist[user].speech)
+				 .end()
 				.find('input[name=color]')
 					.val(state.userlist[user].color || 'black');
 		}).on('click', 'button', function(e) {
@@ -302,12 +297,13 @@ $(function() {
 			if($btn.hasClass('delete'))
 				cmd['delete'] = true;
 
+			// Map '1' to true
 			cmd.admin = (cmd.admin == '1');
+			cmd.speech = (cmd.speech == '1');
 
 			socket.emit('usermgmt', cmd, function(userlist) {
 				console.log(userlist);
-				if(!userlist)
-				{
+				if(!userlist) {
 					$nav.addClass('error');
 					return setTimeout(function() { $nav.removeClass('error'); }, 500);
 				}
@@ -353,13 +349,29 @@ $(function() {
 			function(success) {
 				if(success) {
 					$log.toggleClass('locked', dolock);
-				}
-				else {
+				} else {
 					$log.addClass('error');
 					return setTimeout(function() { $log.removeClass('error'); }, 500);
 				}
 			}
 		);
+	});
+
+	$('header a.dospeech').on('click', function() {
+		var dospeech = !$log.hasClass('locked')
+			$(this).text(dospeech ? '[unlock for speech recognition]' : '[lock for speech recognition]');
+
+		socket.emit(
+			dospeech ? 'speechlock' : 'speechunlock',
+				function(success) {
+					if(success) {
+						$log.toggleClass('locked', dospeech);
+					} else {
+						$log.addClass('error');
+						return setTimeout(function() { $log.removeClass('error'); }, 500);
+					}
+				}
+			);
 	});
 
 	// focus tracking
@@ -391,15 +403,38 @@ $(function() {
 		$nav.hide();
 	});
 
-	function updateWritersList()
-	{
+	socket.on('speechlock', function(name) {
+		// If current username is not in one of both roles
+		if(state.writers[state.username].speech ||
+		   state.writers[state.username].admin) {
+			$log.addClass('locked');
+		}
+		else { // lock her out
+			$nav
+				.show()
+				.find('section')
+					.hide()
+				.end()
+				.find('section.lock')
+					.show()
+					.find('.name')
+						.text(name);
+		}
+	});
+
+	socket.on('speechunlock', function(name) {
+		$nav.hide();
+		$log.removeClass('locked');
+	});
+
+	function updateWritersList() {
 		var $ul = $('.writers > ul').empty();
-		for(writer in state.writers)
-		{
+		for(writer in state.writers) {
 			$('<li>')
 				.text([
 					writer,
 					(state.writers[writer].admin ? '*' : ''),
+					(state.writers[writer].speech ? '<' : ''),
 					(state.writers[writer].cnt > 1 ? ' ×'+state.writers[writer].cnt : '')
 				].join(''))
 				.css('color', state.writers[writer].color || 'black')
