@@ -27,7 +27,7 @@ require('./lib/helper')
 
 // enable http requests logging
 //app.use(morgan('dev'))
-app.set('json spaces', "\t");
+app.set('json spaces', '\t');
 
 // enable less-compiler for all less-files in public
 app.use(less('./public', {
@@ -133,7 +133,7 @@ function fetchFahrplan() {
 
 		var data = '';
 		res.setEncoding('utf-8');
-		res.on("data", function(chunk) {
+		res.on('data', function(chunk) {
 			data += chunk;
 		})
 		res.on('end', function() {
@@ -374,10 +374,10 @@ io.sockets.on('connection', function (socket) {
 		rooms[joinedRoom].statistics.linesWritten++;
 
 		// escape \n and \r in input
-		line = line.replace("\n", "\\n").replace("\r", "\\r");
+		line = line.replace('\n', '\\n').replace('\r', '\\r');
 
 		// write a line into the logfile
-		rooms[joinedRoom].logfile.write(stamp+"\t"+line+"\n", 'utf8');
+		rooms[joinedRoom].logfile.write(stamp+'\t'+line+'\n', 'utf8');
 	});
 
 	// received a partitial line from a socket
@@ -524,7 +524,7 @@ io.sockets.on('connection', function (socket) {
 
 		console.log('saving new version of users.js');
 		var s = fs.createWriteStream('users.json', {encoding: 'utf-8'})
-		s.write(JSON.stringify(users, null, "\t"))
+		s.write(JSON.stringify(users, null, '\t'))
 		s.end()
 
 		return cb(usersWithoutPasswords());

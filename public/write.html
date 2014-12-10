@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
+		<meta charset='UTF-8'>
 
 		<title>31C3 Subtitling</title>
 
-		<link href="/css/write.css" rel="stylesheet">
+		<link href='/css/write.css' rel='stylesheet'>
 
-		<script src="/socket.io/socket.io.js"></script>
-		<script src="/js/libs/jquery-1.11.1.min.js"></script>
-		<script src="/js/libs/colorpicker.js"></script>
-		<script src="/js/libs/moment.min.js"></script>
-		<script src="/js/write.js"></script>
+		<script src='/socket.io/socket.io.js'></script>
+		<script src='/js/libs/jquery-1.11.1.min.js'></script>
+		<script src='/js/libs/colorpicker.js'></script>
+		<script src='/js/libs/moment.min.js'></script>
+		<script src='/js/write.js'></script>
 	</head>
 
 	<body>
@@ -19,151 +19,151 @@
 		<header>
 			<h1>31C3 Subtitling</h1>
 			<h2></h2>
-			<div class="manage">
-				<span class="username"></span>
-				<a href="#" class="domanage">[manage users]</a>
-				<a href="#" class="dolock">[lock room]</a>
+			<div class='manage'>
+				<span class='username'></span>
+				<a href='#' class='domanage'>[manage users]</a>
+				<a href='#' class='dolock'>[lock room]</a>
 			</div>
 		</header>
 
 		<nav>
-			<section class="login">
+			<section class='login'>
 				<h2>Writers Lounge</h2>
 				<p>Everything you write here will be <strong>directly visible</strong> on the Streaming-Frontend. You are also granting permissions for your work to be <strong>published under CC-BY-SA 3.0</strong>. Be aware of that!</p>
 
 				<form>
 					<label>Username:
-						<input class="username" />
+						<input class='username' />
 					</label>
 					<label>Password:
-						<input class="password" type="password" />
+						<input class='password' type='password' />
 					</label>
 				</form>
 
-				<a href="#saal1">Saal 1</a>
-				<a href="#saal2">Saal 2</a>
-				<a href="#saal6">Saal 6</a>
-				<a href="#saalg">Saal G</a>
+				<a href='#saal1'>Saal 1</a>
+				<a href='#saal2'>Saal 2</a>
+				<a href='#saal6'>Saal 6</a>
+				<a href='#saalg'>Saal G</a>
 			</section>
 
-			<section class="usermgmt">
-				<a href="#" class="close">×</a>
+			<section class='usermgmt'>
+				<a href='#' class='close'>×</a>
 				<h2>List of Users</h2>
-				<ul class="users">
-					<li class="template">
-						<a href="#">user</a>
+				<ul class='users'>
+					<li class='template'>
+						<a href='#'>user</a>
 						<strong>(admin)</strong>
 					</li>
 				</ul>
 
 				<h2>Add or Change user</h2>
-				<form action="/users/change" method="POST">
+				<form action='/users/change' method='POST'>
 					<label>Username:
-						<input name="username" />
+						<input name='username' />
 					</label>
 					<br />
 					<label>Password:
-						<input name="password" />
+						<input name='password' />
 						(leave empty to keep password while modifying)
 					</label>
 					<br />
 					<label>
-						<input name="admin" type="checkbox" value="1" />
+						<input name='admin' type='checkbox' value='1' />
 						Admin
 					</label>
 					<br />
 					<label>Color:
-						<input name="color" />
+						<input name='color' />
 					</label>
 					<br />
-					<button type="submit" class="save">Go! Go! Go Subbing!</button>
+					<button type='submit' class='save'>Go! Go! Go Subbing!</button>
 				</form>
 
 				<h2>Delete user</h2>
-				<form action="/users/delete" method="POST">
+				<form action='/users/delete' method='POST'>
 					<label>Username:
-						<input name="username" />
+						<input name='username' />
 					</label>
 					<br />
-					<button type="submit" class="delete">Go! Go! Go Home!</button>
+					<button type='submit' class='delete'>Go! Go! Go Home!</button>
 				</form>
 			</section>
 
-			<section class="lock">
-				This Room is locked by <span class="name"></span>, who is probably currently writing with special hardware.
+			<section class='lock'>
+				This Room is locked by <span class='name'></span>, who is probably currently writing with special hardware.
 			</section>
 		</nav>
 
-		<section class="disconnect">
+		<section class='disconnect'>
 			Help! Connection lost.
 		</section>
 
 		<main>
-			<ul class="part log">
-				<li class="template">
+			<ul class='part log'>
+				<li class='template'>
 					<strong>12:18:50.360</strong> <span>What's your name, again?</span>
 				</li>
 			</ul>
-			<div class="part writers">
+			<div class='part writers'>
 				<ul></ul>
 
-				<p class="instant">
+				<p class='instant'>
 					Everything you type will be
 					<strong>
-						<span style="color: #ff0000">I</span><span style="color: #ff1100">N</span><span style="color: #ff2200">S</span><span style="color: #ff3300">T</span><span style="color: #ff4400">A</span><span style="color: #ff5500">N</span><span style="color: #ff6600">T</span><span style="color: #ff7700">L</span><span style="color: #ff8800">Y</span>
-						<span style="color: #ff9900">L</span><span style="color: #ffaa00">I</span><span style="color: #ffbb00">V</span><span style="color: #ffcc00">E</span>
+						<span style='color: #ff0000'>I</span><span style='color: #ff1100'>N</span><span style='color: #ff2200'>S</span><span style='color: #ff3300'>T</span><span style='color: #ff4400'>A</span><span style='color: #ff5500'>N</span><span style='color: #ff6600'>T</span><span style='color: #ff7700'>L</span><span style='color: #ff8800'>Y</span>
+						<span style='color: #ff9900'>L</span><span style='color: #ffaa00'>I</span><span style='color: #ffbb00'>V</span><span style='color: #ffcc00'>E</span>
 					</strong>
 				</p>
 			</div>
-			<div class="part shortcuts">
-				<a href="#" class="load-shortcuts">Fill from Fahrplan</a>
+			<div class='part shortcuts'>
+				<a href='#' class='load-shortcuts'>Fill from Fahrplan</a>
 				<label>Shortcut #0
-					<input class="shortcut" name="#0" />
+					<input class='shortcut' name='#0' />
 				</label>
 				<label>Shortcut #1
-					<input class="shortcut" name="#1" />
+					<input class='shortcut' name='#1' />
 				</label>
 				<label>Shortcut #2
-					<input class="shortcut" name="#2" />
+					<input class='shortcut' name='#2' />
 				</label>
 				<label>Shortcut #3
-					<input class="shortcut" name="#3" />
+					<input class='shortcut' name='#3' />
 				</label>
 				<label>Shortcut #4
-					<input class="shortcut" name="#4" />
+					<input class='shortcut' name='#4' />
 				</label>
 				<label>Shortcut #5
-					<input class="shortcut" name="#5" />
+					<input class='shortcut' name='#5' />
 				</label>
 				<label>Shortcut #6
-					<input class="shortcut" name="#6" />
+					<input class='shortcut' name='#6' />
 				</label>
 				<label>Shortcut #7
-					<input class="shortcut" name="#7" />
+					<input class='shortcut' name='#7' />
 				</label>
 				<label>Shortcut #8
-					<input class="shortcut" name="#8" />
+					<input class='shortcut' name='#8' />
 				</label>
 				<label>Shortcut #9
-					<input class="shortcut" name="#9" />
+					<input class='shortcut' name='#9' />
 				</label>
 
 				<hr />
 
 				<label>Shortcut #G
-					<input class="shortcut fixed" name="#G" data-en="*Laughter*" value="*Gelächter*" disabled />
+					<input class='shortcut fixed' name='#G' data-en='*Laughter*' value='*Gelächter*' disabled />
 				</label>
 				<label>Shortcut #A
-					<input class="shortcut fixed" name="#A" data-en="*Applause*" value="*Applaus*" disabled />
+					<input class='shortcut fixed' name='#A' data-en='*Applause*' value='*Applaus*' disabled />
 				</label>
 				<label>Shortcut #H
-					<input class="shortcut fixed" name="#H" data-en="Herald: " value="Herald: " disabled />
+					<input class='shortcut fixed' name='#H' data-en='Herald: ' value='Herald: ' disabled />
 				</label>
 				<label>Shortcut #P
-					<input class="shortcut fixed" name="#P" data-en="Audience: " value="Publikum: " disabled />
+					<input class='shortcut fixed' name='#P' data-en='Audience: ' value='Publikum: ' disabled />
 				</label>
 				<label>Shortcut #S
-					<input class="shortcut fixed" name="#S" data-en="Speaker: " value="Redner: " disabled />
+					<input class='shortcut fixed' name='#S' data-en='Speaker: ' value='Redner: ' disabled />
 				</label>
 			</div>
 			<input />
