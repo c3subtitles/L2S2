@@ -475,8 +475,8 @@ io.sockets.on('connection', function (socket) {
 			return;
         }
 
-		console.log('sending usermgmt-list to %s', joinedName);
 		if(!task) {
+            console.log('sending usermgmt-list to %s', joinedName);
 			return cb(usersWithoutPasswords());
         }
 
