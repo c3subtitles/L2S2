@@ -48,8 +48,8 @@ $(function() {
 		var $a = $(this);
 
 		if(!$a.hasClass('active')) {
-            return;
-        }
+			return;
+		}
 
 		var
 			room = $a.text(),
@@ -165,11 +165,11 @@ $(function() {
 	$input.on('keypress', function(e) {
 		if(e.which != 13 /* ENTER */) {
 			return;
-        }
+		}
 
 		if($input.val() == '' /* EMPTY */) {
 			return;
-        }
+		}
 
 		socket.emit('line', $input.val());
 		$input.val('').focus();
@@ -217,7 +217,7 @@ $(function() {
 				$('main .shortcuts input.shortcut.fixed').each(function() {
 					if(!$(this).data('de')) {
 						$(this).data('de', $(this).val());
-                    }
+					}
 
 					$(this).val($(this).data(talk.language))
 				});
@@ -293,7 +293,7 @@ $(function() {
 
 			if($btn.hasClass('delete')) {
 				cmd['delete'] = true;
-            }
+			}
 
 			cmd.admin = (cmd.admin == '1');
 
@@ -357,7 +357,7 @@ $(function() {
 	$('main').on('click', function(e) {
 		if(!$(e.target).is('input:enabled')) {
 			$input.focus();
-        }
+		}
 	});
 
 	// writers-list change

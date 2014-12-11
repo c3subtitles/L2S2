@@ -83,7 +83,7 @@ app.get('/status/:room', function(req, res) {
 app.get('/current-talk/:room', function(req, res) {
 	if(!fahrplan) {
 		return res.end('early bird');
-    }
+	}
 
 	var
 		now = config.fahrplanSimulate ? new Date(config.fahrplanSimulate) : new Date(),
@@ -97,11 +97,11 @@ app.get('/current-talk/:room', function(req, res) {
 
 		if(day_start > now || day_end < now) {
 			continue;
-        }
+		}
 		
 		if(!day.rooms[req.params.room]) {
 			continue;
-        }
+		}
 
 		var talks = day.rooms[req.params.room];
 		for (var i = 0; i < talks.length; i++) {
@@ -114,7 +114,7 @@ app.get('/current-talk/:room', function(req, res) {
 
 			if(start > now || end < now) {
 				continue;
-            }
+			}
 
 			talk.now = now.getTime();
 			return res.json(talk);
@@ -236,12 +236,12 @@ io.sockets.on('connection', function (socket) {
 
 				// if a callback was requested, call back :)
 				if(cb) {
-                    cb(true, writersSettings);
-                }
+					cb(true, writersSettings);
+				}
 
 				if(rooms[room].adminlock) {
 					socket.emit('adminlock', rooms[room].adminlock.name);
-                }
+				}
 
 				console.log('informing all writersockets about new writers');
 				rooms[room].writerSockets.forEach(function(itersocket) {
@@ -267,8 +267,8 @@ io.sockets.on('connection', function (socket) {
 
 				// callback with a fail-flag
 				if(cb) {
-                    cb(false);
-                }
+					cb(false);
+				}
 
 				// and don't change anything on our state
 				return;
@@ -347,14 +347,14 @@ io.sockets.on('connection', function (socket) {
 		// sending lines is not allowed for non-authorized users
 		if(!joinedName) {
 			return;
-        }
+		}
 
 		console.log('line from %s for room %s: %s', socket.id, joinedRoom, line);
 
 		// stamp it
 		if(partlineStamp) {
-            console.log('using existing partlineStamp %s to stamp the line', partlineStamp);
-        }
+			console.log('using existing partlineStamp %s to stamp the line', partlineStamp);
+		}
 		var stamp = partlineStamp || Date.now();
 		partlineStamp = null;
 
@@ -384,7 +384,7 @@ io.sockets.on('connection', function (socket) {
 		// sending partlines is not allowed for non-authorized users
 		if(!joinedName) {
 			return;
-        }
+		}
 
 		if(partline.length == 0) {
 			partlineStamp = null;
@@ -404,12 +404,12 @@ io.sockets.on('connection', function (socket) {
 		// locking is not allowed for non-authorized users
 		if(!joinedName) {
 			return;
-        }
+		}
 
 		// locking is not allowed for non-admin users
 		if(!users[joinedName].admin) {
 			return;
-        }
+		}
 
 		if(rooms[joinedRoom].adminlock) {
 			console.log('room %s already locked by %s', joinedRoom, rooms[joinedRoom].adminlock.name);
@@ -425,7 +425,7 @@ io.sockets.on('connection', function (socket) {
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
 			if(itersocket == socket) {
 				return;
-            }
+			}
 
 			itersocket.emit('adminlock', joinedName);
 		});
@@ -442,7 +442,7 @@ io.sockets.on('connection', function (socket) {
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
 			if(itersocket == socket) {
 				return;
-            }
+			}
 
 			itersocket.emit('adminunlock');
 		});
@@ -468,17 +468,17 @@ io.sockets.on('connection', function (socket) {
 		// sending lines is not allowed for non-authorized users
 		if(!joinedName) {
 			return;
-        }
+		}
 
 		// sending lines is not allowed for non-admin users
 		if(!users[joinedName].admin) {
 			return;
-        }
+		}
 
 		if(!task) {
-            console.log('sending usermgmt-list to %s', joinedName);
+			console.log('sending usermgmt-list to %s', joinedName);
 			return cb(usersWithoutPasswords());
-        }
+		}
 
 		if(task.delete) {
 			if(task.username == joinedName) {
@@ -499,7 +499,7 @@ io.sockets.on('connection', function (socket) {
 
 				if(!task.password) {
 					delete task.password;
-                }
+				}
 
 				var
 					user = extend(user, task),

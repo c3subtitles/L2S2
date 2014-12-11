@@ -6,7 +6,7 @@ $(function() {
 	$.fn.autoScale = function() {
 		if(!this.data('autoScaleOriginal')) {
 			this.data('autoScaleOriginal', parseInt(this.css('font-size')));
-        }
+		}
 
 		var
 			maxSize = this.data('autoScaleOriginal');
@@ -43,8 +43,8 @@ $(function() {
 				.animate({opacity: 1}, 200);
 
 			if(hideTimeout) {
-                clearTimeout(hideTimeout);
-            }
+				clearTimeout(hideTimeout);
+			}
 			hideTimeout = setTimeout(function() {
 				$el.animate({opacity: 0}, 200)
 				clearTimeout(hideTimeout);

@@ -7,7 +7,7 @@ $(function() {
 	$.fn.autoScale = function() {
 		if(!this.data('autoScaleOriginal')) {
 			this.data('autoScaleOriginal', parseInt(this.css('font-size')));
-        }
+		}
 
 		var
 			maxSize = this.data('autoScaleOriginal');
