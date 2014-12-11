@@ -76,7 +76,7 @@ app.get('/status', function(req, res) {
 app.get('/status/:room', function(req, res) {
 	var room = req.params.room;
 	res.json(
-		(room in rooms) && (rooms[room].writerNames.length > 0)
+		(room in rooms) && (rooms[room].writerSockets.length > 0)
 	);
 });
 
