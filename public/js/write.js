@@ -47,7 +47,9 @@ $(function() {
 		e.preventDefault();
 		var $a = $(this);
 
-		if(!$a.hasClass('active')) return;
+		if(!$a.hasClass('active')) {
+			return;
+		}
 
 		var
 			room = $a.text(),
@@ -64,8 +66,7 @@ $(function() {
 			// acknowledgement
 			function(success, writers) {
 				// login-error
-				if(!success)
-				{
+				if(!success) {
 					$nav.addClass('error');
 					return setTimeout(function() { $nav.removeClass('error'); }, 500);
 				}
@@ -121,21 +122,16 @@ $(function() {
 		var $line = $lineTpl
 			.clone()
 			.find('strong')
-				.text(
-					moment(stamp).format('dd, HH:mm:ss.SSS')
-				)
+				.text(moment(stamp).format('dd, HH:mm:ss.SSS'))
 			.end()
 			.find('span')
 				.text(text)
 			.end();
 
 		var $partline = $log.find('li.partline').last();
-		if($partline.length > 0)
-		{
+		if($partline.length > 0) {
 			$line.insertBefore($partline);
-		}
-		else
-		{
+		} else {
 			$line.appendTo($log);
 		}
 
@@ -146,8 +142,7 @@ $(function() {
 	socket.on('partline', function(text, writer, socketid) {
 		var $line = $log.find('.partline[data-socketid='+socketid+']');
 
-		if($line.length == 0)
-		{
+		if($line.length == 0) {
 			$line = $lineTpl
 				.clone()
 				.addClass('partline')
@@ -168,19 +163,20 @@ $(function() {
 	// sending
 	var preVal = '';
 	$input.on('keypress', function(e) {
-		if(e.which != 13 /* ENTER */)
+		if(e.which != 13 /* ENTER */) {
 			return;
+		}
 
-		if($input.val() == '' /* EMPTY */)
+		if($input.val() == '' /* EMPTY */) {
 			return;
+		}
 
 		socket.emit('line', $input.val());
 		$input.val('').focus();
 		preVal = '';
 	}).on('keyup', function(e) {
 		var val = $input.val();
-		if(val != preVal)
-		{
+		if(val != preVal) {
 			preVal = val;
 
 			$('input.shortcut').each(function() {
@@ -188,8 +184,7 @@ $(function() {
 				val = val.replace(this.name.toLowerCase(), this.value);
 			});
 
-			if(val != preVal)
-			{
+			if(val != preVal) {
 				$input.val(val)
 			}
 
@@ -210,8 +205,7 @@ $(function() {
 			url: '/current-talk/'+state.room,
 			dataType: 'json',
 			success: function(talk) {
-				if(!talk)
-				{
+				if(!talk) {
 					$('main .shortcuts').addClass('error');
 					setTimeout(function() { $('main .shortcuts').removeClass('error'); }, 500);
 				}
@@ -221,8 +215,9 @@ $(function() {
 				};
 
 				$('main .shortcuts input.shortcut.fixed').each(function() {
-					if(!$(this).data('de'))
+					if(!$(this).data('de')) {
 						$(this).data('de', $(this).val());
+					}
 
 					$(this).val($(this).data(talk.language))
 				});
@@ -231,9 +226,7 @@ $(function() {
 					.clone()
 					.addClass('note')
 					.find('strong')
-						.text(
-							moment(talk.now).format('dd, HH:mm:ss.SSS')
-						)
+						.text(moment(talk.now).format('dd, HH:mm:ss.SSS'))
 					.end()
 					.find('span')
 						.text('Fahrplan: Current Talk is '+talk.title+' in '+talk.language)
@@ -260,8 +253,7 @@ $(function() {
 
 		function updateUsermgmtList(userlist) {
 			$userul.empty();
-			for(user in userlist)
-			{
+			for(user in userlist) {
 				$tpl
 					.clone()
 					.find('a')
@@ -299,15 +291,15 @@ $(function() {
 				$btn = $(this),
 				cmd = $btn.closest('form').serializeObject();
 
-			if($btn.hasClass('delete'))
+			if($btn.hasClass('delete')) {
 				cmd['delete'] = true;
+			}
 
 			cmd.admin = (cmd.admin == '1');
 
 			socket.emit('usermgmt', cmd, function(userlist) {
 				console.log(userlist);
-				if(!userlist)
-				{
+				if(!userlist) {
 					$nav.addClass('error');
 					return setTimeout(function() { $nav.removeClass('error'); }, 500);
 				}
@@ -353,8 +345,7 @@ $(function() {
 			function(success) {
 				if(success) {
 					$log.toggleClass('locked', dolock);
-				}
-				else {
+				} else {
 					$log.addClass('error');
 					return setTimeout(function() { $log.removeClass('error'); }, 500);
 				}
@@ -364,8 +355,9 @@ $(function() {
 
 	// focus tracking
 	$('main').on('click', function(e) {
-		if(!$(e.target).is('input:enabled'))
+		if(!$(e.target).is('input:enabled')) {
 			$input.focus();
+		}
 	});
 
 	// writers-list change
@@ -391,11 +383,9 @@ $(function() {
 		$nav.hide();
 	});
 
-	function updateWritersList()
-	{
+	function updateWritersList() {
 		var $ul = $('.writers > ul').empty();
-		for(writer in state.writers)
-		{
+		for(writer in state.writers) {
 			$('<li>')
 				.text([
 					writer,
