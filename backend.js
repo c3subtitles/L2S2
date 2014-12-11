@@ -75,7 +75,7 @@ app.get('/status', function(req, res) {
 // serve a per-room status call
 app.get('/status/:room', function(req, res) {
 	var room = req.params.room;
-	res.json(
+	res.jsonp(
 		(room in rooms) && (rooms[room].writerSockets.length > 0)
 	);
 });
