@@ -15,7 +15,6 @@ $(function() {
 
 		while(thisH > maxH && maxSize > 0) {
 			thisH = this.css('font-size', --maxSize).outerHeight();
-			console.log(maxSize, thisH);
 		}
 
 		return this;
