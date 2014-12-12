@@ -9,3 +9,5 @@ cli.on('connect', function() {
 cli.on('line', function(stamp, line, duration) {
 	console.log(line);
 });
+/* vim: ts=4:sw=4:noet 
+ */
