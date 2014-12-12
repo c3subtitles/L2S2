@@ -47,7 +47,9 @@ $(function() {
 		e.preventDefault();
 		var $a = $(this);
 
-		if(!$a.hasClass('active')) return;
+		if(!$a.hasClass('active')) {
+			return;
+		}
 
 		var
 			room = $a.text(),
@@ -64,8 +66,7 @@ $(function() {
 			// acknowledgement
 			function(success, writers) {
 				// login-error
-				if(!success)
-				{
+				if(!success) {
 					$nav.addClass('error');
 					return setTimeout(function() { $nav.removeClass('error'); }, 500);
 				}
@@ -121,9 +122,7 @@ $(function() {
 		var $line = $lineTpl
 			.clone()
 			.find('strong')
-				.text(
-					moment(stamp).format('dd, HH:mm:ss.SSS')
-				)
+				.text(moment(stamp).format('dd, HH:mm:ss.SSS'))
 			.end()
 			.find('span')
 				.text(text)
@@ -164,11 +163,13 @@ $(function() {
 	// sending
 	var preVal = '';
 	$input.on('keypress', function(e) {
-		if(e.which != 13 /* ENTER */)
+		if(e.which != 13 /* ENTER */) {
 			return;
+		}
 
-		if($input.val() == '' /* EMPTY */)
+		if($input.val() == '' /* EMPTY */) {
 			return;
+		}
 
 		socket.emit('line', $input.val());
 		$input.val('').focus();
@@ -214,8 +215,9 @@ $(function() {
 				};
 
 				$('main .shortcuts input.shortcut.fixed').each(function() {
-					if(!$(this).data('de'))
+					if(!$(this).data('de')) {
 						$(this).data('de', $(this).val());
+					}
 
 					$(this).val($(this).data(talk.language))
 				});
@@ -224,9 +226,7 @@ $(function() {
 					.clone()
 					.addClass('note')
 					.find('strong')
-						.text(
-							moment(talk.now).format('dd, HH:mm:ss.SSS')
-						)
+						.text(moment(talk.now).format('dd, HH:mm:ss.SSS'))
 					.end()
 					.find('span')
 						.text('Fahrplan: Current Talk is '+talk.title+' in '+talk.language)
@@ -294,8 +294,9 @@ $(function() {
 				$btn = $(this),
 				cmd = $btn.closest('form').serializeObject();
 
-			if($btn.hasClass('delete'))
+			if($btn.hasClass('delete')) {
 				cmd['delete'] = true;
+			}
 
 			// Map '1' to true
 			cmd.admin = (cmd.admin == '1');
@@ -376,8 +377,9 @@ $(function() {
 
 	// focus tracking
 	$('main').on('click', function(e) {
-		if(!$(e.target).is('input:enabled'))
+		if(!$(e.target).is('input:enabled')) {
 			$input.focus();
+		}
 	});
 
 	// writers-list change
