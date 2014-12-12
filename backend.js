@@ -66,6 +66,9 @@ app.get('/status', function(req, res) {
 			// locked-state
 			'adminlock': room.adminlock,
 
+			// room with speech recognition
+			'speechlock': room.speechlock,
+
 			// receiced number of lines per roomm
 			'statistics': room.statistics,
 		}
@@ -207,6 +210,7 @@ io.sockets.on('connection', function (socket) {
 			writerSockets: [],
 			logfile: null,
 			adminlock: null,
+			speechlock: null,
 			statistics: {
 				linesWritten: 0,
 				linesServed: 0
@@ -242,6 +246,9 @@ io.sockets.on('connection', function (socket) {
 				if(rooms[room].adminlock) {
 					socket.emit('adminlock', rooms[room].adminlock.name);
 				}
+
+				if(rooms[room].speechlock)
+					socket.emit('speechlock', rooms[room].speechlock.name);
 
 				console.log('informing all writersockets about new writers');
 				rooms[room].writerSockets.forEach(function(itersocket) {
@@ -332,6 +339,17 @@ io.sockets.on('connection', function (socket) {
 
 			rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
 				itersocket.emit('adminunlock');
+			});
+		}
+		
+		// if this user had locked the room - unlock it
+		if(rooms[joinedRoom].speechlock && rooms[joinedRoom].speechlock.id == socket.id)
+		{
+			console.log('this user had locked the room', joinedRoom, '- unlocking it');
+			rooms[joinedRoom].speechlock = null;
+
+			rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+				itersocket.emit('speechunlock');
 			});
 		}
 	});
@@ -451,10 +469,52 @@ io.sockets.on('connection', function (socket) {
 		return cb(true);
 	});
 
+	socket.on('speechlock', function(cb) {
+		// locking is not allowed for non-authorized users
+		if(!joinedName)
+			return;
 
+		// locking is not allowed for non-admin users
+		if(!users[joinedName].admin)
+			return;
 
+		if(rooms[joinedRoom].speechlock) {
+			console.log('room', joinedRoom, 'already locked by', rooms[joinedRoom].speechlock.name);
+			return cb(false);
+		}
+	
+		console.log('locking room', joinedRoom, 'for username', joinedName);
+		rooms[joinedRoom].speechlock = {
+			id: socket.id,
+			name: joinedName
+		}
+	
+		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+			if(itersocket == socket)
+				return;
+	
+			itersocket.emit('speechlock', joinedName);
+		});
+	
+		return cb(true);
+	});
 
+	socket.on('speechunlock', function(cb) {
+		if(!rooms[joinedRoom].speechlock || rooms[joinedRoom].speechlock.id != socket.id) {
+			console.log('room', joinedRoom, 'not locked or locked by a different socket, NOT unlocking');
+			return cb(false);
+		}
 
+		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+			if(itersocket == socket)
+				return;
+
+			itersocket.emit('speechunlock');
+		});
+		rooms[joinedRoom].speechlock = null;
+
+		return cb(true);
+	});
 
 	function usersWithoutPasswords() {
 		return users.map(function(user) {

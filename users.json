@@ -1,4 +1,20 @@
 {
-	"peter":	{ "password": "peter", "color": "blue" },
-	"percidae": { "password": "percidae", "color": "green", "admin": true }
+	"peter": {
+		"password": "peter",
+		"speech": false,
+		"color": "blue",
+		"admin": false
+	},
+	"percidae": {
+		"password": "percidae",
+		"speech": false,
+		"color": "green",
+		"admin": true
+	},
+	"evita": {
+		"password": "evita",
+		"speech": true,
+		"color": "#db9600",
+		"admin": false
+	}
 }

@@ -283,6 +283,9 @@ $(function() {
 				.find('input[name=admin]')
 					.prop('checked', !!state.userlist[user].admin)
 				.end()
+				.find('input[name=speech]')
+					.prop('checked', !!state.userlist[user].speech)
+				 .end()
 				.find('input[name=color]')
 					.val(state.userlist[user].color || 'black');
 		}).on('click', 'button', function(e) {
@@ -295,7 +298,9 @@ $(function() {
 				cmd['delete'] = true;
 			}
 
+			// Map '1' to true
 			cmd.admin = (cmd.admin == '1');
+			cmd.speech = (cmd.speech == '1');
 
 			socket.emit('usermgmt', cmd, function(userlist) {
 				console.log(userlist);
@@ -353,6 +358,23 @@ $(function() {
 		);
 	});
 
+	$('header a.dospeech').on('click', function() {
+		var dospeech = !$log.hasClass('locked')
+			$(this).text(dospeech ? '[unlock for speech recognition]' : '[lock for speech recognition]');
+
+		socket.emit(
+			dospeech ? 'speechlock' : 'speechunlock',
+				function(success) {
+					if(success) {
+						$log.toggleClass('locked', dospeech);
+					} else {
+						$log.addClass('error');
+						return setTimeout(function() { $log.removeClass('error'); }, 500);
+					}
+				}
+			);
+	});
+
 	// focus tracking
 	$('main').on('click', function(e) {
 		if(!$(e.target).is('input:enabled')) {
@@ -383,6 +405,30 @@ $(function() {
 		$nav.hide();
 	});
 
+	socket.on('speechlock', function(name) {
+		// If current username is not in one of both roles
+		if(state.writers[state.username].speech ||
+		   state.writers[state.username].admin) {
+			$log.addClass('locked');
+		}
+		else { // lock her out
+			$nav
+				.show()
+				.find('section')
+					.hide()
+				.end()
+				.find('section.lock')
+					.show()
+					.find('.name')
+						.text(name);
+		}
+	});
+
+	socket.on('speechunlock', function(name) {
+		$nav.hide();
+		$log.removeClass('locked');
+	});
+
 	function updateWritersList() {
 		var $ul = $('.writers > ul').empty();
 		for(writer in state.writers) {
@@ -390,6 +436,7 @@ $(function() {
 				.text([
 					writer,
 					(state.writers[writer].admin ? '*' : ''),
+					(state.writers[writer].speech ? '<' : ''),
 					(state.writers[writer].cnt > 1 ? ' ×'+state.writers[writer].cnt : '')
 				].join(''))
 				.css('color', state.writers[writer].color || 'black')
