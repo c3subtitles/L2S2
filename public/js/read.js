@@ -1,5 +1,7 @@
 $(function() {
 	var
+		$silence = $('.silence'),
+		silenceWait = 15*1000,
 		room,
 		socket = io(window.location.protocol+'//'+window.location.host);
 
@@ -43,8 +45,24 @@ $(function() {
 			socket.emit('join', room);
 	});
 
+	function silence() {
+		$silence
+			.show()
+			.css({opacity: 0})
+			.animate({opacity: 1}, .75);
+	}
+
+	silenceTimeout = setTimeout(silence, silenceWait);
+
 	// display a line
 	socket.on('line', function(stamp, line, duration) {
+		if(silenceTimeout) {
+			clearTimeout(silenceTimeout);
+		}
+
+		silenceTimeout = setTimeout(silence, silenceWait);
+		$silence.hide();
+
 		pushLine(stamp, line, duration);
 	});
 
