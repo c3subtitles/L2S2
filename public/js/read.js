@@ -69,7 +69,6 @@ $(function() {
 
 	// presentation specific
 	var $lines = $('main').find('h1, h2, h3').reverse();
-	console.log($lines);
 	function pushLine(stamp, line, duration) {
 		// shift lines
 		for (var i = $lines.length - 1; i >= 0; i--) {
