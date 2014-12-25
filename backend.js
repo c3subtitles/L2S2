@@ -1,29 +1,28 @@
 var
-	fs = require('fs'),
-	path = require('path'),
-	config = require('./config'),
-	users = require('./users'),
+fs = require('fs'),
+		path = require('path'),
+		config = require('./config'),
+		users = require('./users'),
 
-	express = require('express'),
-	morgan = require('morgan'),
-	serveIndex = require('serve-index'),
-	serveStatic = require('serve-static'),
-	socketio = require('socket.io'),
-	http = require('http'),
-	less = require('less-middleware'),
-	extend = require('util')._extend,
-	clone = function(o) { return extend({}, o); },
+		express = require('express'),
+		serveIndex = require('serve-index'),
+		serveStatic = require('serve-static'),
+		socketio = require('socket.io'),
+		http = require('http'),
+		less = require('less-middleware'),
+		extend = require('util')._extend,
+		clone = function(o) { return extend({}, o); },
 
-	app = express(),
-	server = http.Server(app),
-	io = socketio(server),
+		app = express(),
+		server = http.Server(app),
+		io = socketio(server),
 
-	// per-room information. see 'connection'-event for per-room structure
-	rooms = {},
-	fahrplan = null;
+		// per-room information. see 'connection'-event for per-room structure
+		rooms = {},
+		fahrplan = null;
 
 // load some small helpers, like an oject-map call
-require('./lib/helper')
+require('./lib/helper');
 
 // enable http requests logging
 //app.use(morgan('dev'))
@@ -34,23 +33,23 @@ app.use(less('./public', {
 	compiler: {
 		sourceMap: true
 	}
-}))
+}));
 
 // serve ui files
 app.get('/', function(req, res) {
-	res.sendFile(path.join(__dirname, 'public/read.html'))
-})
+	res.sendFile(path.join(__dirname, 'public/read.html'));
+});
 app.get('/beamer', function(req, res) {
-	res.sendFile(path.join(__dirname, 'public/beamer.html'))
-})
+	res.sendFile(path.join(__dirname, 'public/beamer.html'));
+});
 app.get('/write', function(req, res) {
-	res.sendFile(path.join(__dirname, 'public/write.html'))
-})
+	res.sendFile(path.join(__dirname, 'public/write.html'));
+});
 
 // enable directory-indexes for the logs-folder
 app.use('/logs', serveIndex('./public/logs', {
 	view: 'details'
-}))
+}));
 
 // serve a generic /status call
 app.get('/status', function(req, res) {
@@ -71,7 +70,7 @@ app.get('/status', function(req, res) {
 
 			// receiced number of lines per roomm
 			'statistics': room.statistics,
-		}
+		};
 	}));
 });
 
@@ -89,31 +88,31 @@ app.get('/current-talk/:room', function(req, res) {
 	}
 
 	var
-		now = config.fahrplanSimulate ? new Date(config.fahrplanSimulate) : new Date(),
-		days = fahrplan['schedule']['conference']['days'];
+	now = config.fahrplanSimulate ? new Date(config.fahrplanSimulate) : new Date(),
+			days = fahrplan.schedule.conference.days;
 
 	for (var i = 0; i < days.length; i++) {
 		var
-			day = days[i],
-			day_start = new Date(day.day_start),
-			day_end = new Date(day.day_end);
+		day = days[i],
+				dayStart = new Date(day.day_start),
+				dayEnd = new Date(day.day_end);
 
-		if(day_start > now || day_end < now) {
+		if(dayStart > now || dayEnd < now) {
 			continue;
 		}
-		
+
 		if(!day.rooms[req.params.room]) {
 			continue;
 		}
 
 		var talks = day.rooms[req.params.room];
-		for (var i = 0; i < talks.length; i++) {
+		for (var j = 0; j < talks.length; j++) {
 			var
-				talk = talks[i],
-				parts = talk.duration.split(':');
-				duration = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-				start = new Date(talk.date),
-				end = new Date(start.getTime() + duration*60*1000);
+			talk = talks[j],
+					parts = talk.duration.split(':'),
+					duration = parseInt(parts[0]) * 60 + parseInt(parts[1]),
+					start = new Date(talk.date),
+					end = new Date(start.getTime() + duration*60*1000);
 
 			if(start > now || end < now) {
 				continue;
@@ -121,14 +120,14 @@ app.get('/current-talk/:room', function(req, res) {
 
 			talk.now = now.getTime();
 			return res.json(talk);
-		};
+		}
 	}
 
 	return res.json(null);
 });
 
 // enable serving the public filder
-app.use(serveStatic('./public'))
+app.use(serveStatic('./public'));
 
 function fetchFahrplan() {
 	console.log('updating fahrplan from %s', config.fahrplan);
@@ -138,14 +137,15 @@ function fetchFahrplan() {
 		res.setEncoding('utf-8');
 		res.on('data', function(chunk) {
 			data += chunk;
-		})
+		});
 		res.on('end', function() {
 			setTimeout(fetchFahrplan, config.fahrplanTTL);
 			console.log('got updated version of %s bytes', data.length);
 
-			var newFahrplan = JSON.parse(data)
-			if(!newFahrplan)
+			var newFahrplan = JSON.parse(data);
+			if(!newFahrplan) {
 				return console.log('updated is not valid JSON, resheduling - keeping old version');
+			}
 
 			fahrplan = newFahrplan;
 		});
@@ -165,16 +165,18 @@ fetchFahrplan();
 // for submitting it to the client for displaying
 function aggregateWritersSettings(room) {
 	var writersSettings = {};
-	if(rooms[room]) rooms[room].writerSockets.forEach(function(socket) {
-		var
+	if(rooms[room]) {
+		rooms[room].writerSockets.forEach(function(socket) {
+			var
 			writer = socket.username,
-			settings = clone(users[writer]);
+					settings = clone(users[writer]);
 
-		delete settings.password;
-		settings.cnt = writersSettings[writer] ? writersSettings[writer].cnt+1 : 1;
+			delete settings.password;
+			settings.cnt = writersSettings[writer] ? writersSettings[writer].cnt+1 : 1;
 
-		writersSettings[writer] = settings;
-	});
+			writersSettings[writer] = settings;
+		});
+	}
 	return writersSettings;
 }
 
@@ -183,19 +185,19 @@ io.sockets.on('connection', function (socket) {
 	// hint: this is run once per-connection
 
 	var
-		// if set, the current socket has joined a room and can be found in
-		// the publicSockets- or the writerSockets-array for that room.
-		// on connection-close it must be removed from the respective array.
-		// it takes part in the broadcasting of lines for this room
-		joinedRoom,
+	// if set, the current socket has joined a room and can be found in
+	// the publicSockets- or the writerSockets-array for that room.
+	// on connection-close it must be removed from the respective array.
+	// it takes part in the broadcasting of lines for this room
+	joinedRoom,
 
-		// if set, the socket has successfully authorized itsself as the user
-		// named by joinedName. the socket can be found in the writerSockets-array
-		// for the room it has joined. on connection-close it must be removed from
-		// the respective array. it takes part in the broadcasting of partitial lines
-		// join and leave-events for this room. it is then also allowed to emit its
-		// own line and partline events
-		joinedName;
+			// if set, the socket has successfully authorized itsself as the user
+			// named by joinedName. the socket can be found in the writerSockets-array
+			// for the room it has joined. on connection-close it must be removed from
+			// the respective array. it takes part in the broadcasting of partitial lines
+			// join and leave-events for this room. it is then also allowed to emit its
+			// own line and partline events
+			joinedName;
 
 	var partlineStamp = null;
 	console.log('connection %s from %s', socket.id, socket.conn.remoteAddress);
@@ -205,24 +207,26 @@ io.sockets.on('connection', function (socket) {
 		// clean name - to be sure we're not hacked that easy
 		room = room.replace(/[^a-zA-Z0-9 ]/g, '-');
 
-		if(!rooms[room]) rooms[room] = {
-			publicSockets: [],
-			writerSockets: [],
-			logfile: null,
-			adminlock: null,
-			speechlock: null,
-			statistics: {
-				linesWritten: 0,
-				linesServed: 0
-			}
-		};
+		if(!rooms[room]) {
+			rooms[room] = {
+				publicSockets: [],
+				writerSockets: [],
+				logfile: null,
+				adminlock: null,
+				speechlock: null,
+				statistics: {
+					linesWritten: 0,
+					linesServed: 0
+				}
+			};
+		}
 
 		// if username and password is provided
 		if(username && password) {
 			console.log('socket %s tries to authenticate as %s', socket.id, username);
 
 			// check if the password correct
-			if(users[username] && users[username].password == password) {
+			if(users[username] && users[username].password === password) {
 				console.log('socket %s is now authenticated as %s', socket.id, username);
 
 				// register that the socket successfully authenticated as user
@@ -247,8 +251,9 @@ io.sockets.on('connection', function (socket) {
 					socket.emit('adminlock', rooms[room].adminlock.name);
 				}
 
-				if(rooms[room].speechlock)
+				if(rooms[room].speechlock) {
 					socket.emit('speechlock', rooms[room].speechlock.name);
+				}
 
 				console.log('informing all writersockets about new writers');
 				rooms[room].writerSockets.forEach(function(itersocket) {
@@ -325,7 +330,7 @@ io.sockets.on('connection', function (socket) {
 		});
 
 		// if there is no writer for that room left
-		if(rooms[joinedRoom].logfile && rooms[joinedRoom].writerSockets.length == 0) {
+		if(rooms[joinedRoom].logfile && rooms[joinedRoom].writerSockets.length === 0) {
 			// close the logfile
 			console.log('closing logfile for room %s', joinedRoom);
 			rooms[joinedRoom].logfile.close();
@@ -333,7 +338,7 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		// if this user had locked the room - unlock it
-		if(rooms[joinedRoom].adminlock && rooms[joinedRoom].adminlock.id == socket.id) {
+		if(rooms[joinedRoom].adminlock && rooms[joinedRoom].adminlock.id === socket.id) {
 			console.log('this user had locked the room %s - unlocking it', joinedRoom);
 			rooms[joinedRoom].adminlock = null;
 
@@ -341,9 +346,9 @@ io.sockets.on('connection', function (socket) {
 				itersocket.emit('adminunlock');
 			});
 		}
-		
+
 		// if this user had locked the room - unlock it
-		if(rooms[joinedRoom].speechlock && rooms[joinedRoom].speechlock.id == socket.id)
+		if(rooms[joinedRoom].speechlock && rooms[joinedRoom].speechlock.id === socket.id)
 		{
 			console.log('this user had locked the room', joinedRoom, '- unlocking it');
 			rooms[joinedRoom].speechlock = null;
@@ -365,6 +370,17 @@ io.sockets.on('connection', function (socket) {
 		// sending lines is not allowed for non-authorized users
 		if(!joinedName) {
 			return;
+		}
+		
+		console.log(users[joinedName]);
+		
+		//If locked only authorized
+		if (rooms[joinedRoom].adminlock && !users[joinedName].admin) {
+			return;
+		}
+		
+		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
+				return;
 		}
 
 		console.log('line from %s for room %s: %s', socket.id, joinedRoom, line);
@@ -403,8 +419,16 @@ io.sockets.on('connection', function (socket) {
 		if(!joinedName) {
 			return;
 		}
+		
+		if (rooms[joinedRoom].adminlock && !users[joinedName].admin) {
+			return;
+		}
 
-		if(partline.length == 0) {
+		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
+			return;
+		}
+
+		if(partline.length === 0) {
 			partlineStamp = null;
 			console.log('partline got empty from %s - unsetting partlineStamp', socket.id);
 		} else if(!partlineStamp) {
@@ -438,10 +462,10 @@ io.sockets.on('connection', function (socket) {
 		rooms[joinedRoom].adminlock = {
 			id: socket.id,
 			name: joinedName
-		}
+		};
 
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
-			if(itersocket == socket) {
+			if(itersocket === socket) {
 				return;
 			}
 
@@ -452,13 +476,13 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('adminunlock', function(cb) {
-		if(!rooms[joinedRoom].adminlock || rooms[joinedRoom].adminlock.id != socket.id) {
+		if(!rooms[joinedRoom].adminlock || rooms[joinedRoom].adminlock.id !== socket.id) {
 			console.log('room %s not locked or locked by a different socket, NOT unlocking', joinedRoom);
 			return cb(false);
 		}
 
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
-			if(itersocket == socket) {
+			if(itersocket === socket) {
 				return;
 			}
 
@@ -471,43 +495,47 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('speechlock', function(cb) {
 		// locking is not allowed for non-authorized users
-		if(!joinedName)
+		if(!joinedName) {
 			return;
+		}
 
 		// locking is not allowed for non-admin users
-		if(!users[joinedName].admin)
+		if(!users[joinedName].admin) {
 			return;
+		}
 
 		if(rooms[joinedRoom].speechlock) {
 			console.log('room', joinedRoom, 'already locked by', rooms[joinedRoom].speechlock.name);
 			return cb(false);
 		}
-	
+
 		console.log('locking room', joinedRoom, 'for username', joinedName);
 		rooms[joinedRoom].speechlock = {
 			id: socket.id,
 			name: joinedName
-		}
-	
+		};
+
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
-			if(itersocket == socket)
+			if(itersocket === socket) {
 				return;
-	
+			}
+
 			itersocket.emit('speechlock', joinedName);
 		});
-	
+
 		return cb(true);
 	});
 
 	socket.on('speechunlock', function(cb) {
-		if(!rooms[joinedRoom].speechlock || rooms[joinedRoom].speechlock.id != socket.id) {
+		if(!rooms[joinedRoom].speechlock || rooms[joinedRoom].speechlock.id !== socket.id) {
 			console.log('room', joinedRoom, 'not locked or locked by a different socket, NOT unlocking');
 			return cb(false);
 		}
 
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
-			if(itersocket == socket)
+			if(itersocket === socket) {
 				return;
+			}
 
 			itersocket.emit('speechunlock');
 		});
@@ -541,7 +569,7 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		if(task.delete) {
-			if(task.username == joinedName) {
+			if(task.username === joinedName) {
 				console.log('NOT allowing user %s to delete her-/himself', task.username);
 				return cb(false);
 			}
@@ -552,7 +580,7 @@ io.sockets.on('connection', function (socket) {
 			if(users[task.username]) {
 				var user = users[task.username];
 
-				if(joinedName == task.username && user.admin && !task.admin) {
+				if(joinedName === task.username && user.admin && !task.admin) {
 					console.log('NOT allowing user %s to revoke her/hos own admin privileges', joinedName);
 					delete task.admin;
 				}
@@ -561,9 +589,8 @@ io.sockets.on('connection', function (socket) {
 					delete task.password;
 				}
 
-				var
-					user = extend(user, task),
-					username = task.username;
+				user = extend(user, task);
+				var	username = task.username;
 
 				delete user.username;
 				console.log('modifying user %s on behalf of %s to %s', username, joinedName, user);
@@ -582,9 +609,9 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		console.log('saving new version of users.js');
-		var s = fs.createWriteStream('users.json', {encoding: 'utf-8'})
-		s.write(JSON.stringify(users, null, '\t'))
-		s.end()
+		var s = fs.createWriteStream('users.json', {encoding: 'utf-8'});
+		s.write(JSON.stringify(users, null, '\t'));
+		s.end();
 
 		return cb(usersWithoutPasswords());
 	});
@@ -592,6 +619,6 @@ io.sockets.on('connection', function (socket) {
 
 // listen for connections
 console.log('starting http/socket-server on port %s', config.port);
-server.listen(config.port, '::')
+server.listen(config.port, '::');
 /* vim: ts=4:sw=4:noet 
  */

@@ -1,0 +1,20 @@
+{
+	"bitwise": true,
+	"camelcase": true,
+	"curly": true,
+	"eqeqeq": true,
+	"noarg": true,
+	"noempty": true,
+	"quotmark": "single",
+	"undef": true,
+	"unused": true,
+	"esnext": true,
+	"browser": true,
+	"jquery": true,
+	"node": true,
+	"indent": 2,
+	"globals": {
+		"io": true,
+		"moment": true
+	}
+}
