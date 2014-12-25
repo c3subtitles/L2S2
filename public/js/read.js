@@ -3,7 +3,8 @@ $(function() {
 		$silence = $('.silence'),
 		silenceWait = 15*1000,
 		room,
-		socket = io(window.location.protocol+'//'+window.location.host);
+			socketPath = window.location.protocol+'//'+window.location.host,
+			socket = io(socketPath);
 
 	jQuery.fn.reverse = Array.prototype.reverse;
 	$.fn.autoScale = function() {
@@ -11,8 +12,7 @@ $(function() {
 			this.data('autoScaleOriginal', parseInt(this.css('font-size')));
 		}
 
-		var
-			maxSize = this.data('autoScaleOriginal');
+		var maxSize = this.data('autoScaleOriginal'),
 			maxH = this.parent().innerHeight(),
 			thisH = this.css('font-size', maxSize).outerHeight();
 
@@ -21,7 +21,7 @@ $(function() {
 		}
 
 		return this;
-	}
+	};
 
 	// join
 	$('nav').on('click', 'td', function() {

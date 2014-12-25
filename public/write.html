@@ -5,6 +5,7 @@
 
 		<title>31C3 Subtitling Writing UI</title>
 
+		<link href="css/libs/ionicons.css" rel='stylesheet'>
 		<link href='css/write.css' rel='stylesheet'>
 
 		<script src='socket.io/socket.io.js'></script>
@@ -24,6 +25,7 @@
 				<a href="#" class="domanage">[manage users]</a>
 				<a href="#" class="dolock">[lock room]</a>
 				<a href="#" class="dospeech">[lock for speech recognition]</a>
+				<a href="#" class="docorrect">[Correct Interface]</a>
 			</div>
 		</header>
 
@@ -104,9 +106,9 @@
 			Help! Connection lost.
 		</section>
 
-		<main>
+		<main class="writeInterface">
 			<ul class='part log'>
-				<li class='template'>
+				<li class='line template'>
 					<strong>12:18:50.360</strong> <span>What's your name, again?</span>
 				</li>
 			</ul>
@@ -173,6 +175,76 @@
 				</label>
 			</div>
 			<input />
+		</main>
+		
+		<main class="correctInterface">
+			<ul class='part log'>
+				<li class='correct template'>
+					<strong>timestamp</strong><input/><i class="ion-checkmark"></i><i class="ion-trash-a"></i>
+				</li>
+			</ul>
+			<div class='part writers'>
+				<ul></ul>
+
+				<p class='instant'>
+					Everything you type will be
+					<strong>
+						<span style='color: #ff0000'>I</span><span style='color: #ff1100'>N</span><span style='color: #ff2200'>S</span><span style='color: #ff3300'>T</span><span style='color: #ff4400'>A</span><span style='color: #ff5500'>N</span><span style='color: #ff6600'>T</span><span style='color: #ff7700'>L</span><span style='color: #ff8800'>Y</span>
+						<span style='color: #ff9900'>L</span><span style='color: #ffaa00'>I</span><span style='color: #ffbb00'>V</span><span style='color: #ffcc00'>E</span>
+					</strong>
+				</p>
+			</div>
+			<div class='part shortcuts'>
+				<a href='#' class='load-shortcuts'>Fill from Fahrplan</a>
+				<label>Shortcut #0
+					<input class='shortcut' name='#0' />
+				</label>
+				<label>Shortcut #1
+					<input class='shortcut' name='#1' />
+				</label>
+				<label>Shortcut #2
+					<input class='shortcut' name='#2' />
+				</label>
+				<label>Shortcut #3
+					<input class='shortcut' name='#3' />
+				</label>
+				<label>Shortcut #4
+					<input class='shortcut' name='#4' />
+				</label>
+				<label>Shortcut #5
+					<input class='shortcut' name='#5' />
+				</label>
+				<label>Shortcut #6
+					<input class='shortcut' name='#6' />
+				</label>
+				<label>Shortcut #7
+					<input class='shortcut' name='#7' />
+				</label>
+				<label>Shortcut #8
+					<input class='shortcut' name='#8' />
+				</label>
+				<label>Shortcut #9
+					<input class='shortcut' name='#9' />
+				</label>
+
+				<hr />
+
+				<label>Shortcut #G
+					<input class='shortcut fixed' name='#G' data-en='*Laughter*' value='*Gelächter*' disabled />
+				</label>
+				<label>Shortcut #A
+					<input class='shortcut fixed' name='#A' data-en='*Applause*' value='*Applaus*' disabled />
+				</label>
+				<label>Shortcut #H
+					<input class='shortcut fixed' name='#H' data-en='Herald: ' value='Herald: ' disabled />
+				</label>
+				<label>Shortcut #P
+					<input class='shortcut fixed' name='#P' data-en='Audience: ' value='Publikum: ' disabled />
+				</label>
+				<label>Shortcut #S
+					<input class='shortcut fixed' name='#S' data-en='Speaker: ' value='Redner: ' disabled />
+				</label>
+			</div>
 		</main>
 	</body>
     <!-- vim: set sw=4 ts=4 noet: -->

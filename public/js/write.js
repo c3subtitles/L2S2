@@ -1,20 +1,26 @@
 $(function() {
   var
-  socket = io(window.location.protocol+'//'+window.location.host),
+  socketPath = window.location.protocol+'//'+window.location.host,
+      socket = io(socketPath),
       $nav = $('nav'),
       $login = $('nav .login'),
       $disconnect = $('.disconnect'),
-      $log = $('main ul.log'),
-      $lineTpl = $log.find('li.template')
+      $writeLog = $('.writeInterface ul.log'),
+      $lineTpl = $writeLog.find('li.line.template')
   .removeClass('template')
   .detach(),
-      $input = $('main > input'),
+      $correctLog = $('.correctInterface ul.log'),
+      $correctTpl = $correctLog.find('li.correct.template')
+  .removeClass('template')
+  .detach(),
+      $input = $('.writeInterface > input'),
 
       // system state
       state = {
         room: null,
         username: null,
         password: null,
+        interface: 'write',
         writers: []
       };
 
@@ -51,8 +57,7 @@ $(function() {
       return;
     }
 
-    var
-    room = $a.text(),
+    var room = $a.text(),
         username = $login.find('input.username').val(),
         password = $login.find('input.password').val();
 
@@ -83,17 +88,19 @@ $(function() {
 
         // header setup
         $('header h2').text($a.text());
+
         $('header .manage')
         .find('.username')
         .text(username)
         .end()
         .find('a')
-        .toggleClass('visible', !!writers[username].admin)
+        .toggleClass('visible', !!writers[username].admin);
+
+        $('.docorrect').hide();
 
         $input.focus();
       }
     );
-
   });
 
   // disconnect/reconnect
@@ -115,32 +122,10 @@ $(function() {
     }
   });
 
-  // receiving
-  socket.on('line', function(stamp, text, writer, socketid) {
-    $log.find('.partline[data-socketid='+socketid+']').remove();
-
-    var $line = $lineTpl
-    .clone()
-    .find('strong')
-    .text(moment(stamp).format('dd, HH:mm:ss.SSS'))
-    .end()
-    .find('span')
-    .text(text)
-    .end();
-
-    var $partline = $log.find('li.partline').last();
-    if($partline.length > 0) {
-      $line.insertBefore($partline);
-    } else {
-      $line.appendTo($log);
-    }
-
-    $log.scrollTop($log.prop('scrollHeight'));
-  });
 
   // receiving
   socket.on('partline', function(text, writer, socketid) {
-    var $line = $log.find('.partline[data-socketid='+socketid+']');
+    var $line = $writeLog.find('.partline[data-socketid='+socketid+']');
 
     if($line.length === 0) {
       $line = $lineTpl
@@ -148,7 +133,7 @@ $(function() {
       .addClass('partline')
       .attr('data-socketid', socketid)
       .css('color', state.writers[writer].color || 'black')
-      .appendTo($log);
+      .appendTo($writeLog);
     }
 
     $line.toggleClass('first', !$line.prev().hasClass('partline'));
@@ -157,7 +142,7 @@ $(function() {
     .find('span')
     .text(text);
 
-    $log.scrollTop($log.prop('scrollHeight'));
+    $writeLog.scrollTop($writeLog.prop('scrollHeight'));
   });
 
   // sending
@@ -171,7 +156,14 @@ $(function() {
       return;
     }
 
-    socket.emit('line', $input.val());
+    if (state.interface === 'write') {
+      socket.emit('line', $input.val());
+    } else if (state.interface === 'correct') {
+      socket.emit('correct',$input.val());
+    } else {
+      return;
+    }
+
     $input.val('').focus();
     preVal = '';
   }).on('keyup', function() {
@@ -188,7 +180,9 @@ $(function() {
         $input.val(val);
       }
 
-      socket.emit('partline', val);
+      if (state.interface === 'write') {
+        socket.emit('partline', val);
+      }
     }
   });
 
@@ -202,7 +196,7 @@ $(function() {
     var $shortcuts = $('main .shortcuts input:enabled');
 
     $.ajax({
-      url: '/current-talk/'+state.room,
+      url: 'current-talk/'+state.room,
       dataType: 'json',
       success: function(talk) {
         if(!talk) {
@@ -232,7 +226,7 @@ $(function() {
         .find('span')
         .text('Fahrplan: Current Talk is '+talk.title+' in '+talk.language)
         .end()
-        .appendTo($log);
+        .appendTo($writeLog);
       }
     });
   });
@@ -245,6 +239,22 @@ $(function() {
       $tpl = $userul.find('> li.template')
   .detach()
   .removeClass('template');
+
+  $('header a.docorrect').on('click', function() {
+    //switch to correctInterface
+    if (state.interface === 'write') {
+      state.interface = 'correct';
+      $('.writeInterface').hide();
+      $('.correctInterface').show();
+      $('.docorrect').text('[Write Interface]');
+    } else {
+      state.interface = 'write';
+      $('.writeInterface').show();
+      $('.correctInterface').hide();
+      $('.docorrect').text('[Correct Interface]');
+    }
+  });
+
 
   $('header a.domanage').on('click', function() {
     $nav
@@ -343,34 +353,40 @@ $(function() {
   });
 
   $('header a.dolock').on('click', function() {
-    var dolock = !$log.hasClass('locked');
+    var dolock = !$writeLog.hasClass('locked');
     $(this).text(dolock ? '[unlock room]' : '[lock room]');
 
     socket.emit(
       dolock ? 'adminlock' : 'adminunlock',
       function(success) {
         if(success) {
-          $log.toggleClass('locked', dolock);
+          $writeLog.toggleClass('locked', dolock);
         } else {
-          $log.addClass('error');
-          return setTimeout(function() { $log.removeClass('error'); }, 500);
+          $writeLog.addClass('error');
+          return setTimeout(function() { $writeLog.removeClass('error'); }, 500);
         }
       }
     );
   });
 
   $('header a.dospeech').on('click', function() {
-    var dospeech = !$log.hasClass('locked');
+    var dospeech = !$writeLog.hasClass('locked');
     $(this).text(dospeech ? '[unlock for speech recognition]' : '[lock for speech recognition]');
 
     socket.emit(
       dospeech ? 'speechlock' : 'speechunlock',
       function(success) {
         if(success) {
-          $log.toggleClass('locked', dospeech);
+          $writeLog.toggleClass('locked', dospeech);
+          if (dospeech) {
+            $('.docorrect').show();
+          } else {
+            $('.docorrect').hide();
+          }
+          state.interface = 'correct';
         } else {
-          $log.addClass('error');
-          return setTimeout(function() { $log.removeClass('error'); }, 500);
+          $writeLog.addClass('error');
+          return setTimeout(function() { $writeLog.removeClass('error'); }, 500);
         }
       }
     );
@@ -399,18 +415,22 @@ $(function() {
     .show()
     .find('.name')
     .text(name);
+    $('header h2').append(' (Locked)');
   });
 
 
   socket.on('adminunlock', function(name) {
     $nav.hide();
+    $('header h2').text(state.room);
   });
 
   socket.on('speechlock', function(name) {
+    $('header h2').append(' (Speech Locked)');
     // If current username is not in one of both roles
     if(state.writers[state.username].speech ||
        state.writers[state.username].admin) {
-      $log.addClass('locked');
+      $writeLog.addClass('locked');
+      $('.docorrect').show();
     }
     else { // lock her out
       $nav
@@ -426,8 +446,89 @@ $(function() {
   });
 
   socket.on('speechunlock', function(name) {
+    $('.docorrect').hide();
     $nav.hide();
-    $log.removeClass('locked');
+    $writeLog.removeClass('locked');
+    $('header h2').text(state.room);
+  });
+
+  // receiving
+  socket.on('line', function(stamp, text, writer, socketid, correctionId) {
+    $correctLog.find('.correct[data-id='+correctionId+']').remove();
+    $correctLog.find('li > i.ion-checkmark').first().show();
+    $writeLog.find('.partline[data-socketid='+socketid+']').remove();
+
+    var $line = $lineTpl
+    .clone()
+    .find('strong')
+    .text(moment(stamp).format('dd, HH:mm:ss.SSS'))
+    .end()
+    .find('span')
+    .text(text)
+    .end();
+
+    var $partline = $writeLog.find('li.partline').last();
+    if($partline.length > 0) {
+      $line.insertBefore($partline);
+    } else {
+      $line.appendTo($writeLog);
+    }
+
+    $writeLog.scrollTop($writeLog.prop('scrollHeight'));
+  });
+
+  function sendCorrection(line, correctionId) {
+    socket.emit('line', line.find('input').val(), correctionId, function(success) {
+      if (success) {
+        line.remove();
+      }
+    });
+  }
+
+  function deleteCorrection(correctionId) {
+    socket.emit('removeCorrection', correctionId);
+    //line.remove();
+  }
+
+  socket.on('removeCorrection', function(correctionId) {
+    $correctLog.find('.correct[data-id='+correctionId+']').remove();
+  });
+
+  socket.on('correct', function(stamp, text, writer, socketid) {
+    $correctLog.find('.partline[data-socketid='+socketid+']').remove();
+
+    var $line = $correctTpl
+    .clone()
+    .attr('data-id', stamp+writer)
+    .find('strong')
+    .text(moment(stamp).format('dd, HH:mm:ss.SSS'))
+    .end()
+    .find('input')
+    .val(text)
+    .end();
+
+    $line.find('i.ion-checkmark').on('click', function() {
+      sendCorrection($line, stamp+writer);
+    });
+
+    $line.find('i.ion-trash-a').on('click', function() {
+      deleteCorrection(stamp+writer);
+    });
+
+    var $partline = $correctLog.find('li.partline').last();
+    if($partline.length > 0) {
+      $line.insertBefore($partline);
+    } else {
+      $line.appendTo($correctLog);
+    }
+    var corrections = $correctLog.find('li > i.ion-checkmark');
+    corrections.hide();
+    corrections.first().show();
+    if (corrections.count === 1) {
+      corrections.first().focus();
+    }
+
+    $correctLog.scrollTop($correctLog.prop('scrollHeight'));
   });
 
   function updateWritersList() {

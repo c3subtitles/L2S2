@@ -366,21 +366,19 @@ io.sockets.on('connection', function (socket) {
 	}
 
 	// received a line from a socket
-	socket.on('line', function(line) {
+	socket.on('line', function(line, correctionId) {
 		// sending lines is not allowed for non-authorized users
 		if(!joinedName) {
 			return;
 		}
-		
-		console.log(users[joinedName]);
-		
+
 		//If locked only authorized
 		if (rooms[joinedRoom].adminlock && !users[joinedName].admin) {
 			return;
 		}
-		
+
 		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
-				return;
+			return;
 		}
 
 		console.log('line from %s for room %s: %s', socket.id, joinedRoom, line);
@@ -394,7 +392,7 @@ io.sockets.on('connection', function (socket) {
 
 		// emit a line-event with text & stamp to all sockets in that room
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
-			itersocket.emit('line', stamp, line, joinedName, socket.id);
+			itersocket.emit('line', stamp, line, joinedName, socket.id, correctionId);
 		});
 
 		// emit a line-event with text & stamp to all sockets in that room
@@ -413,13 +411,46 @@ io.sockets.on('connection', function (socket) {
 		rooms[joinedRoom].logfile.write(stamp+'\t'+line+'\n', 'utf8');
 	});
 
+	socket.on('removeCorrection', function(correctionId) {
+		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
+			return;
+		}
+
+		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+			itersocket.emit('removeCorrection', correctionId);
+		});
+	});
+
+	socket.on('correct', function(line) {
+		if(!joinedName) {
+			return;
+		}
+		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
+			return;
+		}
+
+		console.log('line for correction from %s for room %s: %s', socket.id, joinedRoom, line);
+
+		// stamp it
+		if(partlineStamp) {
+			console.log('using existing partlineStamp %s to stamp the line', partlineStamp);
+		}
+		var stamp = partlineStamp || Date.now();
+		partlineStamp = null;
+
+		// emit a line-event with text & stamp to all sockets in that room
+		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+			itersocket.emit('correct', stamp, line, joinedName, socket.id);
+		});
+	});
+
 	// received a partitial line from a socket
 	socket.on('partline', function(partline) {
 		// sending partlines is not allowed for non-authorized users
 		if(!joinedName) {
 			return;
 		}
-		
+
 		if (rooms[joinedRoom].adminlock && !users[joinedName].admin) {
 			return;
 		}
