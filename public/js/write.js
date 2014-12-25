@@ -492,6 +492,7 @@ $(function() {
 
   socket.on('removeCorrection', function(correctionId) {
     $correctLog.find('.correct[data-id='+correctionId+']').remove();
+    $correctLog.find('li > i.ion-checkmark').first().show();
   });
 
   socket.on('correct', function(stamp, text, writer, socketid) {
