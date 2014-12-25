@@ -208,6 +208,7 @@ $(function() {
         if(!talk) {
           $('main .shortcuts').addClass('error');
           setTimeout(function() { $('main .shortcuts').removeClass('error'); }, 500);
+          return;
         }
 
         for (var i = 0; i < Math.min(10, talk.persons.length); i++) {
