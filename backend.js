@@ -214,6 +214,7 @@ io.sockets.on('connection', function (socket) {
 				logfile: null,
 				adminlock: null,
 				speechlock: null,
+				speechDelay: 3,
 				statistics: {
 					linesWritten: 0,
 					linesServed: 0
@@ -246,6 +247,8 @@ io.sockets.on('connection', function (socket) {
 				if(cb) {
 					cb(true, writersSettings);
 				}
+				
+				socket.emit('speechDelay', rooms[room].speechDelay);
 
 				if(rooms[room].adminlock) {
 					socket.emit('adminlock', rooms[room].adminlock.name);
@@ -412,7 +415,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('removeCorrection', function(correctionId) {
-		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
+		if ((rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) || !rooms[joinedRoom].speechlock) {
 			return;
 		}
 
@@ -425,7 +428,7 @@ io.sockets.on('connection', function (socket) {
 		if(!joinedName) {
 			return;
 		}
-		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
+		if ((rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) || !rooms[joinedRoom].speechlock) {
 			return;
 		}
 
@@ -475,12 +478,7 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('adminlock', function(cb) {
 		// locking is not allowed for non-authorized users
-		if(!joinedName) {
-			return;
-		}
-
-		// locking is not allowed for non-admin users
-		if(!users[joinedName].admin) {
+		if(!joinedName || !users[joinedName].admin) {
 			return;
 		}
 
@@ -575,6 +573,21 @@ io.sockets.on('connection', function (socket) {
 		return cb(true);
 	});
 
+	socket.on('speechDelay', function(delay) {
+		if(!joinedName) {
+			return;
+		}
+		if ((rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) || !rooms[joinedRoom].speechlock) {
+			return;
+		}
+		
+		rooms[joinedRoom].speechDelay = delay;
+		
+		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
+			itersocket.emit('speechDelay', delay);
+		});
+	});
+	
 	function usersWithoutPasswords() {
 		return users.map(function(user) {
 			var newUser = clone(user);

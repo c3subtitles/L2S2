@@ -14,6 +14,7 @@ $(function() {
   .removeClass('template')
   .detach(),
       $input = $('.writeInterface > input'),
+      intervals = {},
 
       // system state
       state = {
@@ -21,6 +22,8 @@ $(function() {
         username: null,
         password: null,
         interface: 'write',
+        delay: 5,
+        delays: [],
         writers: []
       };
 
@@ -431,6 +434,9 @@ $(function() {
        state.writers[state.username].admin) {
       $writeLog.addClass('locked');
       $('.docorrect').show();
+      $('.part.shortcuts > .delay').on('change', function() {
+        socket.emit('speechDelay', this.value);
+      });
     }
     else { // lock her out
       $nav
@@ -481,17 +487,19 @@ $(function() {
     socket.emit('line', line.find('input').val(), correctionId, function(success) {
       if (success) {
         line.remove();
+        clearInterval(intervals[correctionId]);
       }
     });
   }
 
   function deleteCorrection(correctionId) {
     socket.emit('removeCorrection', correctionId);
-    //line.remove();
+    clearInterval(intervals[correctionId]);
   }
 
   socket.on('removeCorrection', function(correctionId) {
     $correctLog.find('.correct[data-id='+correctionId+']').remove();
+    clearInterval(intervals[correctionId]);
     $correctLog.find('li > i.ion-checkmark').first().show();
   });
 
@@ -515,6 +523,19 @@ $(function() {
     $line.find('i.ion-trash-a').on('click', function() {
       deleteCorrection(stamp+writer);
     });
+    
+    var delaySpan = $line.find('.delay');
+    state.delays[stamp+writer]=state.delay;
+    delaySpan.text(state.delays[stamp+writer]);
+    intervals[stamp+writer] = setInterval(function() {
+      if (state.delays[stamp+writer] <= 1) {
+        clearInterval(intervals[stamp+writer]);
+        sendCorrection($line, stamp+writer);
+        return;
+      }
+      state.delays[stamp+writer]-=1;
+      delaySpan.text(state.delays[stamp+writer]);
+    }, 1000);
 
     var $partline = $correctLog.find('li.partline').last();
     if($partline.length > 0) {
@@ -528,8 +549,22 @@ $(function() {
     if (corrections.count === 1) {
       corrections.first().focus();
     }
+    
+    var input = $line.find('input').first();
+    input.focus();
+    input.on('keypress', function(e) {
+      if(e.which !== 13 /* ENTER */) {
+        return;
+      }
+      sendCorrection($(this).parent(), stamp+writer);
+    });
 
     $correctLog.scrollTop($correctLog.prop('scrollHeight'));
+  });
+  
+  socket.on('speechDelay', function(delay) {
+    state.delay = delay;
+    $('.part.shortcuts > .delay').val(delay);
   });
 
   function updateWritersList() {

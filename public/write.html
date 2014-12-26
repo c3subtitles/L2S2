@@ -180,7 +180,7 @@
 		<main class="correctInterface">
 			<ul class='part log'>
 				<li class='correct template'>
-					<strong>timestamp</strong><input/><i class="ion-checkmark"></i><i class="ion-trash-a"></i>
+					<strong>timestamp</strong><input/><span class="delay"></span><i class="ion-checkmark"></i><i class="ion-trash-a"></i>
 				</li>
 			</ul>
 			<div class='part writers'>
@@ -195,6 +195,8 @@
 				</p>
 			</div>
 			<div class='part shortcuts'>
+				<span style="margin-right:5px;">Delay:</span>
+				<input class="delay" type="number" max="10" min="2"/>
 				<a href='#' class='load-shortcuts'>Fill from Fahrplan</a>
 				<label>Shortcut #0
 					<input class='shortcut' name='#0' />
