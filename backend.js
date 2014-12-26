@@ -10,6 +10,7 @@ fs = require('fs'),
 		socketio = require('socket.io'),
 		http = require('http'),
 		less = require('less-middleware'),
+		_ = require('lodash'),
 		extend = require('util')._extend,
 		clone = function(o) { return extend({}, o); },
 
@@ -215,6 +216,7 @@ io.sockets.on('connection', function (socket) {
 				adminlock: null,
 				speechlock: null,
 				speechDelay: 3,
+				lastTwenty: [],
 				statistics: {
 					linesWritten: 0,
 					linesServed: 0
@@ -383,6 +385,15 @@ io.sockets.on('connection', function (socket) {
 		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
 			return;
 		}
+		
+		console.log(correctionId);
+		if (_.contains(rooms[joinedRoom].lastTwenty, correctionId)) {
+			return;
+		}
+	
+
+		rooms[joinedRoom].lastTwenty.push(correctionId);
+		rooms[joinedRoom].lastTwenty = _.drop(rooms[joinedRoom].lastTwenty, rooms[joinedRoom].lastTwenty.length - 20);
 
 		console.log('line from %s for room %s: %s', socket.id, joinedRoom, line);
 

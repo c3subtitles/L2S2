@@ -7,14 +7,13 @@
   },
   "dependencies": {
     "async": "*",
-    "socket.io": "*",
-
     "express": "*",
-    "morgan": "*",
-    "serve-static": "*",
-    "serve-index": "*",
     "less-middleware": "*",
-
+    "lodash": "^2.4.1",
+    "morgan": "*",
+    "serve-index": "*",
+    "serve-static": "*",
+    "socket.io": "*",
     "socket.io-client": "*"
   }
 }

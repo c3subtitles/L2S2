@@ -528,12 +528,15 @@ $(function() {
     state.delays[stamp+writer]=state.delay;
     delaySpan.text(state.delays[stamp+writer]);
     intervals[stamp+writer] = setInterval(function() {
-      if (state.delays[stamp+writer] <= 1) {
+      if (state.delays[stamp+writer] < 1) {
         clearInterval(intervals[stamp+writer]);
-        sendCorrection($line, stamp+writer);
         return;
       }
       state.delays[stamp+writer]-=1;
+      if (state.delays[stamp+writer] === 1) {
+        clearInterval(intervals[stamp+writer]);
+        sendCorrection($line, stamp+writer);
+      }
       delaySpan.text(state.delays[stamp+writer]);
     }, 1000);
 
