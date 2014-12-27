@@ -99,6 +99,10 @@ $(function() {
         .end()
         .find('a')
         .toggleClass('visible', !!writers[username].admin);
+        
+        if (writers[username].speech) {
+          $('.dospeech').show();
+        }
 
         $('.docorrect').hide();
 

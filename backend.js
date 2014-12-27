@@ -539,9 +539,8 @@ io.sockets.on('connection', function (socket) {
 		if(!joinedName) {
 			return;
 		}
-
-		// locking is not allowed for non-admin users
-		if(!users[joinedName].admin) {
+		
+		if(!users[joinedName].admin && !users[joinedName].speech) {
 			return;
 		}
 
