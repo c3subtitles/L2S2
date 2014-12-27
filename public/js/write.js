@@ -493,97 +493,96 @@ $(function() {
 
   function sendCorrection(line, correctionId) {
     socket.emit('line', line.find('input').val(), correctionId);
-  });
-}
+  }
 
   function deleteCorrection(correctionId) {
-  socket.emit('removeCorrection', correctionId);
-  clearInterval(intervals[correctionId]);
-}
+    socket.emit('removeCorrection', correctionId);
+    clearInterval(intervals[correctionId]);
+  }
 
-socket.on('removeCorrection', function(correctionId) {
-  $correctLog.find('.correct[data-id='+correctionId+']').remove();
-  clearInterval(intervals[correctionId]);
-  $correctLog.find('li > i.ion-checkmark').first().show();
-});
-
-socket.on('correct', function(stamp, text, writer, socketid) {
-  $correctLog.find('.partline[data-socketid='+socketid+']').remove();
-
-  var $line = $correctTpl
-  .clone()
-  .attr('data-id', stamp+writer)
-  .find('strong')
-  .text(moment(stamp).format('dd, HH:mm:ss.SSS'))
-  .end()
-  .find('input')
-  .val(text)
-  .end();
-
-  $line.find('i.ion-checkmark').on('click', function() {
-    sendCorrection($line, stamp+writer);
+  socket.on('removeCorrection', function(correctionId) {
+    $correctLog.find('.correct[data-id='+correctionId+']').remove();
+    clearInterval(intervals[correctionId]);
+    $correctLog.find('li > i.ion-checkmark').first().show();
   });
 
-  $line.find('i.ion-trash-a').on('click', function() {
-    deleteCorrection(stamp+writer);
-  });
+  socket.on('correct', function(stamp, text, writer, socketid) {
+    $correctLog.find('.partline[data-socketid='+socketid+']').remove();
 
-  var delaySpan = $line.find('.delay');
-  state.delays[stamp+writer]=state.delay;
-  delaySpan.text(state.delays[stamp+writer]);
-  intervals[stamp+writer] = setInterval(function() {
-    state.delays[stamp+writer]-=0.1;
-    if (state.delays[stamp+writer] <= 0.1) {
-      clearInterval(intervals[stamp+writer]);
+    var $line = $correctTpl
+    .clone()
+    .attr('data-id', stamp+writer)
+    .find('strong')
+    .text(moment(stamp).format('dd, HH:mm:ss.SSS'))
+    .end()
+    .find('input')
+    .val(text)
+    .end();
+
+    $line.find('i.ion-checkmark').on('click', function() {
       sendCorrection($line, stamp+writer);
-    }
-    delaySpan.text(Math.round(state.delays[stamp+writer] * 10) / 10);
-  }, 100);
+    });
 
-  var $partline = $correctLog.find('li.partline').last();
-  if($partline.length > 0) {
-    $line.insertBefore($partline);
-  } else {
-    $line.appendTo($correctLog);
-  }
-  var corrections = $correctLog.find('li > i.ion-checkmark');
-  corrections.hide();
-  corrections.first().show();
-  if (corrections.count === 1) {
-    corrections.first().focus();
-  }
+    $line.find('i.ion-trash-a').on('click', function() {
+      deleteCorrection(stamp+writer);
+    });
 
-  var input = $line.find('input').first();
-  input.on('keypress', function(e) {
-    if(e.which !== 13 /* ENTER */) {
-      return;
+    var delaySpan = $line.find('.delay');
+    state.delays[stamp+writer]=state.delay;
+    delaySpan.text(state.delays[stamp+writer]);
+    intervals[stamp+writer] = setInterval(function() {
+      state.delays[stamp+writer]-=0.1;
+      if (state.delays[stamp+writer] <= 0.1) {
+        clearInterval(intervals[stamp+writer]);
+        sendCorrection($line, stamp+writer);
+      }
+      delaySpan.text(Math.round(state.delays[stamp+writer] * 10) / 10);
+    }, 100);
+
+    var $partline = $correctLog.find('li.partline').last();
+    if($partline.length > 0) {
+      $line.insertBefore($partline);
+    } else {
+      $line.appendTo($correctLog);
     }
-    sendCorrection($(this).parent(), stamp+writer);
+    var corrections = $correctLog.find('li > i.ion-checkmark');
+    corrections.hide();
+    corrections.first().show();
+    if (corrections.count === 1) {
+      corrections.first().focus();
+    }
+
+    var input = $line.find('input').first();
+    input.on('keypress', function(e) {
+      if(e.which !== 13 /* ENTER */) {
+        return;
+      }
+      sendCorrection($(this).parent(), stamp+writer);
+    });
+    $line.parent().find('input').first().focus();
+
+    $correctLog.scrollTop($correctLog.prop('scrollHeight'));
   });
-  $line.parent().find('input').first().focus();
 
-  $correctLog.scrollTop($correctLog.prop('scrollHeight'));
-});
+  socket.on('speechDelay', function(delay) {
+    state.delay = delay;
+    $('.part.shortcuts > .delay').val(delay);
+  });
 
-socket.on('speechDelay', function(delay) {
-  state.delay = delay;
-  $('.part.shortcuts > .delay').val(delay);
-});
-
-function updateWritersList() {
-  var $ul = $('.writers > ul').empty();
-  for(var writer in state.writers) {
-    $('<li>')
-    .text([
-      writer,
-      (state.writers[writer].admin ? '*' : ''),
-      (state.writers[writer].speech ? '<' : ''),
-      (state.writers[writer].cnt > 1 ? ' ×'+state.writers[writer].cnt : '')
-    ].join(''))
-    .css('color', state.writers[writer].color || 'black')
-    .appendTo($ul);
+  function updateWritersList() {
+    var $ul = $('.writers > ul').empty();
+    for(var writer in state.writers) {
+      $('<li>')
+      .text([
+        writer,
+        (state.writers[writer].admin ? '*' : ''),
+        (state.writers[writer].speech ? '<' : ''),
+        (state.writers[writer].cnt > 1 ? ' ×'+state.writers[writer].cnt : '')
+      ].join(''))
+      .css('color', state.writers[writer].color || 'black')
+      .appendTo($ul);
+    }
   }
-}
 });
 /* vim: ts=4:sw=4:noet
  */
