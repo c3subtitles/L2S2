@@ -536,7 +536,11 @@ $(function() {
         clearInterval(intervals[stamp+writer]);
         sendCorrection($line, stamp+writer);
       }
-      delaySpan.text(Math.round(state.delays[stamp+writer] * 10) / 10);
+      var delayText = Math.round(state.delays[stamp+writer] * 10) / 10;
+      if (!delayText.contains('.')) {
+        delayText+='.0';
+      }
+      delaySpan.text(delayText);
     }, 100);
 
     var $partline = $correctLog.find('li.partline').last();
