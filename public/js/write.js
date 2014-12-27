@@ -436,15 +436,15 @@ $(function() {
 
   socket.on('speechlock', function(name) {
     state.speechLocked = true;
+    $('.part.shortcuts > .delay').on('change', function() {
+      socket.emit('speechDelay', this.value);
+    });
     $('header h2').append(' (Speech Locked)');
     // If current username is not in one of both roles
     if(state.writers[state.username].speech ||
        state.writers[state.username].admin) {
       $writeLog.addClass('locked');
       $('.docorrect').show();
-      $('.part.shortcuts > .delay').on('change', function() {
-        socket.emit('speechDelay', this.value);
-      });
     }
     else { 
       state.interface = 'correct';
