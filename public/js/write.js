@@ -492,6 +492,7 @@ $(function() {
       if (success) {
         line.remove();
         clearInterval(intervals[correctionId]);
+        $('.correctInterface .log').find('input').first().focus();
       }
     });
   }
