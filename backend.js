@@ -588,7 +588,7 @@ io.sockets.on('connection', function (socket) {
 		if(!joinedName) {
 			return;
 		}
-		if ((rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) || !rooms[joinedRoom].speechlock) {
+		if (!rooms[joinedRoom].speechlock) {
 			return;
 		}
 
