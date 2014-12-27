@@ -676,6 +676,6 @@ io.sockets.on('connection', function (socket) {
 
 // listen for connections
 console.log('starting http/socket-server on port %s', config.port);
-server.listen(config.port, '::');
+server.listen(config.port, config.host || '::');
 /* vim: ts=4:sw=4:noet 
  */
