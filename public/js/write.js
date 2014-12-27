@@ -156,6 +156,10 @@ $(function() {
   // sending
   var preVal = '';
   $input.on('keypress', function(e) {
+    //DEBUG
+    console.log($input.val());
+    console.log(e.which);
+    
     if(e.which !== 13 /* ENTER */) {
       return;
     }
