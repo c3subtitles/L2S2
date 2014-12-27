@@ -382,7 +382,7 @@ io.sockets.on('connection', function (socket) {
 			return;
 		}
 
-		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
+		if (rooms[joinedRoom].speechlock && !correctionId && !(users[joinedName].admin || users[joinedName].speech)) {
 			return;
 		}
 

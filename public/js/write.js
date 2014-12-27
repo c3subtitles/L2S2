@@ -553,7 +553,7 @@ $(function() {
       corrections.first().focus();
     }
     
-    var input = $line.find('input').first();
+    var input = $line.parent().find('input').first();
     input.focus();
     input.on('keypress', function(e) {
       if(e.which !== 13 /* ENTER */) {
