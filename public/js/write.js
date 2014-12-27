@@ -157,10 +157,9 @@ $(function() {
   var preVal = '';
   $input.on('keypress', function(e) {
     //DEBUG
-    console.log($input.val());
     console.log(e.which);
     
-    if(e.which !== 13 /* ENTER */) {
+    if(e.which !== 13 && e.which !== 85 /* ENTER */) {
       return;
     }
 
