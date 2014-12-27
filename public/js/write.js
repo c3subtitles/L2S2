@@ -22,6 +22,7 @@ $(function() {
         username: null,
         password: null,
         interface: 'write',
+        speechLocked: false,
         delay: 5,
         delays: [],
         writers: []
@@ -159,12 +160,10 @@ $(function() {
       return;
     }
 
-    if (state.interface === 'write') {
+    if (!state.speechLocked) {
       socket.emit('line', $input.val());
-    } else if (state.interface === 'correct') {
-      socket.emit('correct',$input.val());
     } else {
-      return;
+      socket.emit('correct',$input.val());
     }
 
     $input.val('').focus();
@@ -383,10 +382,11 @@ $(function() {
           $writeLog.toggleClass('locked', dospeech);
           if (dospeech) {
             $('.docorrect').show();
+            state.speechLocked = true;
           } else {
             $('.docorrect').hide();
+            state.speechLocked = false;
           }
-          state.interface = 'correct';
         } else {
           $writeLog.addClass('error');
           return setTimeout(function() { $writeLog.removeClass('error'); }, 500);
@@ -528,17 +528,13 @@ $(function() {
     state.delays[stamp+writer]=state.delay;
     delaySpan.text(state.delays[stamp+writer]);
     intervals[stamp+writer] = setInterval(function() {
-      if (state.delays[stamp+writer] < 1) {
-        clearInterval(intervals[stamp+writer]);
-        return;
-      }
-      state.delays[stamp+writer]-=1;
-      if (state.delays[stamp+writer] === 1) {
+      state.delays[stamp+writer]-=0.1;
+      if (state.delays[stamp+writer] <= 0.1) {
         clearInterval(intervals[stamp+writer]);
         sendCorrection($line, stamp+writer);
       }
-      delaySpan.text(state.delays[stamp+writer]);
-    }, 1000);
+      delaySpan.text(Math.round(state.delays[stamp+writer] * 10) / 10);
+    }, 100);
 
     var $partline = $correctLog.find('li.partline').last();
     if($partline.length > 0) {

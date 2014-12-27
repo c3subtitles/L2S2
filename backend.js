@@ -215,7 +215,7 @@ io.sockets.on('connection', function (socket) {
 				logfile: null,
 				adminlock: null,
 				speechlock: null,
-				speechDelay: 3,
+				speechDelay: 5,
 				lastTwenty: [],
 				statistics: {
 					linesWritten: 0,
@@ -593,6 +593,7 @@ io.sockets.on('connection', function (socket) {
 		}
 		
 		rooms[joinedRoom].speechDelay = delay;
+		console.log(delay);
 		
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
 			itersocket.emit('speechDelay', delay);
