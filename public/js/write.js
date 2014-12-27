@@ -537,7 +537,7 @@ $(function() {
         sendCorrection($line, stamp+writer);
       }
       var delayText = Math.round(state.delays[stamp+writer] * 10) / 10;
-      if (!delayText.contains('.')) {
+      if (!delayText.toString().contains('.')) {
         delayText+='.0';
       }
       delaySpan.text(delayText);
