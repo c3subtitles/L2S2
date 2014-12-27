@@ -249,7 +249,7 @@ io.sockets.on('connection', function (socket) {
 				if(cb) {
 					cb(true, writersSettings);
 				}
-				
+
 				socket.emit('speechDelay', rooms[room].speechDelay);
 
 				if(rooms[room].adminlock) {
@@ -385,15 +385,16 @@ io.sockets.on('connection', function (socket) {
 		if (rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) {
 			return;
 		}
-		
-		console.log(correctionId);
-		if (_.contains(rooms[joinedRoom].lastTwenty, correctionId)) {
+
+		if (correctionId && _.contains(rooms[joinedRoom].lastTwenty, correctionId)) {
 			return;
 		}
-	
 
-		rooms[joinedRoom].lastTwenty.push(correctionId);
-		rooms[joinedRoom].lastTwenty = _.drop(rooms[joinedRoom].lastTwenty, rooms[joinedRoom].lastTwenty.length - 20);
+
+		if (correctionId) {
+			rooms[joinedRoom].lastTwenty.push(correctionId);
+			rooms[joinedRoom].lastTwenty = _.drop(rooms[joinedRoom].lastTwenty, rooms[joinedRoom].lastTwenty.length - 20);
+		}
 
 		console.log('line from %s for room %s: %s', socket.id, joinedRoom, line);
 
@@ -426,7 +427,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('removeCorrection', function(correctionId) {
-		if ((rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) || !rooms[joinedRoom].speechlock) {
+		if (!rooms[joinedRoom].speechlock) {
 			return;
 		}
 
@@ -439,7 +440,7 @@ io.sockets.on('connection', function (socket) {
 		if(!joinedName) {
 			return;
 		}
-		if ((rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) || !rooms[joinedRoom].speechlock) {
+		if (!rooms[joinedRoom].speechlock) {
 			return;
 		}
 
@@ -591,15 +592,15 @@ io.sockets.on('connection', function (socket) {
 		if ((rooms[joinedRoom].speechlock && !(users[joinedName].admin || users[joinedName].speech)) || !rooms[joinedRoom].speechlock) {
 			return;
 		}
-		
+
 		rooms[joinedRoom].speechDelay = delay;
 		console.log(delay);
-		
+
 		rooms[joinedRoom].writerSockets.forEach(function(itersocket) {
 			itersocket.emit('speechDelay', delay);
 		});
 	});
-	
+
 	function usersWithoutPasswords() {
 		return users.map(function(user) {
 			var newUser = clone(user);

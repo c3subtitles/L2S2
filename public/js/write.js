@@ -428,6 +428,7 @@ $(function() {
   });
 
   socket.on('speechlock', function(name) {
+    state.speechLocked = true;
     $('header h2').append(' (Speech Locked)');
     // If current username is not in one of both roles
     if(state.writers[state.username].speech ||
@@ -438,20 +439,16 @@ $(function() {
         socket.emit('speechDelay', this.value);
       });
     }
-    else { // lock her out
-      $nav
-      .show()
-      .find('section')
-      .hide()
-      .end()
-      .find('section.lock')
-      .show()
-      .find('.name')
-      .text(name);
+    else { 
+      state.interface = 'correct';
+      $('.writeInterface').hide();
+      $('.correctInterface').show();
+      $('.docorrect').text('[Write Interface]');
     }
   });
 
   socket.on('speechunlock', function(name) {
+    state.speechLocked = false;
     $('.docorrect').hide();
     $nav.hide();
     $writeLog.removeClass('locked');
