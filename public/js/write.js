@@ -553,14 +553,14 @@ $(function() {
       corrections.first().focus();
     }
     
-    var input = $line.parent().find('input').first();
-    input.focus();
+    var input = $line.find('input').first();
     input.on('keypress', function(e) {
       if(e.which !== 13 /* ENTER */) {
         return;
       }
       sendCorrection($(this).parent(), stamp+writer);
     });
+    $line.parent().find('input').first().focus();
 
     $correctLog.scrollTop($correctLog.prop('scrollHeight'));
   });
