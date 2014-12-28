@@ -134,6 +134,14 @@ $(function() {
   // receiving
   socket.on('partline', function(text, writer, socketid) {
     var $line = $writeLog.find('.partline[data-socketid='+socketid+']');
+    
+    if ($writeLog.find('.partline').length === 0) {
+      $lineTpl
+      .clone()
+      .addClass('partline first')
+      .appendTo($writeLog)
+      .text('');
+    }
 
     if($line.length === 0) {
       $line = $lineTpl
@@ -143,8 +151,6 @@ $(function() {
       .css('color', state.writers[writer].color || 'black')
       .appendTo($writeLog);
     }
-
-    $line.toggleClass('first', !$line.prev().hasClass('partline'));
 
     $line
     .find('span')
@@ -471,6 +477,9 @@ $(function() {
     } catch (e) {}
     $correctLog.find('li > i.ion-checkmark').first().show();
     $writeLog.find('.partline[data-socketid='+socketid+']').remove();
+    if ($writeLog.find('.partline').length <= 1) {
+      $writeLog.find('.partline').remove();
+    }
 
     var $line = $lineTpl
     .clone()
@@ -481,7 +490,7 @@ $(function() {
     .text(text)
     .end();
 
-    var $partline = $writeLog.find('li.partline').last();
+    var $partline = $writeLog.find('li.partline').first();
     if($partline.length > 0) {
       $line.insertBefore($partline);
     } else {
@@ -508,6 +517,9 @@ $(function() {
 
   socket.on('correct', function(stamp, text, writer, socketid) {
     $correctLog.find('.partline[data-socketid='+socketid+']').remove();
+    if ($writeLog.find('.partline').length <= 1) {
+      $writeLog.find('.partline').remove();
+    }
 
     var $line = $correctTpl
     .clone()
