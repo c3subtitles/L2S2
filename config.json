@@ -2,5 +2,7 @@
 	"port": 33133,
 
 	"fahrplan": "http://events.ccc.de/congress/2014/Fahrplan/schedule.json",
-	"fahrplanTTL": 600000
+	"fahrplanTTL": 600000,
+	"gid": "",
+	"uid": ""
 }

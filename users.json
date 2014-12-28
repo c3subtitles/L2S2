@@ -1,18 +1,18 @@
 {
-	"peter": {
-		"password": "peter",
+	"user": {
+		"password": "user",
 		"speech": false,
 		"color": "blue",
 		"admin": false
 	},
-	"percidae": {
-		"password": "percidae",
+	"admin": {
+		"password": "admin",
 		"speech": false,
 		"color": "green",
 		"admin": true
 	},
-	"evita": {
-		"password": "evita",
+	"speech": {
+		"password": "speech",
 		"speech": true,
 		"color": "#db9600",
 		"admin": false

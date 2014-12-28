@@ -675,6 +675,17 @@ io.sockets.on('connection', function (socket) {
 
 // listen for connections
 console.log('starting http/socket-server on port %s', config.port);
-server.listen(config.port, config.host || '::');
+server.listen(config.port, config.host || '::', null, function() {
+	try {
+		console.log('Old User ID: ' + process.getuid() + ', Old Group ID: ' + process.getgid());
+		process.setgid(config.gid);
+		process.setuid(config.uid);
+		console.log('New User ID: ' + process.getuid() + ', New Group ID: ' + process.getgid());
+	} catch (err) {
+		console.log(err);
+		console.log('Cowardly refusing to keep the process alive as root.');
+		process.exit(1);
+	}
+});
 /* vim: ts=4:sw=4:noet 
  */
