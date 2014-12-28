@@ -558,6 +558,10 @@ $(function() {
 
     var input = $line.find('input').first();
     input.on('keypress', function(e) {
+      if (e.which === 27) {
+        input.val('');
+        return;
+      }
       if(e.which !== 13 /* ENTER */) {
         return;
       }
