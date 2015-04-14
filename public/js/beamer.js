@@ -1,24 +1,22 @@
 $(function() {
-	var
-		room,
-		socket = io(window.location.protocol+'//'+window.location.host);
+	var room;
+	var socket = io(window.location.protocol+'//'+window.location.host);
 
 	$.fn.autoScale = function() {
 		if(!this.data('autoScaleOriginal')) {
 			this.data('autoScaleOriginal', parseInt(this.css('font-size')));
 		}
 
-		var
-			maxSize = this.data('autoScaleOriginal');
-			maxH = this.parent().innerHeight(),
-			thisH = this.css('font-size', maxSize).outerHeight();
+		var maxSize = this.data('autoScaleOriginal');
+		var maxH = this.parent().innerHeight();
+		var thisH = this.css('font-size', maxSize).outerHeight();
 
 		while(thisH > maxH && maxSize > 0) {
 			thisH = this.css('font-size', --maxSize).outerHeight();
 		}
 
 		return this;
-	}
+	};
 
 	// join & rejoin
 	socket.on('connect', function() {
@@ -45,7 +43,7 @@ $(function() {
 				clearTimeout(hideTimeout);
 			}
 			hideTimeout = setTimeout(function() {
-				$el.animate({opacity: 0}, 200)
+				$el.animate({opacity: 0}, 200);
 				clearTimeout(hideTimeout);
 				hideTimeout = null;
 			}, duration*1000);

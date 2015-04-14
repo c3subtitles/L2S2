@@ -49,10 +49,10 @@ $(function() {
 		$silence
 			.show()
 			.css({opacity: 0})
-			.animate({opacity: 1}, .75);
+			.animate({opacity: 1}, 0.75);
 	}
 
-	silenceTimeout = setTimeout(silence, silenceWait);
+	var silenceTimeout = setTimeout(silence, silenceWait);
 
 	// display a line
 	socket.on('line', function(stamp, line, duration) {
