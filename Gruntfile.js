@@ -28,7 +28,7 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      all: ['public/js/*.js'],
+      all: ['public/js/*.js', '!public/js/*.min.js'],
       beforeconcat: ['<%= concat.dist.src %>'],
       afterconcat: ['<%= concat.dist.dest %>'],
       options: {
