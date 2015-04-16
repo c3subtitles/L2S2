@@ -1,4 +1,5 @@
 $(function() {
+	'use strict';
 	var
 		$silence = $('.silence'),
 		silenceWait = 15*1000,

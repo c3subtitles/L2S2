@@ -1,4 +1,5 @@
 $(function() {
+  'use strict';
   var
   socketPath = window.location.protocol+'//'+window.location.host,
       socket = io(socketPath),

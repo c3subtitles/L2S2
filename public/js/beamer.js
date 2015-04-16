@@ -1,4 +1,5 @@
 $(function() {
+	'use strict';
 	var socket = io(window.location.protocol+'//'+window.location.host);
 
 	$.fn.autoScale = function() {
