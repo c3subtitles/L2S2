@@ -400,7 +400,7 @@ $(function() {
     var dospeech = !$writeLog.hasClass('locked');
   if (dospeech) {
     $(this).text('[unlock for speech recognition]');
-   else {
+  } else {
     $(this).text('[lock for speech recognition]');
   }
 
