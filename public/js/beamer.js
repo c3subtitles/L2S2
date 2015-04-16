@@ -1,5 +1,4 @@
 $(function() {
-	var room;
 	var socket = io(window.location.protocol+'//'+window.location.host);
 
 	$.fn.autoScale = function() {

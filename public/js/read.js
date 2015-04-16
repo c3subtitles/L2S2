@@ -41,8 +41,9 @@ $(function() {
 		$('.disconnect').hide();
 
 		// rejoin
-		if(room)
+		if(room) {
 			socket.emit('join', room);
+		}
 	});
 
 	function silence() {
@@ -55,7 +56,7 @@ $(function() {
 	var silenceTimeout = setTimeout(silence, silenceWait);
 
 	// display a line
-	socket.on('line', function(stamp, line, duration) {
+	socket.on('line', function(stamp, line) {
 		if(silenceTimeout) {
 			clearTimeout(silenceTimeout);
 		}
@@ -63,13 +64,13 @@ $(function() {
 		silenceTimeout = setTimeout(silence, silenceWait);
 		$silence.hide();
 
-		pushLine(stamp, line, duration);
+		pushLine(stamp, line);
 	});
 
 
 	// presentation specific
 	var $lines = $('main').find('h1, h2, h3').reverse();
-	function pushLine(stamp, line, duration) {
+	function pushLine(stamp, line) {
 		// shift lines
 		for (var i = $lines.length - 1; i >= 0; i--) {
 			$($lines[i]).text(
