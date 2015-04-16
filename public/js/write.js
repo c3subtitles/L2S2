@@ -1,4 +1,5 @@
 $(function() {
+  'use strict';
   var
   socketPath = window.location.protocol+'//'+window.location.host,
       socket = io(socketPath),
@@ -77,7 +78,9 @@ $(function() {
         // login-error
         if(!success) {
           $nav.addClass('error');
-          return setTimeout(function() { $nav.removeClass('error'); }, 500);
+          return setTimeout(function() {
+            $nav.removeClass('error');
+          }, 500);
         }
 
         // login-success
@@ -218,7 +221,9 @@ $(function() {
       success: function(talk) {
         if(!talk) {
           $('main .shortcuts').addClass('error');
-          setTimeout(function() { $('main .shortcuts').removeClass('error'); }, 500);
+          setTimeout(function() {
+            $('main .shortcuts').removeClass('error');
+          }, 500);
           return;
         }
 
@@ -334,7 +339,9 @@ $(function() {
         console.log(userlist);
         if(!userlist) {
           $nav.addClass('error');
-          return setTimeout(function() { $nav.removeClass('error'); }, 500);
+          return setTimeout(function() {
+            $nav.removeClass('error');
+          }, 500);
         }
 
         state.userlist = userlist;
@@ -347,7 +354,9 @@ $(function() {
         .prop('checked', false);
 
         $nav.addClass('success');
-        return setTimeout(function() { $nav.removeClass('success'); }, 500);
+        return setTimeout(function() {
+          $nav.removeClass('success');
+        }, 500);
       });
     }).on('click', '.close', function(e) {
       e.preventDefault();
@@ -380,7 +389,9 @@ $(function() {
           $writeLog.toggleClass('locked', dolock);
         } else {
           $writeLog.addClass('error');
-          return setTimeout(function() { $writeLog.removeClass('error'); }, 500);
+          return setTimeout(function() {
+            $writeLog.removeClass('error');
+          }, 500);
         }
       }
     );
@@ -388,7 +399,11 @@ $(function() {
 
   $('header a.dospeech').on('click', function() {
     var dospeech = !$writeLog.hasClass('locked');
-    $(this).text(dospeech ? '[unlock for speech recognition]' : '[lock for speech recognition]');
+  if (dospeech) {
+    $(this).text('[unlock for speech recognition]');
+  } else {
+    $(this).text('[lock for speech recognition]');
+  }
 
     socket.emit(
       dospeech ? 'speechlock' : 'speechunlock',
@@ -404,7 +419,9 @@ $(function() {
           }
         } else {
           $writeLog.addClass('error');
-          return setTimeout(function() { $writeLog.removeClass('error'); }, 500);
+          return setTimeout(function() {
+            $writeLog.removeClass('error');
+        }, 500);
         }
       }
     );

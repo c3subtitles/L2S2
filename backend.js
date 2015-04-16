@@ -678,9 +678,11 @@ console.log('starting http/socket-server on port %s', config.port);
 server.listen(config.port, config.host || '::', null, function() {
 	try {
 		console.log('Old User ID: ' + process.getuid() + ', Old Group ID: ' + process.getgid());
+		/* Throws an error that gid does not exist on my box
 		process.setgid(config.gid);
 		process.setuid(config.uid);
 		console.log('New User ID: ' + process.getuid() + ', New Group ID: ' + process.getgid());
+		*/
 	} catch (err) {
 		console.log(err);
 		console.log('Cowardly refusing to keep the process alive as root.');
