@@ -1,8 +1,6 @@
-node_modules
-public/css/*.css.map
-public/css/*.css
-public/logs/*
-
-# Temporary VIM files
-*.*~
-*.swp
+.idea/
+node_modules/
+dist/
+*.iml
+webpack-stats.json
+npm-debug.log

@@ -1,8 +1,0 @@
-{
-	"port": 33133,
-
-	"fahrplan": "/schedule.json",
-	"fahrplanTTL": 600000,
-	"gid": "",
-	"uid": ""
-}
