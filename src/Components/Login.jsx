@@ -29,13 +29,9 @@ export default class Login extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     const { username, password } = this.refs;
-    try {
-      await User.login(username.getValue(), password.getValue());
-      this.context.history.pushState(null, '/write');
-      Notifications.addSuccess({ title: 'Login successful' });
-    } catch (e) {
-      Notifications.addError({ title: 'Wrong Credentials', message: 'Password or Username wrong' });
-    }
+    await User.login(username.getValue(), password.getValue());
+    this.context.history.pushState(null, '/write');
+    Notifications.addSuccess({ title: 'Login successful' });
   }
   render() {
     const style = Login.style;

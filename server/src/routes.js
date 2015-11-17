@@ -1,53 +1,58 @@
 import Users from './Services/users';
 import { User } from './models';
 
-global.router.post('/api/login', function*() {
-  const { username, password } = this.request.body;
-  const { user, sessionId } = yield Users.login(username, password);
+global.router.post('/api/login', async function(ctx) {
+  const { username, password } = ctx.request.body;
+  const { user, sessionId } = await Users.login(username, password);
   if (user) {
-    this.status = 200;
-    this.body = {
+    ctx.status = 200;
+    ctx.body = {
       sessionId,
       user: Users.getClientUserRepresentation(user),
     };
   } else {
-    this.status = 403;
+    ctx.status = 403;
   }
 });
 
-global.router.post('/api/userForSessionId', function*() {
-  const { sessionId } = this.request.body;
-  const user = yield Users.getUserForSessionId(sessionId);
+global.router.post('/api/userForSessionId', async function(ctx) {
+  const { sessionId } = ctx.request.body;
+  const user = await Users.getUserForSessionId(sessionId);
   if (user) {
-    this.body = Users.getClientUserRepresentation(user);
-    this.status = 200;
+    ctx.body = Users.getClientUserRepresentation(user);
+    ctx.status = 200;
   } else {
-    this.status = 400;
+    ctx.status = 400;
   }
 });
 
-global.router.post('/api/logout', function() {
-  const { sessionId } = this.request.body;
+global.router.post('/api/logout', (ctx) => {
+  const { sessionId } = ctx.request.body;
   Users.logout(sessionId);
-  this.status = 200;
+  ctx.status = 200;
 });
 
-global.router.post('/api/changePassword', function*() {
-  const { sessionId, oldPassword, newPassword } = this.request.body;
-  try {
-    const user = yield Users.getUserForSessionId(sessionId);
-    if (user) {
-      const correctOld = yield Users.checkPassword(oldPassword, user);
-      if (!correctOld) {
-        this.status = 400;
-        return;
-      }
-      yield User.update({ id: user.id }, { password: newPassword });
-      this.status = 200;
-    } else {
-      this.status = 400;
+global.router.post('/api/changePassword', async function(ctx) {
+  const { sessionId, oldPassword, newPassword } = ctx.request.body;
+  const user = await Users.getUserForSessionId(sessionId);
+  if (user) {
+    const correctOld = await Users.checkPassword(oldPassword, user);
+    if (!correctOld) {
+      ctx.status = 400;
+      return;
     }
-  } catch (e) {
-    console.error(e);
+    await User.update({ id: user.id }, { password: newPassword });
+    ctx.status = 200;
+  } else {
+    ctx.status = 400;
   }
+});
+
+global.router.post('/api/register', async function(ctx) {
+  const { username, password, email } = ctx.request.body;
+  if (!username || !password || !email) {
+    throw { message: 'Please fill out all fields.' };
+  }
+  await Users.register(username, password, email);
+  ctx.status = 200;
 });

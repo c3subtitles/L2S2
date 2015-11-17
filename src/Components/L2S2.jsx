@@ -1,14 +1,14 @@
-import { CSS } from '../Helper';
+import { CSS } from 'Helper';
 import GlobalCSS from './Global.CSS';
 import Navbar from './Navbar';
-import Notifications from '../Services/notifications';
+import Notifications from 'Services/notifications';
 import NotificationSystem from 'react-notification-system';
 import Radium from 'radium';
 import React from 'react';
-import User from '../Services/user';
+import User from 'Services/user';
 
 function allowedRoute(path) {
-  if (_.contains(path, 'login') || path === '/') {
+  if (_.contains(path, 'login') || path === '/' || _.contains(path, 'register')) {
     return true;
   }
   return false;

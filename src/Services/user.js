@@ -78,3 +78,12 @@ export async function changePassword(oldPassword, newPassword) {
     }
   }
 }
+
+export async function register(username, email, password) {
+  await axios.post('/register', {
+    username,
+    email,
+    password,
+  });
+  Notifications.addSuccess({ title: 'Successfully registered', message: 'You will have to wait to be activated before you can login.' });
+}

@@ -1,4 +1,5 @@
 import { Role, User } from '../models';
+import _ from 'lodash';
 
 global.initPromise.then(() => {
 
@@ -32,7 +33,8 @@ global.initPromise.then(() => {
     ];
   }
 
-  async function createAdmin(adminRole) {
+  async function createAdmin(roles) {
+    const adminRole = _.find(roles, { name: 'admin' });
     return await User.findOrCreate({ username: 'admin' }, {
       username: 'admin',
       password: 'admin',

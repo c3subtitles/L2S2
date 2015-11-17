@@ -5,6 +5,7 @@ import Login from 'Components/Login';
 import Logout from 'Components/Logout';
 import Profile from 'Components/Profile';
 import React from 'react';
+import Register from 'Components/Register';
 import WriteInterface from 'Components/WriteInterface';
 
 export default (
@@ -14,6 +15,8 @@ export default (
       <Route path="login" component={Login}/>
       <Route path="logout" component={Logout}/>
       <Route path="profile" component={Profile}/>
+      <Route path="register" component={Register}/>
+      <Route path="*" component={Register}/>
     </Route>
   </Router>
 );

@@ -1,6 +1,6 @@
 /* @flow */
 
-import { User } from '../models';
+import { User, Role } from '../models';
 import bcrypt from 'bcryptjs';
 import Session from './session';
 export default exports;
@@ -42,17 +42,33 @@ export function getClientUserRepresentation(user) {
 
 export async function getUserForSessionId(sessionId: string) {
   const id = Session.getUserIdForSessionId(sessionId);
-  return await User.findOne({ id }).populate('role');
+  const user = await User.findOne({ id }).populate('role');
+  console.log(user);
+  return user;
+}
+
+export async function register(username: string, password: string, email: string) {
+  let user = await User.findOne({ username });
+  if (user) {
+    throw { title: 'Duplicate User', message: 'Username already in use' };
+  }
+  const userRole = await Role.findOne({ name: 'User' });
+  user = await User.create({
+    username,
+    password,
+    email,
+    role: userRole ? userRole.id : undefined,
+  });
 }
 
 export async function login(username: string, password: string) {
   const user = await User.findOne({ username })
   .populate('role');
   if (!user || !await checkPassword(password, user)) {
-    throw new Error('wrongCredentials');
+    throw { title: 'Wrong Credentials', message: 'Username or password wrong' };
   }
   if (!user.active) {
-    throw new Error('inactive');
+    throw { title: 'Inactive', message: `${user.username} is not active yet. Wait until you are activated.` };
   }
   const sessionId = Session.newSession(user);
   return { user, sessionId };
