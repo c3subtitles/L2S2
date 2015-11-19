@@ -7,7 +7,9 @@
     "build": "webpack --bail",
     "buildServer": "cd server && babel src/ -d dist",
     "server": "nf start",
-    "devServer": "npm run buildServer && nf start"
+    "devServer": "npm run buildServer && nf start",
+    "travis": "npm run build",
+    "travisServer": "npm run buildServer"
   },
   "license": "GPL-3.0",
   "devDependencies": {
@@ -51,7 +53,7 @@
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
     "primus-emit": "^0.1.2",
-    "radium": "^0.14.3",
+    "radium": "^0.15.3",
     "react": "^0.14.1",
     "react-dom": "^0.14.1",
     "react-notification-system": "^0.2.5",

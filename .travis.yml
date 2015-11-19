@@ -1,0 +1,10 @@
+sudo: false
+language: node_js
+node_js:
+  - "4.0"
+  - "5.0"
+script:
+  - "npm run travis"
+  - "npm run travisServer"
+env:
+  - NO_WATCH_TESTS=1
