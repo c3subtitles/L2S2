@@ -44,6 +44,7 @@
     "bcryptjs": "^2.3.0",
     "bluebird": "^3.0.5",
     "engine.io": "^1.5.4",
+    "eventemitter3": "^1.1.1",
     "history": "^1.13.0",
     "immutable": "^3.7.5",
     "koa": "^2.0.0-alpha.3",
