@@ -1,4 +1,4 @@
 webpack/*
 karma.conf.js
 tests.webpack.js
-src/primusClient.js
+interfaces/**/*

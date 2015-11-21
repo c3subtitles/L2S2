@@ -1,7 +1,11 @@
-import './vendor';
-import { render } from 'react-dom';
-import React from 'react';
-import routes from './routes';
+global.Promise = require('bluebird');
+require('babel-runtime/core-js/promise').default = require('bluebird');
+require('./vendor');
+require('../server/src/flowWorkarounds');
+require('./flowWorkarounds');
+const render = require('react-dom').render;
+const React = require('react');
+const routes = require('./routes');
 
 global.isDev = process.env.NODE_ENV !== 'production';
 

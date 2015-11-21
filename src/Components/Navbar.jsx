@@ -1,85 +1,91 @@
 import { AppBar, IconMenu, RaisedButton } from 'material-ui';
-import { globalEventEmitter } from 'Helper';
+import { globalEventEmitter } from '../Helper';
 import MenuDivider from 'material-ui/lib/menus/menu-divider';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Radium from 'radium';
 import React from 'react';
-import User from '../Services/user';
+import { loggedIn, user, hasPermission } from '../Services/user';
 
 
 @Radium
 export default class Navbar extends React.Component {
   static contextTypes = {
     transitionTo: React.PropTypes.func.isRequired,
-  }
+  };
   static style = {
     bar: {
       lineHeight: '48px',
       minHeight: 48,
     },
     title: {
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      margin: 0,
-      paddingTop: 0,
-      letterSpacing: 0,
+      color: '#fff',
+      cursor: 'pointer',
+      flex: 1,
       fontSize: 24,
       fontWeight: 400,
-      color: '#fff',
-      flex: 1,
+      letterSpacing: 0,
+      margin: 0,
+      overflow: 'hidden',
+      paddingTop: 0,
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     },
     menu: {
+      alignSelf: 'center',
       marginTop: 0,
     },
     menuButton: {
+      alignSelf: 'center',
       boxShadow: 'initial',
       height: 'initial',
     },
     menuButtonLabel: {
       color: '#fff',
     },
-  }
+  };
   componentWillMount() {
     globalEventEmitter.on('login', this.handleLoginLogout);
     globalEventEmitter.on('logout', this.handleLoginLogout);
   }
-  handleLoginLogout = () => {
+  handleLoginLogout: () => void = () => {
     this.forceUpdate();
-  }
-  profile = () => {
+  };
+  home: () => void = () => {
+    this.context.transitionTo('/');
+  };
+  profile: () => void = () => {
     this.context.transitionTo('/profile');
-  }
-  logout = () => {
+  };
+  logout: () => void = () => {
     this.context.transitionTo('/logout');
-  }
-  rooms = () => {
-    this.context.transitionTo('/rooms');
-  }
-  users = () => {
-    this.context.transitionTo('/users');
-  }
+  };
+  rooms: () => void = () => {
+    this.context.transitionTo('/roomManagement');
+  };
+  users: () => void = () => {
+    this.context.transitionTo('/userManagement');
+  };
   render() {
     const style = Navbar.style;
     let iconElementRight;
-    if (User.loggedIn()) {
+    if (loggedIn()) {
       iconElementRight = (
         <IconMenu desktop iconButtonElement={
-            <RaisedButton style={style.menuButton} secondary label={User.user.username}/>
+            <RaisedButton style={style.menuButton} secondary label={user.username}/>
           }>
           <MenuItem onClick={this.profile} primaryText="Profile"/>
           <MenuDivider/>
-          {User.hasPermission(['canCreateRoom', 'canDeleteRoom']) &&
+          {hasPermission(['canCreateRoom', 'canDeleteRoom']) &&
             <MenuItem onClick={this.rooms} primaryText="Rooms"/>}
-          {User.hasPermission(['canCreateUser', 'canDeleteUser', 'canActivateUser']) &&
+          {hasPermission(['canCreateUser', 'canDeleteUser', 'canActivateUser']) &&
             <MenuItem onClick={this.users} primaryText="Usermanagement"/>}
-          {User.hasPermission(['canCreateRoom', 'canDeleteRoom', 'canCreateUser', 'canDeleteUser', 'canActivateUser']) && <MenuDivider/>}
+          {hasPermission(['canCreateRoom', 'canDeleteRoom', 'canCreateUser', 'canDeleteUser', 'canActivateUser']) && <MenuDivider/>}
           <MenuItem primaryText="Logout" onClick={this.logout}/>
         </IconMenu>
       );
     }
     return (
-      <AppBar style={style.bar} iconStyleRight={style.menu} showMenuIconButton={false} title={<h1 style={style.title}>L2S2</h1>} iconElementRight={iconElementRight}/>
+      <AppBar style={style.bar} iconStyleRight={style.menu} showMenuIconButton={false} title={<h1 onClick={this.home} style={style.title}>L2S2</h1>} iconElementRight={iconElementRight}/>
     );
   }
 }

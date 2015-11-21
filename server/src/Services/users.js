@@ -1,12 +1,12 @@
-/* @flow */
 
+
+import { getUserIdForSessionId, newSession, removeSession } from './session';
 import { User, Role } from '../models';
 import bcrypt from 'bcryptjs';
-import Session from './session';
-export default exports;
+import _ from 'lodash';
 
 
-export function checkPassword(password: string, user): Promise {
+export function checkPassword(password: string, user: Object): Promise {
   return new Promise((resolve) => {
     bcrypt.compare(password, user.password, (err, res) => {
       if (res) {
@@ -17,6 +17,7 @@ export function checkPassword(password: string, user): Promise {
     });
   });
 }
+
 export function getInactive(): Promise {
   return User.findAll({
     where: {
@@ -24,7 +25,7 @@ export function getInactive(): Promise {
     },
   });
 }
-export function activateUser(user, u) {
+export function activateUser(user: Object, u: Object): Promise {
   if (!u.role.canActivateUser) {
     return Promise.reject(new Error('Insufficent Permission'));
   }
@@ -33,21 +34,25 @@ export function activateUser(user, u) {
   });
 }
 
-export function getClientUserRepresentation(user) {
-  return {
-    username: user.username,
+export function getClientUserRepresentation(user: Object): ClientUser {
+  return new Object({
+    active: user.active,
+    id: user.id,
     role: user.role,
-  };
+    username: user.username,
+  });
 }
 
-export async function getUserForSessionId(sessionId: string) {
-  const id = Session.getUserIdForSessionId(sessionId);
+export async function getUserForSessionId(sessionId: string): ?{ role: RoleType } {
+  const id = getUserIdForSessionId(sessionId);
+  if (!id) {
+    return undefined;
+  }
   const user = await User.findOne({ id }).populate('role');
-  console.log(user);
   return user;
 }
 
-export async function register(username: string, password: string, email: string) {
+export async function register(username: string, password: string, email: string): Object {
   let user = await User.findOne({ username });
   if (user) {
     throw { title: 'Duplicate User', message: 'Username already in use' };
@@ -61,7 +66,7 @@ export async function register(username: string, password: string, email: string
   });
 }
 
-export async function login(username: string, password: string) {
+export async function login(username: string, password: string): Object {
   const user = await User.findOne({ username })
   .populate('role');
   if (!user || !await checkPassword(password, user)) {
@@ -70,10 +75,15 @@ export async function login(username: string, password: string) {
   if (!user.active) {
     throw { title: 'Inactive', message: `${user.username} is not active yet. Wait until you are activated.` };
   }
-  const sessionId = Session.newSession(user);
+  const sessionId = newSession(user);
   return { user, sessionId };
 }
 
 export function logout(sessionId: string) {
-  Session.removeSession(sessionId);
+  removeSession(sessionId);
+}
+
+export async function getUsers(): Array<ClientUser> {
+  const users = await User.find().populate('role');
+  return _.map(users, user => getClientUserRepresentation(user));
 }

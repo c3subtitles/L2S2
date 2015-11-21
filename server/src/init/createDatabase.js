@@ -8,6 +8,7 @@ global.initPromise.then(() => {
       Role.findOrCreate({ name: 'Admin' }, {
         name: 'admin',
         canActivateUser: true,
+        canChangeUserRole: true,
         canCreateRoom: true,
         canCreateUser: true,
         canDeleteRoom: true,

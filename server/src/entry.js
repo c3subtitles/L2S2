@@ -1,5 +1,3 @@
-/* @flow */
-
 import http from 'http';
 import koa from 'koa';
 import Primus from 'primus';
@@ -8,6 +6,7 @@ import path from 'path';
 import router from 'koa-66';
 import koaJSON from 'koa-json-body';
 import UUID from 'uuid-js';
+import './flowWorkarounds';
 
 UUID.create = function(old) {
   return function() {
@@ -40,6 +39,7 @@ global.app
   try {
     await next();
   } catch (e) {
+    console.error(e.stack);
     ctx.body = e;
     ctx.status = 500;
   }

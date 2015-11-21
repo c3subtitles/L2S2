@@ -1,9 +1,7 @@
-/* eslint no-alert: 0 */
-
-import React from 'react';
+import { addSuccess } from '../Services/notifications';
+import { loggedIn, login } from '../Services/user';
 import { TextField, RaisedButton } from 'material-ui';
-import User from '../Services/user';
-import Notifications from '../Services/notifications';
+import React from 'react';
 
 export default class Login extends React.Component {
   static style = {
@@ -16,23 +14,23 @@ export default class Login extends React.Component {
       flex: 1,
       flexDirection: 'column',
     },
-  }
+  };
   static contextTypes = {
     history: React.PropTypes.object,
-  }
+  };
   componentWillMount() {
-    if (User.user) {
+    if (loggedIn()) {
       this.context.history.pushState(null, '/write');
     }
   }
-  login = async (e) => {
+  login = async (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     const { username, password } = this.refs;
-    await User.login(username.getValue(), password.getValue());
+    await login(username.getValue(), password.getValue());
     this.context.history.pushState(null, '/write');
-    Notifications.addSuccess({ title: 'Login successful' });
-  }
+    addSuccess({ title: 'Login successful' });
+  };
   render() {
     const style = Login.style;
     return (

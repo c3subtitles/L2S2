@@ -1,7 +1,9 @@
+
+
 export default function(component) {
   return class ObserveMount extends component {
-    _mounted = false
-    _checkMounted = false
+    _mounted = false;
+    _checkMounted = false;
     componentDidMount() {
       this._mounted = true;
       this._checkMounted = true;

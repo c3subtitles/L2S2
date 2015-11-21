@@ -1,7 +1,7 @@
-export default exports;
+
 let notificationSystem;
 
-export function setSystem(system) {
+export function setSystem(system: Object) {
   notificationSystem = system;
 }
 

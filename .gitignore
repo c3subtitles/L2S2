@@ -5,3 +5,4 @@ dist/
 webpack-stats.json
 npm-debug.log
 .DS_Store
+www

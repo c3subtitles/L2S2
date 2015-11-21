@@ -1,12 +1,13 @@
 import { createHistory } from 'history';
 import { Router, Route } from 'react-router';
-import L2S2 from 'Components/L2S2';
-import Login from 'Components/Login';
-import Logout from 'Components/Logout';
-import Profile from 'Components/Profile';
+import L2S2 from './Components/L2S2';
+import Login from './Components/Login';
+import Logout from './Components/Logout';
+import Profile from './Components/Profile';
 import React from 'react';
-import Register from 'Components/Register';
-import WriteInterface from 'Components/WriteInterface';
+import Register from './Components/Register';
+import UserManagement from './Components/UserManagement';
+import WriteInterface from './Components/WriteInterface';
 
 export default (
   <Router history={createHistory()}>
@@ -16,6 +17,7 @@ export default (
       <Route path="logout" component={Logout}/>
       <Route path="profile" component={Profile}/>
       <Route path="register" component={Register}/>
+      <Route path="userManagement" component={UserManagement}/>
       <Route path="*" component={Register}/>
     </Route>
   </Router>

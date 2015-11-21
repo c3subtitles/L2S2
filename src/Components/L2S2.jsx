@@ -1,13 +1,14 @@
-import { CSS } from 'Helper';
+import _ from 'lodash';
+import { CSS } from '../Helper';
 import GlobalCSS from './Global.CSS';
 import Navbar from './Navbar';
-import Notifications from 'Services/notifications';
+import { setSystem } from '../Services/notifications';
 import NotificationSystem from 'react-notification-system';
 import Radium from 'radium';
 import React from 'react';
-import User from 'Services/user';
+import { loggedIn, loadFromLocalstorage } from '../Services/user';
 
-function allowedRoute(path) {
+function allowedRoute(path: string): bool {
   if (_.contains(path, 'login') || path === '/' || _.contains(path, 'register')) {
     return true;
   }
@@ -17,17 +18,17 @@ function allowedRoute(path) {
 @CSS(GlobalCSS)
 @Radium
 export default class L2S2 extends React.Component {
-  static _globalCSS = true
+  static _globalCSS = true;
   static propTypes = {
     children: React.PropTypes.any,
-  }
+  };
   static contextTypes = {
     history: React.PropTypes.any,
     location: React.PropTypes.any,
-  }
+  };
   static childContextTypes = {
     transitionTo: React.PropTypes.func,
-  }
+  };
   static style = {
     childWrap: {
       display: 'flex',
@@ -35,29 +36,29 @@ export default class L2S2 extends React.Component {
       flexDirection: 'column',
       padding: 10,
     },
-  }
-  getChildContext() {
+  };
+  getChildContext(): Object {
     return {
       transitionTo: url => {
         this.context.history.pushState(null, url);
       },
     };
   }
-  state = {
+  state: Object = {
     ready: false,
-  }
+  };
   componentWillMount() {
-    User.loadFromLocalstorage().finally(() => {
+    loadFromLocalstorage().finally(() => {
       this.setState({
         ready: true,
       });
-      if (!allowedRoute(this.context.location.pathname) && !User.user) {
+      if (!allowedRoute(this.context.location.pathname) && !loggedIn()) {
         this.context.history.pushState(null, '/login');
       }
     });
   }
   componentDidMount() {
-    Notifications.setSystem(this.refs.notification);
+    setSystem(this.refs.notification);
   }
   render() {
     const { children } = this.props;

@@ -1,5 +1,7 @@
+
+
 import React from 'react';
-import User from '../Services/user';
+import { hasPermission } from '../Services/user';
 
 export default class PermissionWrap extends React.Component {
   static propTypes = {
@@ -8,10 +10,10 @@ export default class PermissionWrap extends React.Component {
       React.PropTypes.string,
       React.PropTypes.arrayOf(React.PropTypes.string),
     ]).isRequired,
-  }
-  render() {
+  };
+  render(): ? {
     const { permission, children } = this.props;
-    if (User.hasPermission(permission)) {
+    if (hasPermission(permission)) {
       if (React.Children.count(children) > 1) {
         return (
           <div>

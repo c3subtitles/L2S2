@@ -1,11 +1,13 @@
+
+
 import ObserveMount from './ObserveMount';
 import shallowequal from 'shallowequal';
+import _ from 'lodash';
 
 function pureRender({ state, props }) {
-  return function(component) {
-    @ObserveMount
+  return function(component: Function) {
     class PureRender extends component {
-      static displayName = component.displayName || component.name
+      static displayName = component.displayName || component.name;
       shouldComponentUpdate(nextProps, nextState) {
         let ownUpdate = false;
         if (props !== false) {
@@ -28,11 +30,11 @@ function pureRender({ state, props }) {
         return super.render();
       }
     }
-    return PureRender;
+    return ObserveMount(PureRender);
   };
 }
 
-export default function(optionsOrComponent) {
+export default function(optionsOrComponent: Object|Function): Function {
   if (_.isFunction(optionsOrComponent)) {
     return pureRender({})(optionsOrComponent);
   }

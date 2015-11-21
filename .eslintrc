@@ -10,8 +10,10 @@
     "modules": true
   },
   "globals": {
-    "_": false,
     "CONFIGPATH": false,
+    "ClientUser": false,
+    "RoleType": false,
+    "SyntheticEvent": false,
   },
   "rules": {
     "accessor-pairs": 0,
@@ -116,7 +118,7 @@
     "no-negated-in-lhs": 2,
     "no-nested-ternary": 2,
     "no-new-func": 2,
-    "no-new-object": 2,
+    "no-new-object": 0,
     "no-new-require": 2,
     "no-new-wrappers": 2,
     "no-new": 2,
@@ -129,7 +131,7 @@
     "no-process-env": 0,
     "no-process-exit": 0,
     "no-proto": 2,
-    "no-redeclare": 2,
+    "no-redeclare": 0,
     "no-regex-spaces": 2,
     "no-restricted-modules": 0,
     "no-restricted-syntax": [2, "WithStatement"],

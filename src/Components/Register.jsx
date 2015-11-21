@@ -1,11 +1,16 @@
+
+import _ from 'lodash';
 import { PureRender } from 'Helper';
 import { TextField, RaisedButton } from 'material-ui';
-import Notifications from 'Services/notifications';
+import { addError } from 'Services/notifications';
 import React from 'react';
-import User from 'Services/user';
+import { register } from 'Services/user';
 
 @PureRender
 export default class Register extends React.Component {
+  static contextTypes = {
+    transitionTo: React.PropTypes.func,
+  };
   static style = {
     wrapper: {
       display: 'flex',
@@ -16,7 +21,7 @@ export default class Register extends React.Component {
       flex: 1,
       flexDirection: 'column',
     },
-  }
+  };
   register = async (e) => {
     e.preventDefault();
     if (this.loggingIn) {
@@ -29,11 +34,12 @@ export default class Register extends React.Component {
     password1 = password1.getValue();
     password2 = password2.getValue();
     if (password1 !== password2) {
-      Notifications.addError({ message: 'passwords do not match' });
+      addError({ message: 'passwords do not match' });
     }
     try {
-      await User.register(username, email, password1);
+      await register(username, email, password1);
       _.each(this.refs, r => r.setValue(''));
+      this.context.transitionTo('/');
     } finally {
       this.loggingIn = false;
     }

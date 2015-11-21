@@ -6,6 +6,7 @@ export default Waterline.Collection.extend({
   attributes: {
     name: { type: 'string', unique: true, required: true },
     canActivateUser: { type: 'boolean', required: true, defaultsTo: false },
+    canChangeUserRole: { type: 'boolean', required: true, defaultsTo: false },
     canCreateRoom: { type: 'boolean', required: true, defaultsTo: false },
     canCreateUser: { type: 'boolean', required: true, defaultsTo: false },
     canDeleteRoom: { type: 'boolean', required: true, defaultsTo: false },

@@ -1,5 +1,6 @@
 /* eslint no-sync: 0 */
 
+
 import postgresAdapter from 'waterline-postgresql';
 import Waterline from 'waterline';
 import fs from 'fs';
