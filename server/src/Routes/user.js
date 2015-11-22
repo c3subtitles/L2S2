@@ -95,3 +95,18 @@ global.router.post('/api/saveRole', async function(ctx) {
     ctx.status = 400;
   }
 });
+
+global.router.post('/api/deleteUser', async function(ctx) {
+  const ownUser = await getUserForSessionId(ctx.request.headers.sessionid);
+  if (ownUser) {
+    if (!ownUser.role.canDeleteUser) {
+      throw { message: 'insufficent permissions' };
+    }
+    const { user } = ctx.request.body;
+    const userToDelete = await User.findOne({ id: user.id });
+    await userToDelete.destroy();
+    ctx.status = 200;
+  } else {
+    ctx.status = 400;
+  }
+});

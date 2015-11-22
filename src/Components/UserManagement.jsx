@@ -1,43 +1,39 @@
-import { Permission } from '../Helper';
-import { user, getUsers, getRoles } from '../Services/user';
+import { fetchUsers, fetchRoles } from '../Actions/user';
+import { Permission, Connect } from '../Helper';
 import React from 'react';
 import UserLine from './UserLine';
-import _ from 'lodash';
 
+const props = state => ({
+  user: state.user,
+  users: state.users,
+});
 
 @Permission('canActivateUser', 'canDeleteUser')
+@Connect(props)
 export default class UserManagement extends React.Component {
+  static propTypes = {
+    user: React.PropTypes.object,
+    users: React.PropTypes.arrayOf(ClientUser),
+  }
   static style = {
     wrapper: {
       display: 'flex',
       flexDirection: 'column',
     },
   };
-  state: { users: Array<ClientUser>, availableRoles: Array<RoleType> } = {
-    availableRoles: [],
-    users: [],
-  };
   componentWillMount() {
-    getUsers().then((users: Array<ClientUser>) => {
-      this.setState({
-        users: _.sortBy(users, 'username'),
-      });
-    });
-    if (user.role.canChangeUserRole) {
-      getRoles().then(roles => {
-        this.setState({
-          availableRoles: roles,
-        });
-      });
+    fetchUsers();
+    if (this.props.user.role.canChangeUserRole) {
+      fetchRoles();
     }
   }
   render() {
-    const { users, availableRoles } = this.state;
+    const { users } = this.props;
     const style = UserManagement.style;
     return (
       <div style={style.wrapper}>
         {
-          users.map(user => <UserLine key={user.username} availableRoles={availableRoles} user={user}/>)
+          users.map(user => <UserLine key={user.username} user={user}/>)
         }
       </div>
     );

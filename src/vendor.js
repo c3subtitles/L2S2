@@ -1,8 +1,7 @@
 import './fonts.css';
+import { addError } from './Services/notifications';
 import axios from 'axios';
 import UUID from 'uuid-js';
-import { addError } from './Services/notifications';
-import { sessionId } from './Services/user';
 
 UUID.create = function(old) {
   return function() {
@@ -13,6 +12,10 @@ UUID.create = function(old) {
 
 axios.interceptors.request.use(requestConfig => {
   requestConfig.url = `api${requestConfig.url}`;
+  let sessionId;
+  if (store) {
+    sessionId = store.getState().sessionId;
+  }
   requestConfig.headers.sessionId = sessionId;
   return requestConfig;
 });

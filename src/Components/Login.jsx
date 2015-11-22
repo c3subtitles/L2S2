@@ -1,9 +1,13 @@
-import { addSuccess } from '../Services/notifications';
-import { loggedIn, login } from '../Services/user';
 import { TextField, RaisedButton } from 'material-ui';
+import { login } from '../Actions/user';
+import { Connect } from '../Helper';
 import React from 'react';
 
+@Connect()
 export default class Login extends React.Component {
+  static propTypes = {
+    loggedIn: React.PropTypes.bool,
+  };
   static style = {
     wrapper: {
       display: 'flex',
@@ -19,17 +23,21 @@ export default class Login extends React.Component {
     history: React.PropTypes.object,
   };
   componentWillMount() {
-    if (loggedIn()) {
+    this.checkStatus();
+  }
+  componentDidUpdate() {
+    this.checkStatus();
+  }
+  checkStatus = () => {
+    if (this.props.loggedIn) {
       this.context.history.pushState(null, '/write');
     }
-  }
+  };
   login = async (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     const { username, password } = this.refs;
-    await login(username.getValue(), password.getValue());
-    this.context.history.pushState(null, '/write');
-    addSuccess({ title: 'Login successful' });
+    login(username.getValue(), password.getValue());
   };
   render() {
     const style = Login.style;

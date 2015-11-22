@@ -1,14 +1,21 @@
 import { AppBar, IconMenu, RaisedButton } from 'material-ui';
-import { globalEventEmitter } from '../Helper';
+import { Connect } from '../Helper';
 import MenuDivider from 'material-ui/lib/menus/menu-divider';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Radium from 'radium';
 import React from 'react';
-import { loggedIn, user, hasPermission } from '../Services/user';
+import { hasPermission } from '../Services/user';
 
 
 @Radium
+@Connect(state => ({
+  user: state.user,
+}))
 export default class Navbar extends React.Component {
+  static propTypes = {
+    loggedIn: React.PropTypes.bool,
+    user: React.PropTypes.instanceOf(ClientUser),
+  }
   static contextTypes = {
     transitionTo: React.PropTypes.func.isRequired,
   };
@@ -43,13 +50,6 @@ export default class Navbar extends React.Component {
       color: '#fff',
     },
   };
-  componentWillMount() {
-    globalEventEmitter.on('login', this.handleLoginLogout);
-    globalEventEmitter.on('logout', this.handleLoginLogout);
-  }
-  handleLoginLogout: () => void = () => {
-    this.forceUpdate();
-  };
   home: () => void = () => {
     this.context.transitionTo('/');
   };
@@ -66,9 +66,10 @@ export default class Navbar extends React.Component {
     this.context.transitionTo('/userManagement');
   };
   render() {
+    const { loggedIn, user } = this.props;
     const style = Navbar.style;
     let iconElementRight;
-    if (loggedIn()) {
+    if (loggedIn) {
       iconElementRight = (
         <IconMenu desktop iconButtonElement={
             <RaisedButton style={style.menuButton} secondary label={user.username}/>

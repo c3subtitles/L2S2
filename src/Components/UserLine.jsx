@@ -1,11 +1,22 @@
-import { addSuccess } from '../Services/notifications';
-import { Paper, DropDownMenu } from 'material-ui';
-import { user as ownUser, saveRole, saveActive } from '../Services/user';
+import { Connect } from '../Helper';
+import { Dialog, Paper, DropDownMenu, FlatButton } from 'material-ui';
+import { deleteUser, saveRole, saveActive } from '../Actions/user';
 import React from 'react';
 
+type State = {
+  showDelete: bool,
+}
+
+const props = state => ({
+  availableRoles: state.roles,
+  ownUser: state.user,
+});
+
+@Connect(props)
 export default class UserLine extends React.Component {
   static propTypes = {
     availableRoles: React.PropTypes.arrayOf(RoleType),
+    ownUser: React.PropTypes.instanceOf(ClientUser),
     user: React.PropTypes.instanceOf(ClientUser),
   };
   static style = {
@@ -13,25 +24,41 @@ export default class UserLine extends React.Component {
       display: 'flex',
       marginBottom: 10,
       alignItems: 'center',
+      padding: 5,
     },
     col: {
       flex: 1,
       margin: 5,
     },
+    del: {
+      color: '#ff0000',
+    },
   }
-  handleActiveChange = async (e: SyntheticEvent, index: number, menuItem: Object) => {
-    const { user } = this.props;
-    await saveActive(user, menuItem.payload);
-    addSuccess({ message: 'Change Saved' });
+  state: State = {
+    showDelete: false,
   };
-  handleRoleChange = async (e: SyntheticEvent, index: number, menuItem: Object) => {
+  handleActiveChange = (e: SyntheticEvent, index: number, menuItem: Object) => {
     const { user } = this.props;
-    await saveRole(user, menuItem.payload);
-    addSuccess({ message: 'Change Saved' });
+    saveActive(user, menuItem.payload);
+  };
+  handleRoleChange = (e: SyntheticEvent, index: number, menuItem: Object) => {
+    const { user } = this.props;
+    saveRole(user, menuItem.payload);
+  };
+  handleDelete = () => {
+    this.setState({ showDelete: true });
+  };
+  hideDelete = () => {
+    this.setState({ showDelete: false });
+  }
+  delete = () => {
+    this.setState({ showDelete: false });
+    deleteUser(this.props.user);
   };
   render() {
     const style = UserLine.style;
-    const { availableRoles, user } = this.props;
+    const { availableRoles, user, ownUser } = this.props;
+    const { showDelete } = this.state;
     const activeDropdownOptions = {
       menuItems: [{ payload: true, text: 'active' }, { payload: false, text: 'inactive' }],
       selectedIndex: user.active ? 0 : 1,
@@ -44,6 +71,13 @@ export default class UserLine extends React.Component {
       onChange: this.handleRoleChange,
     };
     const isActive = (user.active ? 'active' : 'inactive');
+    const dialogOptions = [{
+      text: 'Cancel',
+    }, {
+      text: 'Delete',
+      onClick: this.delete,
+      ref: 'delete',
+    }];
     return (
       <Paper zDepth={2} style={style.wrapper}>
         <div style={style.col}>{user.username}</div>
@@ -61,7 +95,16 @@ export default class UserLine extends React.Component {
             ) : user.role.name
           }
         </div>
-      </Paper>
-    );
+        {ownUser.role.canDeleteUser && ownUser.id === user.id ? <div style={style.col}/> : [
+          <FlatButton style={{ ...style.col, ...style.del }} key="d" label="Delete" onClick={this.handleDelete}/>,
+          <Dialog key="dd"
+            open={showDelete}
+            onRequestClose={this.hideDelete}
+            actions={dialogOptions}>
+            Are you sure you want to delete {user.username}
+          </Dialog>,
+        ]}
+        </Paper>
+      );
+    }
   }
-}

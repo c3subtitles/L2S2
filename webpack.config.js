@@ -13,6 +13,7 @@ let plugins = [
     'process.env': {
       NODE_ENV: JSON.stringify(node_env),
     },
+    IS_PRODUCTION: JSON.stringify(node_env === 'production'),
     CONFIGPATH: JSON.stringify(configPath),
   }),
   new HtmlWebpackPlugin({

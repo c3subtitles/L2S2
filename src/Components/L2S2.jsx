@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import { CSS } from '../Helper';
+import { CSS, Connect } from '../Helper';
+import { fetchUser } from '../Actions/user';
+import { setSystem } from '../Services/notifications';
 import GlobalCSS from './Global.CSS';
 import Navbar from './Navbar';
-import { setSystem } from '../Services/notifications';
 import NotificationSystem from 'react-notification-system';
 import Radium from 'radium';
 import React from 'react';
-import { loggedIn, loadFromLocalstorage } from '../Services/user';
 
 function allowedRoute(path: string): bool {
   if (_.contains(path, 'login') || path === '/' || _.contains(path, 'register')) {
@@ -15,12 +15,18 @@ function allowedRoute(path: string): bool {
   return false;
 }
 
+
 @CSS(GlobalCSS)
 @Radium
+@Connect(state => ({ ready: state.initialized }))
 export default class L2S2 extends React.Component {
   static _globalCSS = true;
   static propTypes = {
     children: React.PropTypes.any,
+    dispatch: React.PropTypes.func,
+    loggedIn: React.PropTypes.bool,
+    ready: React.PropTypes.bool,
+    user: React.PropTypes.instanceOf(ClientUser),
   };
   static contextTypes = {
     history: React.PropTypes.any,
@@ -44,25 +50,19 @@ export default class L2S2 extends React.Component {
       },
     };
   }
-  state: Object = {
-    ready: false,
-  };
   componentWillMount() {
-    loadFromLocalstorage().finally(() => {
-      this.setState({
-        ready: true,
-      });
-      if (!allowedRoute(this.context.location.pathname) && !loggedIn()) {
-        this.context.history.pushState(null, '/login');
-      }
-    });
+    fetchUser();
   }
   componentDidMount() {
     setSystem(this.refs.notification);
   }
+  componentDidUpdate() {
+    if (this.props.ready && !allowedRoute(this.context.location.pathname) && !this.props.loggedIn) {
+      this.context.history.pushState(null, '/login');
+    }
+  }
   render() {
-    const { children } = this.props;
-    const { ready } = this.state;
+    const { children, ready } = this.props;
     const style = L2S2.style;
     return (
       <div>
