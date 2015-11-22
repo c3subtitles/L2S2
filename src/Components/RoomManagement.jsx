@@ -2,7 +2,7 @@
 import React from 'react';
 
 export default class RoomManagement extends React.Component {
-  render(): ? {
+  render() {
     return null;
   }
 }

@@ -1,0 +1,8 @@
+{
+  "watch": [
+    "server/dist/"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

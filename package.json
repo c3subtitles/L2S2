@@ -7,7 +7,7 @@
     "build": "webpack --bail",
     "buildServer": "cd server && babel src/ -d dist",
     "server": "nf start",
-    "devServer": "npm run buildServer && nf start",
+    "devServer": "babel server/src/ -d server/dist -w & nodemon --exec 'nf start'",
     "database": "nf run node server/dist/init/createDatabase.js",
     "travis": "npm run build",
     "travisServer": "npm run buildServer"
@@ -30,6 +30,7 @@
     "inline-css-loader": "^0.4.8",
     "json-loader": "^0.5.3",
     "koa": "^2.0.0-alpha",
+    "nodemon": "^1.8.1",
     "pretty-error": "^1.2.0",
     "primus": "^4.0.1",
     "react-transform-catch-errors": "^1.0.0",
