@@ -33,11 +33,7 @@ if (node_env === 'production') {
       names: ['Common'],
     }),
     new webpack.optimize.OccurenceOrderPlugin(true),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warning: false,
-      },
-    }),
+    new webpack.optimize.UglifyJsPlugin(),
   ]);
   jsLoader = 'babel';
 }
