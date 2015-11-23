@@ -72,10 +72,9 @@
     "redux": "^3.0.4",
     "redux-actions": "^0.8.0",
     "redux-promise": "^0.5.0",
-    "sails-postgresql": "^0.10.16",
+    "sails-postgresql": "^0.10.17",
     "shallowequal": "^0.2.2",
     "uuid-js": "^0.7.5",
-    "waterline": "^0.10.26",
-    "waterline-postgresql": "^0.13.4"
+    "waterline": "^0.10.26"
   }
 }

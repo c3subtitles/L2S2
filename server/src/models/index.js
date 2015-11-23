@@ -1,7 +1,5 @@
 /* eslint no-sync: 0 */
-
-
-import postgresAdapter from 'waterline-postgresql';
+import postgresAdapter from 'sails-postgresql';
 import Waterline from 'waterline';
 import fs from 'fs';
 import path from 'path';
@@ -22,6 +20,15 @@ fs
 global.models = {};
 export default global.models;
 
+const config = {
+  url: process.env.DATABASE_URL,
+  host: process.env.DATABASE_HOST,
+  port: process.env.DATABASE_PORT,
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_DATABASE,
+};
+
 global.initPromise = new Promise(resolve => {
   global.waterline.initialize({
     adapters: {
@@ -29,7 +36,7 @@ global.initPromise = new Promise(resolve => {
     },
     connections: {
       default: {
-        connection: process.env.DATABASE_URL,
+        ...config,
         adapter: 'postgres',
       },
     },
