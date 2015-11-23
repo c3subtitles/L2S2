@@ -1,6 +1,10 @@
 import { login, getClientUserRepresentation, getUserForSessionId, logout, checkPassword, register, getUsers } from '../Services/users';
 import { User, Role } from '../models';
 
+async function getUser(ctx): ?ClientUser {
+  return await getUserForSessionId(ctx.request.headers.sessionid);
+}
+
 global.router.post('/api/login', async function(ctx) {
   const { username, password } = ctx.request.body;
   const { user, sessionId } = await login(username, password);
@@ -15,8 +19,7 @@ global.router.post('/api/login', async function(ctx) {
 });
 
 global.router.post('/api/userForSessionId', async function(ctx) {
-  const { sessionId } = ctx.request.body;
-  const user = await getUserForSessionId(sessionId);
+  const user = await getUser(ctx);
   if (user) {
     ctx.body = getClientUserRepresentation(user);
   } else {
@@ -31,8 +34,8 @@ global.router.post('/api/logout', (ctx) => {
 });
 
 global.router.post('/api/changePassword', async function(ctx) {
-  const { sessionId, oldPassword, newPassword } = ctx.request.body;
-  const user = await getUserForSessionId(sessionId);
+  const { oldPassword, newPassword } = ctx.request.body;
+  const user = await getUser(ctx);
   if (user) {
     const correctOld = await checkPassword(oldPassword, user);
     if (!correctOld) {
@@ -55,7 +58,7 @@ global.router.post('/api/register', async function(ctx) {
 });
 
 global.router.get('/api/getUsers', async function(ctx) {
-  const user = await getUserForSessionId(ctx.request.headers.sessionid);
+  const user = await getUser(ctx);
   if (user) {
     ctx.body = await getUsers();
   } else {
@@ -64,7 +67,7 @@ global.router.get('/api/getUsers', async function(ctx) {
 });
 
 global.router.post('/api/saveActive', async function(ctx) {
-  const ownUser = await getUserForSessionId(ctx.request.headers.sessionid);
+  const ownUser = await getUser(ctx);
   if (ownUser) {
     if (!ownUser.role.canActivateUser) {
       throw { message: 'insufficent permissions' };
@@ -80,7 +83,7 @@ global.router.post('/api/saveActive', async function(ctx) {
 });
 
 global.router.post('/api/saveRole', async function(ctx) {
-  const ownUser = await getUserForSessionId(ctx.request.headers.sessionid);
+  const ownUser = await getUser(ctx);
   if (ownUser) {
     if (!ownUser.role.canChangeUserRole) {
       throw { message: 'insufficent permissions' };
@@ -97,7 +100,7 @@ global.router.post('/api/saveRole', async function(ctx) {
 });
 
 global.router.post('/api/deleteUser', async function(ctx) {
-  const ownUser = await getUserForSessionId(ctx.request.headers.sessionid);
+  const ownUser = await getUser(ctx);
   if (ownUser) {
     if (!ownUser.role.canDeleteUser) {
       throw { message: 'insufficent permissions' };

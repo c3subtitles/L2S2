@@ -6,6 +6,7 @@ export default function(reducer) {
       return {
         ...old(state),
         loggedIn: Boolean(state.user),
+        user: state.user,
       };
     };
   }(reducer);

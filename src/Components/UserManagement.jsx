@@ -4,7 +4,6 @@ import React from 'react';
 import UserLine from './UserLine';
 
 const props = state => ({
-  user: state.user,
   users: state.users,
 });
 

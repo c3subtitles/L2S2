@@ -1,12 +1,15 @@
+import './flowWorkarounds';
+import bluebird from 'bluebird';
 import http from 'http';
 import koa from 'koa';
-import Primus from 'primus';
-import bluebird from 'bluebird';
-import path from 'path';
-import router from 'koa-66';
 import koaJSON from 'koa-json-body';
+import path from 'path';
+import Primus from 'primus';
+import RedisSessions from 'redis-sessions';
+import router from 'koa-66';
 import UUID from 'uuid-js';
-import './flowWorkarounds';
+
+bluebird.promisifyAll(RedisSessions.prototype);
 
 UUID.create = function(old) {
   return function() {

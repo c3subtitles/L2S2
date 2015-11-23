@@ -6,6 +6,7 @@ import Logout from './Components/Logout';
 import Profile from './Components/Profile';
 import React from 'react';
 import Register from './Components/Register';
+import RoomManagement from './Components/RoomManagement';
 import UserManagement from './Components/UserManagement';
 import WriteInterface from './Components/WriteInterface';
 
@@ -18,6 +19,7 @@ export default (
       <Route path="profile" component={Profile}/>
       <Route path="register" component={Register}/>
       <Route path="userManagement" component={UserManagement}/>
+      <Route path="RoomManagement" component={RoomManagement}/>
       <Route path="*" component={Register}/>
     </Route>
   </Router>

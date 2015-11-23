@@ -1,10 +1,8 @@
-
-
-import { getUserIdForSessionId, newSession, removeSession } from './session';
 import { User, Role } from '../models';
 import bcrypt from 'bcryptjs';
 import _ from 'lodash';
-
+import './redis';
+import { getUserForSessionFromRedis, createSession, deleteSession } from './redis';
 
 export function checkPassword(password: string, user: Object): Promise {
   return new Promise((resolve) => {
@@ -43,13 +41,8 @@ export function getClientUserRepresentation(user: Object): ClientUser {
   });
 }
 
-export async function getUserForSessionId(sessionId: string): ?{ role: RoleType } {
-  const id = getUserIdForSessionId(sessionId);
-  if (!id) {
-    return undefined;
-  }
-  const user = await User.findOne({ id }).populate('role');
-  return user;
+export async function getUserForSessionId(sessionId: string): ?ClientUser {
+  return await getUserForSessionFromRedis(sessionId);
 }
 
 export async function register(username: string, password: string, email: string): Object {
@@ -75,12 +68,12 @@ export async function login(username: string, password: string): Object {
   if (!user.active) {
     throw { title: 'Inactive', message: `${user.username} is not active yet. Wait until you are activated.` };
   }
-  const sessionId = newSession(user);
+  const sessionId = await createSession(user.id);
   return { user, sessionId };
 }
 
 export function logout(sessionId: string) {
-  removeSession(sessionId);
+  deleteSession(sessionId);
 }
 
 export async function getUsers(): Array<ClientUser> {

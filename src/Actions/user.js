@@ -33,7 +33,7 @@ export const fetchUser = createAction('FETCH_USER', async () => {
         };
       }
     } catch (e) {
-      /* ignored */
+      delete localStorage.sessionId;
     }
   }
   return {
