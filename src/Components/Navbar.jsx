@@ -70,17 +70,23 @@ export default class Navbar extends React.Component {
     const style = Navbar.style;
     let iconElementRight;
     if (loggedIn) {
+      const conditionalMenu = [];
+      if (hasPermission(['canCreateRoom', 'canDeleteRoom'])) {
+        conditionalMenu.push(<MenuItem onClick={this.rooms} primaryText="Rooms"/>);
+      }
+      if (hasPermission(['canCreateUser', 'canDeleteUser', 'canActivateUser'])) {
+        conditionalMenu.push(<MenuItem onClick={this.users} primaryText="Usermanagement"/>);
+      }
+      if (conditionalMenu.length > 0) {
+        conditionalMenu.push(<MenuDivider/>);
+      }
       iconElementRight = (
         <IconMenu desktop iconButtonElement={
             <RaisedButton style={style.menuButton} secondary label={user.username}/>
           }>
           <MenuItem onClick={this.profile} primaryText="Profile"/>
           <MenuDivider/>
-          {hasPermission(['canCreateRoom', 'canDeleteRoom']) &&
-            <MenuItem onClick={this.rooms} primaryText="Rooms"/>}
-          {hasPermission(['canCreateUser', 'canDeleteUser', 'canActivateUser']) &&
-            <MenuItem onClick={this.users} primaryText="Usermanagement"/>}
-          {hasPermission(['canCreateRoom', 'canDeleteRoom', 'canCreateUser', 'canDeleteUser', 'canActivateUser']) && <MenuDivider/>}
+          {conditionalMenu}
           <MenuItem primaryText="Logout" onClick={this.logout}/>
         </IconMenu>
       );

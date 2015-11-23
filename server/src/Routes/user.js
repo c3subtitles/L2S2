@@ -1,6 +1,8 @@
 import { login, getClientUserRepresentation, getUserForSessionId, logout, checkPassword, register, getUsers } from '../Services/users';
 import { User, Role } from '../models';
 
+
+
 async function getUser(ctx): ?ClientUser {
   return await getUserForSessionId(ctx.request.headers.sessionid);
 }
@@ -38,12 +40,17 @@ global.router.post('/api/changePassword', async function(ctx) {
   const { oldPassword, newPassword } = ctx.request.body;
   const user = await getUser(ctx);
   if (user) {
+    console.log(user.password);
     const correctOld = await checkPassword(oldPassword, user);
     if (!correctOld) {
       ctx.status = 400;
       return;
     }
-    await User.update({ id: user.id }, { password: newPassword });
+    const cryptedPw = await global.encrypt(newPassword);
+    await User.update({ id: user.id }, { password: cryptedPw });
+    // user.password = cryptedPw;
+    // await user.save();
+    ctx.status = 200;
   } else {
     ctx.status = 400;
   }

@@ -5,6 +5,7 @@ import UserLine from './UserLine';
 
 const props = state => ({
   users: state.users,
+  user: state.user,
 });
 
 @Permission('canActivateUser', 'canDeleteUser')

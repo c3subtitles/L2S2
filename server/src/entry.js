@@ -8,6 +8,17 @@ import Primus from 'primus';
 import RedisSessions from 'redis-sessions';
 import router from 'koa-66';
 import UUID from 'uuid-js';
+import bcrypt from 'bcryptjs';
+
+global.encrypt = function(value) {
+  return new Promise(resolve => {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(value, salt, (err, hash) => {
+        resolve(hash);
+      });
+    });
+  });
+};
 
 bluebird.promisifyAll(RedisSessions.prototype);
 
