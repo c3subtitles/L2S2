@@ -1,4 +1,4 @@
-import { createStore, bindActionCreators } from 'redux';
+import { createStore, bindActionCreators, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import React from 'react';
 import reduxPromise from 'redux-promise';
@@ -26,9 +26,10 @@ const reducer = require('../Reducers');
 
 
 if (IS_PRODUCTION) {
-  store = createStore(reducer);
+  store = compose(
+    applyMiddleware(reduxPromise)
+  )(createStore)(reducer);
 } else {
-  const { compose, applyMiddleware } = require('redux');
   const DT = require('redux-devtools');
   const DockMonitor = require('redux-devtools-dock-monitor');
   const LogMonitor = require('redux-devtools-log-monitor');

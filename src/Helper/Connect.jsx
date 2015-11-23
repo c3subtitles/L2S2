@@ -5,7 +5,7 @@ export default function(reducer) {
     return function(state) {
       return {
         ...old(state),
-        loggedIn: Boolean(state.user)
+        loggedIn: Boolean(state.user),
       };
     };
   }(reducer);

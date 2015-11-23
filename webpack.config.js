@@ -26,12 +26,6 @@ let plugins = [
 let jsLoader = 'babel!eslint';
 if (node_env === 'production') {
   plugins = plugins.concat([
-    new webpack.optimize.CommonsChunkPlugin({
-      async: true,
-      children: true,
-      minChunks: 2,
-      names: ['Common'],
-    }),
     new webpack.optimize.OccurenceOrderPlugin(true),
     new webpack.optimize.UglifyJsPlugin(),
   ]);
