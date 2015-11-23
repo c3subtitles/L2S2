@@ -21,12 +21,12 @@ global.models = {};
 export default global.models;
 
 const config = {
-  url: process.env.DATABASE_URL,
-  host: process.env.DATABASE_HOST,
-  port: process.env.DATABASE_PORT,
-  username: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_DATABASE,
+  host: process.env.DATABASE_HOST,
+  password: process.env.DATABASE_PASSWORD,
+  port: process.env.DATABASE_PORT,
+  url: process.env.DATABASE_URL,
+  user: process.env.DATABASE_USERNAME,
 };
 
 global.initPromise = new Promise(resolve => {

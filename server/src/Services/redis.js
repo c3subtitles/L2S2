@@ -4,6 +4,7 @@ import { User } from '../models';
 const app = 'L2S2';
 const rs = new RedisSessions({
   options: {
+    path: process.env.REDIS_PATH,
     url: process.env.REDIS_URL,
   },
 });
