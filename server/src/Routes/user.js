@@ -28,8 +28,9 @@ global.router.post('/api/userForSessionId', async function(ctx) {
 });
 
 global.router.post('/api/logout', (ctx) => {
-  const { sessionId } = ctx.request.body;
-  logout(sessionId);
+  if (ctx.request.headers.sessionid) {
+    logout(ctx.request.headers.sessionid);
+  }
   ctx.status = 200;
 });
 

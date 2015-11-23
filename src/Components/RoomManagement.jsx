@@ -4,6 +4,7 @@ import { Permission, Connect } from '../Helper';
 
 const props = state => ({
   rooms: state.rooms,
+  user: state.user,
 });
 
 @Permission('canCreateRoom', 'canDeleteRoom')

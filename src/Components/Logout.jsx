@@ -1,14 +1,12 @@
 import React from 'react';
-import { logout } from '../Services/user';
+import { logout } from '../Actions/user';
 
 export default class Logout extends React.Component {
   static contextTypes = {
-    history: React.PropTypes.object.isRequired,
+    transitionTo: React.PropTypes.func.isRequired,
   };
   componentWillMount() {
-    logout().then(() => {
-      this.context.history.pushState(null, '/login');
-    });
+    logout();
   }
   render() {
     return null;

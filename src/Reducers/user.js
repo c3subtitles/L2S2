@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import initialState from './initialState';
 
 function updateUsers(state, user) {
   const newState: { users: Array<ClientUser> } = {
@@ -28,4 +29,5 @@ export default {
   DELETE_USER: (state, action) => ({
     users: state.users.filter(u => u.id !== action.payload),
   }),
+  LOGOUT: () => initialState,
 };

@@ -3,13 +3,14 @@ import { createAction } from 'redux-actions';
 import axios from 'axios';
 
 
-export const logout = createAction('LOGOUT', () => {
+export const logout = createAction('LOGOUT', async () => {
+  try {
+    await axios.post('/logout');
+  } catch (e) {
+    /* ignored */
+  }
   delete localStorage.sessionId;
-  axios.post('/logout');
-  return {
-    user: null,
-    sessionId: null,
-  };
+  return {};
 });
 export const login = createAction('LOGIN', async (username: string, password: string) => {
   const result = await axios.post('/login', {
