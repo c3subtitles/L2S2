@@ -1,13 +1,13 @@
 
-import _ from 'lodash';
 import { hasPermission } from '../Services/user';
 import React from 'react';
+
 
 export default function(...permissions): Function {
   return function(component) {
     return class Permission extends component {
       static displayName = component.displayName || component.name;
-      static contextTypes = _.merge({}, component.contextTypes, {
+      static contextTypes = Object.assign({}, component.contextTypes, {
         history: React.PropTypes.object,
       });
       componentWillMount() {

@@ -6,7 +6,7 @@ import React from 'react';
 import UUID from 'uuid-js';
 import _ from 'lodash';
 
-function appendUnits(style) {
+function appendUnits(style: Object) {
   _.each(style, (value, key) => {
     if (_.isObject(value)) {
       style[key] = appendUnits(value);

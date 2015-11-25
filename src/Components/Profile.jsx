@@ -4,7 +4,7 @@ import { TextField, RaisedButton } from 'material-ui';
 import React from 'react';
 
 export default class Profile extends React.Component {
-  changePassword = (e: SyntheticEvent) => {
+  changePassword = async (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     const { oldpw, newpw1, newpw2 } = this.refs;
@@ -15,7 +15,7 @@ export default class Profile extends React.Component {
       return;
     }
     const opw = oldpw.getValue();
-    changePassword(opw, pw1);
+    await changePassword(opw, pw1);
     oldpw.setValue('');
     newpw1.setValue('');
     newpw2.setValue('');

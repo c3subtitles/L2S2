@@ -1,12 +1,15 @@
 import RedisSessions from 'redis-sessions';
+import Redis from 'redis';
 import { User } from '../models';
+
+const rc = Redis.createClient({
+  path: process.env.REDIS_PATH,
+  url: process.env.REDIS_URL,
+});
 
 const app = 'L2S2';
 const rs = new RedisSessions({
-  options: {
-    path: process.env.REDIS_PATH,
-    url: process.env.REDIS_URL,
-  },
+  client: rc,
 });
 
 export async function createSession(userId: number) {

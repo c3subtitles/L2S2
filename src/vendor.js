@@ -2,6 +2,10 @@ import './fonts.css';
 import { addError } from './Services/notifications';
 import axios from 'axios';
 import UUID from 'uuid-js';
+import Radium from 'radium';
+import MaterialUI from 'material-ui';
+
+MaterialUI.Paper = Radium(MaterialUI.Paper);
 
 UUID.create = function(old) {
   return function() {

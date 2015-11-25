@@ -1,15 +1,15 @@
+import _ from 'lodash';
 import { createStore, bindActionCreators, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import React from 'react';
 import reduxPromise from 'redux-promise';
-import _ from 'lodash';
 
 let store;
 let renderDevtools;
 
 const reduxActions = require('redux-actions');
 reduxActions.handleActions = function(old) {
-  return function(reducerMap, ...rest) {
+  return function(reducerMap: Object, ...rest) {
     _.each(reducerMap, (r, index) => {
       reducerMap[index] = function(state, action) {
         const newState = r(state, action);

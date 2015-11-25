@@ -1,5 +1,3 @@
-
-import _ from 'lodash';
 import { PureRender } from 'Helper';
 import { TextField, RaisedButton } from 'material-ui';
 import { addError } from 'Services/notifications';
@@ -38,7 +36,7 @@ export default class Register extends React.Component {
     }
     try {
       await register(username, email, password1);
-      _.each(this.refs, r => r.setValue(''));
+      this.refs.each(r => r.setValue(''));
       this.context.transitionTo('/');
     } finally {
       this.loggingIn = false;

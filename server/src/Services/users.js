@@ -1,8 +1,6 @@
+import { getUserForSessionFromRedis, createSession, deleteSession } from './redis';
 import { User, Role } from '../models';
 import bcrypt from 'bcryptjs';
-import _ from 'lodash';
-import './redis';
-import { getUserForSessionFromRedis, createSession, deleteSession } from './redis';
 
 export function checkPassword(password: string, user: Object): Promise {
   return new Promise((resolve) => {
@@ -57,6 +55,7 @@ export async function register(username: string, password: string, email: string
     email,
     role: userRole ? userRole.id : undefined,
   });
+  return user;
 }
 
 export async function login(username: string, password: string): Object {
@@ -77,6 +76,6 @@ export function logout(sessionId: string) {
 }
 
 export async function getUsers(): Array<ClientUser> {
-  const users = await User.find().populate('role');
-  return _.map(users, user => getClientUserRepresentation(user));
+  const users: Array<ClientUser> = await User.find().populate('role');
+  return users.map(user => getClientUserRepresentation(user));
 }

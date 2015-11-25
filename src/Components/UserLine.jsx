@@ -1,7 +1,8 @@
 import { Connect } from '../Helper';
-import { Dialog, Paper, DropDownMenu, FlatButton } from 'material-ui';
+import { Dialog, Paper, DropDownMenu } from 'material-ui';
 import { deleteUser, saveRole, saveActive } from '../Actions/user';
 import React from 'react';
+import DeleteButton from './DeleteButton';
 
 type State = {
   showDelete: bool,
@@ -29,9 +30,6 @@ export default class UserLine extends React.Component {
     col: {
       flex: 1,
       margin: 5,
-    },
-    del: {
-      color: '#ff0000',
     },
   }
   state: State = {
@@ -96,7 +94,7 @@ export default class UserLine extends React.Component {
           }
         </div>
         {ownUser.role.canDeleteUser && ownUser.id === user.id ? <div style={style.col}/> : [
-          <FlatButton style={{ ...style.col, ...style.del }} key="d" label="Delete" onClick={this.handleDelete}/>,
+          <DeleteButton style={style.col} key="d" label="Delete" onClick={this.handleDelete}/>,
           <Dialog key="dd"
             open={showDelete}
             onRequestClose={this.hideDelete}

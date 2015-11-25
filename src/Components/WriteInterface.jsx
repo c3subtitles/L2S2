@@ -1,33 +1,30 @@
-
 import React from 'react';
-import Radium from 'radium';
-import WriterInput from './WriterInput';
+import { Connect } from '../Helper';
+import { joinRoom } from '../Actions/rooms';
 
+const props = state => ({
+  user: state.user,
+  userInRoom: state.userInRoom,
+  room: state.currentRoom,
+});
 
-@Radium
+@Connect(props)
 export default class WriteInterface extends React.Component {
-  static style = {
-    mainWrap: {
-      display: 'flex',
-      flexDirection: 'column',
-      flex: 1,
-    },
-    textPrev: {
-      flex: 1,
-    },
+  static propTypes = {
+    params: React.PropTypes.shape({
+      roomId: React.PropTypes.string,
+    }),
+    room: React.PropTypes.object,
+    user: React.PropTypes.object,
   };
-  static contextTypes = {
-    history: React.PropTypes.object,
-  };
+  componentWillMount() {
+    const { roomId } = this.props.params;
+    joinRoom(roomId);
+  }
   render() {
-    const style = WriteInterface.style;
+    const { room } = this.props;
     return (
-      <div style={style.mainWrap}>
-        <div style={style.textPrev}>
-
-        </div>
-        <WriterInput/>
-      </div>
+      <div>{room.name}</div>
     );
   }
 }

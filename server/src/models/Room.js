@@ -5,7 +5,7 @@ export default Waterline.Collection.extend({
   connection: 'default',
   attributes: {
     name: 'string',
-    locked: { type: 'boolean', require: true, defaultsTo: false },
-    speechLocked: { type: 'boolean', require: true, defaultsTo: false },
+    locked: { type: 'boolean', required: true, defaultsTo: false },
+    speechLocked: { type: 'boolean', required: true, defaultsTo: false },
   },
 });

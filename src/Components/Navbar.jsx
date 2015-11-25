@@ -65,6 +65,19 @@ export default class Navbar extends React.Component {
   users: () => void = () => {
     this.context.transitionTo('/userManagement');
   };
+  login: () => void = () => {
+    this.context.transitionTo('/login');
+  };
+  getGuestMenu() {
+    const style = Navbar.style;
+    return (
+      <IconMenu desktop iconButtonElement={
+        <RaisedButton style={style.menuButton} secondary label="Menu"/>
+        }>
+        <MenuItem onClick={this.login} primaryText="Login"/>
+      </IconMenu>
+    );
+  }
   render() {
     const { loggedIn, user } = this.props;
     const style = Navbar.style;
@@ -72,13 +85,13 @@ export default class Navbar extends React.Component {
     if (loggedIn) {
       const conditionalMenu = [];
       if (hasPermission(['canCreateRoom', 'canDeleteRoom'])) {
-        conditionalMenu.push(<MenuItem onClick={this.rooms} primaryText="Rooms"/>);
+        conditionalMenu.push(<MenuItem key="r" onClick={this.rooms} primaryText="Rooms"/>);
       }
       if (hasPermission(['canCreateUser', 'canDeleteUser', 'canActivateUser'])) {
-        conditionalMenu.push(<MenuItem onClick={this.users} primaryText="Usermanagement"/>);
+        conditionalMenu.push(<MenuItem key="u" onClick={this.users} primaryText="Usermanagement"/>);
       }
       if (conditionalMenu.length > 0) {
-        conditionalMenu.push(<MenuDivider/>);
+        conditionalMenu.push(<MenuDivider key="d"/>);
       }
       iconElementRight = (
         <IconMenu desktop iconButtonElement={
@@ -90,6 +103,8 @@ export default class Navbar extends React.Component {
           <MenuItem primaryText="Logout" onClick={this.logout}/>
         </IconMenu>
       );
+    } else {
+      iconElementRight = this.getGuestMenu();
     }
     return (
       <AppBar style={style.bar} iconStyleRight={style.menu} showMenuIconButton={false} title={<h1 onClick={this.home} style={style.title}>L2S2</h1>} iconElementRight={iconElementRight}/>

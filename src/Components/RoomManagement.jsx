@@ -1,6 +1,8 @@
-
-import React from 'react';
+import { createRoom, fetchRooms } from '../Actions/rooms';
 import { Permission, Connect } from '../Helper';
+import { RaisedButton } from 'material-ui';
+import React from 'react';
+import Room from './room';
 
 const props = state => ({
   rooms: state.rooms,
@@ -19,14 +21,24 @@ export default class RoomManagement extends React.Component {
       display: 'flex',
       flexDirection: 'column',
     },
+    new: {
+      marginBottom: 15,
+    },
   };
+  componentWillMount() {
+    fetchRooms();
+  }
   render() {
-    const { rooms } = this.props;
+    const { rooms, user } = this.props;
     const style = RoomManagement.style;
+    console.log(rooms);
     return (
       <div style={style.wrapper}>
+        {user.role.canCreateRoom && (
+          <RaisedButton primary style={style.new} onClick={createRoom} label="New Room"/>
+        )}
         {
-          rooms.map(room => <div>{room.name}</div>)
+          rooms.map((room, index) => <Room key={room.id || room.name || index} room={room}/>)
         }
       </div>
     );

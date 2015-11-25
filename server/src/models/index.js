@@ -40,8 +40,8 @@ global.initPromise = new Promise(resolve => {
         adapter: 'postgres',
       },
     },
-  }, (e, orm) => {
-    _.each(orm.collections, (model, name) => {
+  }, (e, orm: Object) => {
+    _.each(orm.collections, (model, name: string) => {
       global.models[_.capitalize(name)] = model;
     });
     resolve();
