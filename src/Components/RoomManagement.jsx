@@ -2,7 +2,7 @@ import { createRoom, fetchRooms } from '../Actions/rooms';
 import { Permission, Connect } from '../Helper';
 import { RaisedButton } from 'material-ui';
 import React from 'react';
-import Room from './room';
+import Room from './Room';
 
 const props = state => ({
   rooms: state.rooms,

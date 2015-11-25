@@ -23,6 +23,7 @@ export async function createSession(userId: number) {
 }
 
 export async function getUserForSessionFromRedis(token: string) {
+  console.log(token);
   const { id } = await rs.getAsync({
     app,
     token,
