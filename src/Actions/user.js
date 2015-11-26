@@ -1,5 +1,6 @@
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
+import { updateSessionId } from '../Services/socket';
 import axios from 'axios';
 
 
@@ -18,6 +19,7 @@ export const login = createAction('LOGIN', async (username: string, password: st
     password,
   });
   localStorage.sessionId = result.sessionId;
+  updateSessionId();
   addSuccess({ title: 'Login successful' });
   return result;
 });

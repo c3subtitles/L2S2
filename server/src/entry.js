@@ -70,4 +70,4 @@ global.app
 .use(global.router.routes())
 ;
 
-server.listen(9500);
+server.listen(process.env.PORT || 9500);

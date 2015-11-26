@@ -1,17 +1,13 @@
-import { Connect } from '../Helper';
 import { Paper } from 'material-ui';
+import RecentLines from './RecentLines';
+import LinesInProgress from './LinesInProgress';
 import React from 'react';
 import WriterInput from './WriterInput';
+import Radium from 'radium';
+import OldLines from './OldLines';
 
-const props = state => ({
-  lines: state.lines,
-});
-
-@Connect(props)
+@Radium
 export default class WriteArea extends React.Component {
-  static propTypes = {
-    lines: React.PropTypes.array,
-  };
   static style = {
     wrapper: {
       display: 'flex',
@@ -22,19 +18,20 @@ export default class WriteArea extends React.Component {
       display: 'flex',
       flexDirection: 'column',
       flex: 1,
+      justifyContent: 'flex-end',
+      overflow: 'auto',
     },
   };
   render() {
     const style = WriteArea.style;
-    const { lines } = this.props;
     return (
       <Paper style={style.wrapper}>
         <div style={style.inner}>
-          {
-            lines.map((l, index) => (
-              <span key={`${index}l.line`} style={{ color: l.user.color }}>{l.line}</span>
-            ))
-          }
+          <OldLines style={style.inner}/>
+          SPACER
+          <LinesInProgress style={style.inner}/>
+          SPACER
+          <RecentLines style={style.inner}/>
         </div>
         <WriterInput/>
       </Paper>

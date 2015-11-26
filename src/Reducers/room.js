@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const colors = ['#b20000', '#ffd580', '#39e6da', '#2d2db3', '#cc9999', '#77b300', '#40a6ff', '#ff40d9', '#33210d', '#336633', '#738299'];
+const colors = ['magenta', 'teal', 'orange', 'darkblue', 'darkred', 'black', 'darkgreen'];
 
 function setColors(userInRoom: Array) {
   const usedColors = _(userInRoom).pluck('color').compact().value();
