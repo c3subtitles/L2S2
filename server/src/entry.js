@@ -1,15 +1,16 @@
 import './flowWorkarounds';
+import { onConnection } from './primus/connections';
+import bcrypt from 'bcryptjs';
 import bluebird from 'bluebird';
 import http from 'http';
 import koa from 'koa';
 import koaJSON from 'koa-json-body';
 import path from 'path';
 import Primus from 'primus';
+import Redis from 'redis';
 import RedisSessions from 'redis-sessions';
 import router from 'koa-66';
 import UUID from 'uuid-js';
-import Redis from 'redis';
-import bcrypt from 'bcryptjs';
 
 bluebird.promisifyAll(Redis.RedisClient.prototype);
 bluebird.promisifyAll(Redis.Multi.prototype);
@@ -46,8 +47,12 @@ global.router = new router();
 
 global.primus = new Primus(server, options);
 global.primus.use('emit', require('primus-emit'));
+global.primus.use('rooms', require('primus-rooms'));
 
-global.primus.save(path.resolve('./src/primusClient.js'));
+global.primus.on('connection', onConnection);
+
+global.primus.save(path.resolve('./primusClient.js'));
+
 
 require('./routes.js');
 

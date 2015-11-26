@@ -77,5 +77,5 @@ export function logout(sessionId: string) {
 
 export async function getUsers(): Array<ClientUser> {
   const users: Array<ClientUser> = await User.find().populate('role');
-  return users.map(user => getClientUserRepresentation(user));
+  return users.map(user => user.client());
 }

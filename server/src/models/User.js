@@ -1,4 +1,5 @@
 import Waterline from 'waterline';
+import { getClientUserRepresentation } from '../Services/users';
 
 export default Waterline.Collection.extend({
   identity: 'user',
@@ -17,6 +18,9 @@ export default Waterline.Collection.extend({
     },
     role: {
       model: 'role',
+    },
+    client() {
+      return getClientUserRepresentation(this);
     },
   },
   beforeCreate(values, next) {

@@ -59,6 +59,7 @@ const webpackConfig = {
     loaders: [
       { test: /^((?!CSS\.js$).)*(\.jsx?)$/,
         exclude: /(node_modules)/,
+        include: /src/,
         loader: jsLoader,
       },
       { test: /\.css$/, loader: 'style!css' },
@@ -67,6 +68,9 @@ const webpackConfig = {
       { test: /\.woff2?(\?.*)?$/, loader: 'file' },
       { test: /\.(eot|ttf|otf|svg)(\?.*)?$/, loader: 'file' },
       { test: /\.json$/, loader: 'json' },
+    ],
+    noParse: [
+      /primusClient\.js/,
     ],
   },
   plugins,

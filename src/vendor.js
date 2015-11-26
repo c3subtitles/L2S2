@@ -15,7 +15,7 @@ UUID.create = function(old) {
 }(UUID.create);
 
 axios.interceptors.request.use(requestConfig => {
-  requestConfig.url = `api${requestConfig.url}`;
+  requestConfig.url = `/api${requestConfig.url}`;
   let sessionId;
   if (store) {
     sessionId = store.getState().sessionId;

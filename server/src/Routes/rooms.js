@@ -7,11 +7,8 @@ async function getUser(ctx): ?ClientUser {
 }
 
 global.router.get('/api/rooms/all', async function(ctx) {
-  const user = await getUser(ctx);
-  if (user && user.role.canCreateRoom || user.role.canDeleteRoom) {
-    ctx.body = await Room.find();
-    ctx.status = 200;
-  }
+  ctx.body = await Room.find();
+  ctx.status = 200;
 });
 
 global.router.post('/api/rooms/save', async function(ctx) {
@@ -67,10 +64,10 @@ global.router.post('/api/rooms/join', async function(ctx) {
       ctx.status = 400;
       return;
     }
-    joinRoom(room, user);
+    joinRoom(room.id, user.id);
     ctx.body = {
+      ...await getUsersInRoom(room.id),
       room,
-      usersInRoom: await getUsersInRoom(room),
     };
     ctx.status = 200;
   } else {

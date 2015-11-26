@@ -11,7 +11,7 @@ export default class PermissionWrap extends React.Component {
       React.PropTypes.arrayOf(React.PropTypes.string),
     ]).isRequired,
   };
-  render(): ? {
+  render() {
     const { permission, children } = this.props;
     if (hasPermission(permission)) {
       if (React.Children.count(children) > 1) {

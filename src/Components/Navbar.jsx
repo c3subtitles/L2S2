@@ -10,9 +10,11 @@ import { hasPermission } from '../Services/user';
 @Radium
 @Connect(state => ({
   user: state.user,
+  currentRoom: state.currentRoom,
 }))
 export default class Navbar extends React.Component {
   static propTypes = {
+    currentRoom: React.PropTypes.object,
     loggedIn: React.PropTypes.bool,
     user: React.PropTypes.instanceOf(ClientUser),
   }
@@ -49,6 +51,10 @@ export default class Navbar extends React.Component {
     menuButtonLabel: {
       color: '#fff',
     },
+    room: {
+      marginLeft: 10,
+      marginRight: 10,
+    },
   };
   home: () => void = () => {
     this.context.transitionTo('/');
@@ -79,7 +85,7 @@ export default class Navbar extends React.Component {
     );
   }
   render() {
-    const { loggedIn, user } = this.props;
+    const { loggedIn, user, currentRoom } = this.props;
     const style = Navbar.style;
     let iconElementRight;
     if (loggedIn) {
@@ -107,7 +113,9 @@ export default class Navbar extends React.Component {
       iconElementRight = this.getGuestMenu();
     }
     return (
-      <AppBar style={style.bar} iconStyleRight={style.menu} showMenuIconButton={false} title={<h1 onClick={this.home} style={style.title}>L2S2</h1>} iconElementRight={iconElementRight}/>
+      <AppBar style={style.bar} iconStyleRight={style.menu} showMenuIconButton={false} title={<h1 onClick={this.home} style={style.title}>
+        L2S2{currentRoom && [<span key="s" style={style.room}> - </span>, currentRoom.name]}
+      </h1>} iconElementRight={iconElementRight}/>
     );
   }
 }

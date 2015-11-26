@@ -92,8 +92,9 @@ export default class App extends React.Component {
   render() {
     const { children } = this.props;
     const monitor = IS_PRODUCTION ? null : renderDevtools();
+    const fullFlex = { display: 'flex', flex: 1, flexDirection: 'column' };
     return (
-      <div>
+      <div style={fullFlex}>
         <Provider store={store}>
           <L2S2>
             {children}

@@ -1,10 +1,12 @@
-import React from 'react';
 import { Connect } from '../Helper';
-import { joinRoom } from '../Actions/rooms';
+import { joinRoom, leaveRoom } from '../Actions/rooms';
+import Loading from 'react-loader';
+import React from 'react';
+import UserList from './UserList';
+import WriteArea from './WriteArea';
 
 const props = state => ({
   user: state.user,
-  userInRoom: state.userInRoom,
   room: state.currentRoom,
 });
 
@@ -17,14 +19,34 @@ export default class WriteInterface extends React.Component {
     room: React.PropTypes.object,
     user: React.PropTypes.object,
   };
+  static style = {
+    wrapper: {
+      display: 'flex',
+      flex: 1,
+    },
+    mainContent: {
+      flex: 1,
+    },
+  };
   componentWillMount() {
     const { roomId } = this.props.params;
     joinRoom(roomId);
   }
+  componentWillUnmount() {
+    const { roomId } = this.props.params;
+    leaveRoom(roomId);
+  }
   render() {
+    const style = WriteInterface.style;
     const { room } = this.props;
+    if (!room) {
+      return <Loading/>;
+    }
     return (
-      <div>{room.name}</div>
+      <div style={style.wrapper}>
+        <WriteArea/>
+        <UserList/>
+      </div>
     );
   }
 }

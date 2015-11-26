@@ -13,7 +13,7 @@ export default {
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
-    '> div': {
+    '> div > div': {
       flex: 1,
       display: 'flex',
       flexDirection: 'column',

@@ -40,7 +40,6 @@ export default class L2S2 extends React.Component {
       display: 'flex',
       flex: 1,
       flexDirection: 'column',
-      padding: 10,
     },
   };
   getChildContext(): Object {
