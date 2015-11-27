@@ -4,11 +4,17 @@ import { joinRoom as joinRoomSocket, leaveRoom as leaveRoomSocket } from '../Ser
 import axios from 'axios';
 
 export const fetchRooms = createAction('FETCH_ROOMS', async () => {
-  return await axios.get('/rooms/all');
+  return await axios.get('/rooms');
 });
 
 export const saveRoom = createAction('SAVE_ROOM', async (room) => {
-  room = await axios.post('/rooms/save', { room });
+  if (room.id) {
+    room = await axios.put(`/rooms/${room.id}`, {
+      name: room.name,
+    });
+  } else {
+    room = await axios.post('/rooms', { room });
+  }
   addSuccess({ message: 'Successfully saved' });
   return room;
 });
@@ -22,7 +28,7 @@ export const createRoom = createAction('CREATE_ROOM', async () => {
 
 export const deleteRoom = createAction('DELETE_ROOM', async (room) => {
   if (!room.isNew) {
-    await axios.post('/rooms/delete', { id: room.id });
+    await axios.delete(`/rooms/${room.id}`);
   }
   addSuccess({ message: `Successfully deleted` });
   return room;
@@ -30,7 +36,7 @@ export const deleteRoom = createAction('DELETE_ROOM', async (room) => {
 
 export const joinRoom = createAction('JOIN_ROOM', async roomId => {
   joinRoomSocket(roomId);
-  return await axios.post('/rooms/join', { roomId });
+  return await axios.get(`/rooms/join/${roomId}`);
 });
 
 export const leaveRoom = createAction('LEAVE_ROOM', roomId => {
@@ -59,3 +65,9 @@ export const userLeft = createAction('USER_LEFT', (roomId, user) => ({
   roomId,
   user,
 }));
+
+export const joinReadRoom = createAction('JOIN_READ_ROOM', async roomId => {
+  return await axios.get(`/rooms/joinRead/${roomId}`);
+});
+
+export const leaveReadRoom = createAction('LEAVE_READ_ROOM', () => {});

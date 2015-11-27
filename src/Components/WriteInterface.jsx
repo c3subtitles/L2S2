@@ -1,4 +1,4 @@
-import { Connect } from '../Helper';
+import { Connect, Permission } from '../Helper';
 import { joinRoom, leaveRoom } from '../Actions/rooms';
 import Loading from 'react-loader';
 import React from 'react';
@@ -10,6 +10,8 @@ const props = state => ({
   room: state.currentRoom,
 });
 
+
+@Permission()
 @Connect(props)
 export default class WriteInterface extends React.Component {
   static propTypes = {
@@ -22,10 +24,10 @@ export default class WriteInterface extends React.Component {
   static style = {
     wrapper: {
       display: 'flex',
-      flex: 1,
+      flex: '1 1 0',
     },
     mainContent: {
-      flex: 1,
+      flex: '1 1 0',
     },
   };
   componentWillMount() {

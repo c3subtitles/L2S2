@@ -22,6 +22,14 @@ export default Waterline.Collection.extend({
     client() {
       return getClientUserRepresentation(this);
     },
+    toJSON() {
+      const user = this.toObject();
+      delete user.id;
+      delete user.createdAt;
+      delete user.updatedAt;
+      delete user.password;
+      return user;
+    },
   },
   beforeCreate(values, next) {
     global.encrypt(values.password).then(password => {

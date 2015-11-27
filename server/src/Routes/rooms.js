@@ -1,76 +1,70 @@
-import { getUserForSessionId } from '../Services/users';
-import { getUsersInRoom, joinRoom } from '../Services/rooms';
+import { getCurrentUserFromSession } from '../Services/users';
+import { getUsersInRoom, joinRoom, getLinesForRoom } from '../Services/rooms';
 import { Room } from '../models';
 
-async function getUser(ctx): ?ClientUser {
-  return await getUserForSessionId(ctx.request.headers.sessionid);
-}
-
-global.router.get('/api/rooms/all', async function(ctx) {
+global.router.get('/api/rooms', async function(ctx) {
   ctx.body = await Room.find();
   ctx.status = 200;
 });
 
-global.router.post('/api/rooms/save', async function(ctx) {
-  const user = await getUser(ctx);
-  if (user && user.role.canCreateRoom) {
-    const { room } = ctx.request.body;
-    let dbRoom;
-    if (room.id) {
-      dbRoom = await Room.findOne({ id: room.id });
-      if (!dbRoom) {
-        ctx.status = 400;
-        return;
-      }
-      dbRoom.name = room.name;
-      await dbRoom.save();
-    } else {
-      dbRoom = await Room.create({ name: room.name });
-    }
-    ctx.body = dbRoom;
-    ctx.status = 200;
-  } else {
-    ctx.status = 400;
+global.router.put('/api/rooms/:id', async function(ctx) {
+  const user = await getCurrentUserFromSession(ctx);
+  if (!user.role.canCreateRoom) {
+    throw { message: 'insufficent Permission' };
   }
+  const { room } = ctx.request.body;
+  const dbRoom = await Room.findOne({ id: ctx.params.id });
+  if (!dbRoom) {
+    throw { message: 'Invalid Room' };
+  }
+  Object.assign(dbRoom, room);
+  await dbRoom.save();
+  ctx.body = dbRoom;
+  ctx.status = 200;
 });
 
-global.router.post('/api/rooms/create', async function(ctx) {
-  const user = await getUser(ctx);
-  if (user && user.role.canCreateRoom) {
-    const { name } = ctx.request.body;
-    ctx.body = await Room.create({
-      name,
-    });
-    ctx.status = 200;
+global.router.post('/api/rooms', async function(ctx) {
+  const user = await getCurrentUserFromSession(ctx);
+  if (!user.role.canCreateRoom) {
+    throw { message: 'insufficent Permission' };
   }
+  const { room } = ctx.request.body;
+  const dbRoom = await Room.create({ name: room.name });
+  ctx.body = dbRoom;
+  ctx.status = 200;
 });
 
-global.router.post('/api/rooms/delete', async function(ctx) {
-  const user = await getUser(ctx);
-  if (user && user.role.canDeleteRoom) {
-    const { id } = ctx.request.body;
-    const room = await Room.findOne({ id });
-    await room.destroy();
-    ctx.status = 200;
+global.router.delete('/api/rooms/:id', async function(ctx) {
+  const user = await getCurrentUserFromSession(ctx);
+  if (!user.role.canDeleteRoom) {
+    throw { message: 'insufficent Permission' };
   }
+  const room = await Room.findOne({ id: ctx.params.id });
+  if (!room) {
+    throw { message: 'invalid Room id' };
+  }
+  await room.destroy();
+  ctx.status = 200;
 });
 
-global.router.post('/api/rooms/join', async function(ctx) {
-  const user = await getUser(ctx);
-  if (user) {
-    const { roomId } = ctx.request.body;
-    const room = await Room.findOne({ id: roomId });
-    if (!room) {
-      ctx.status = 400;
-      return;
-    }
-    joinRoom(room.id, user.id);
-    ctx.body = {
-      ...await getUsersInRoom(room.id),
-      room,
-    };
-    ctx.status = 200;
-  } else {
-    ctx.status = 400;
+global.router.get('/api/rooms/join/:id', async function(ctx) {
+  const user = await getCurrentUserFromSession(ctx);
+  const room = await Room.findOne({ id: ctx.params.id });
+  if (!room) {
+    throw { message: 'invalid Room' };
   }
+  joinRoom(room.id, user.id);
+  ctx.body = {
+    ...await getUsersInRoom(room.id),
+    room,
+  };
+  ctx.status = 200;
+});
+
+global.router.get('/api/rooms/joinRead/:id', async (ctx) => {
+  ctx.body = {
+    room: await Room.findOne({ id: ctx.params.id }),
+    lines: getLinesForRoom(Number.parseInt(ctx.params.id)),
+  };
+  ctx.status = 200;
 });

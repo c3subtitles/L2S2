@@ -45,31 +45,27 @@ export const fetchUser = createAction('FETCH_USER', async () => {
   };
 });
 export const fetchUsers = createAction('FETCH_USERS', async () => {
-  return await axios.get('/getUsers');
+  return await axios.get('/users');
 });
 export const fetchRoles = createAction('FETCH_ROLES', async () => {
-  return await axios.get('/role/getAll');
+  return await axios.get('/roles');
 });
 export const saveRole = createAction('SAVE_ROLE', async (user: ClientUser, role: RoleType) => {
-  await axios.post('/saveRole', {
-    user,
-    role,
+  user = await axios.put(`/users/${user.id}`, {
+    role: role.id,
   });
   addSuccess({ message: 'Change Saved' });
-  user.role = role;
   return user;
 });
 export const saveActive = createAction('SAVE_ACTIVE', async (user: ClientUser, active: bool) => {
-  await axios.post('/saveActive', {
-    user,
+  user = await axios.put(`/users/${user.id}`, {
     active,
   });
   addSuccess({ message: 'Change Saved' });
-  user.active = active;
   return user;
 });
 export const deleteUser = createAction('DELETE_USER', async (user: ClientUser) => {
-  await axios.post('/deleteUser', { user });
+  await axios.delete(`/users/${user.id}`);
   addSuccess({ message: `${user.username} successfully deleted` });
   return user.id;
 });

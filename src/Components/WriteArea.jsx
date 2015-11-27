@@ -11,27 +11,32 @@ export default class WriteArea extends React.Component {
   static style = {
     wrapper: {
       display: 'flex',
-      flex: 1,
+      flex: '1 1 0',
       flexDirection: 'column',
     },
-    inner: {
+    lineContainer: {
       display: 'flex',
       flexDirection: 'column',
-      flex: 1,
       justifyContent: 'flex-end',
+    },
+    inner: {
       overflow: 'auto',
+      flex: '1 1 0',
+    },
+    spacer: {
+      background: 'red',
+      height: 1,
     },
   };
   render() {
     const style = WriteArea.style;
     return (
       <Paper style={style.wrapper}>
-        <div style={style.inner}>
-          <OldLines style={style.inner}/>
-          SPACER
-          <LinesInProgress style={style.inner}/>
-          SPACER
-          <RecentLines style={style.inner}/>
+        <div style={[style.lineContainer, style.inner]}>
+          <OldLines style={style.lineContainer}/>
+          <div style={style.spacer}/>
+          <LinesInProgress spacerStyle={style.spacer} style={style.lineContainer}/>
+          <RecentLines style={style.lineContainer}/>
         </div>
         <WriterInput/>
       </Paper>

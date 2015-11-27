@@ -33,7 +33,7 @@ export default class RoomSelection extends React.Component {
       backgroundColor: 'inherit',
       cursor: 'pointer',
       display: 'flex',
-      flex: 1,
+      flex: '1 1 0',
       fontSize: 40,
       fontWeight: 'bold',
       height: '100%',

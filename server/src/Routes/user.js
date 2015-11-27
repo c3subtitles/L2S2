@@ -1,32 +1,19 @@
-import { login, getClientUserRepresentation, getUserForSessionId, logout, checkPassword, register, getUsers } from '../Services/users';
-import { User, Role } from '../models';
+import { login, getClientUserRepresentation, logout, checkPassword, register, getUsers, getCurrentUserFromSession } from '../Services/users';
+import { User } from '../models';
 
-
-
-async function getUser(ctx): ?ClientUser {
-  return await getUserForSessionId(ctx.request.headers.sessionid);
-}
 
 global.router.post('/api/login', async function(ctx) {
   const { username, password } = ctx.request.body;
   const { user, sessionId } = await login(username, password);
-  if (user) {
-    ctx.body = {
-      sessionId,
-      user: getClientUserRepresentation(user),
-    };
-  } else {
-    ctx.status = 403;
-  }
+  ctx.body = {
+    sessionId,
+    user: getClientUserRepresentation(user),
+  };
 });
 
 global.router.post('/api/userForSessionId', async function(ctx) {
-  const user = await getUser(ctx);
-  if (user) {
-    ctx.body = getClientUserRepresentation(user);
-  } else {
-    ctx.status = 400;
-  }
+  const user = await getCurrentUserFromSession(ctx);
+  ctx.body = getClientUserRepresentation(user);
 });
 
 global.router.post('/api/logout', (ctx) => {
@@ -38,22 +25,14 @@ global.router.post('/api/logout', (ctx) => {
 
 global.router.post('/api/changePassword', async function(ctx) {
   const { oldPassword, newPassword } = ctx.request.body;
-  const user = await getUser(ctx);
-  if (user) {
-    console.log(user.password);
-    const correctOld = await checkPassword(oldPassword, user);
-    if (!correctOld) {
-      ctx.status = 400;
-      return;
-    }
-    const cryptedPw = await global.encrypt(newPassword);
-    await User.update({ id: user.id }, { password: cryptedPw });
-    // user.password = cryptedPw;
-    // await user.save();
-    ctx.status = 200;
-  } else {
-    ctx.status = 400;
+  const user = await getCurrentUserFromSession(ctx);
+  const correctOld = await checkPassword(oldPassword, user);
+  if (!correctOld) {
+    throw { message: 'Old Password is incorrect' };
   }
+  const cryptedPw = await global.encrypt(newPassword);
+  await User.update({ id: user.id }, { password: cryptedPw });
+  ctx.status = 200;
 });
 
 global.router.post('/api/register', async function(ctx) {
@@ -65,59 +44,32 @@ global.router.post('/api/register', async function(ctx) {
   ctx.status = 200;
 });
 
-global.router.get('/api/getUsers', async function(ctx) {
-  const user = await getUser(ctx);
-  if (user) {
-    ctx.body = await getUsers();
-  } else {
-    ctx.status = 400;
-  }
+global.router.get('/api/users', async function(ctx) {
+  await getCurrentUserFromSession(ctx);
+  ctx.body = await getUsers();
 });
 
-global.router.post('/api/saveActive', async function(ctx) {
-  const ownUser = await getUser(ctx);
-  if (ownUser) {
-    if (!ownUser.role.canActivateUser) {
-      throw { message: 'insufficent permissions' };
-    }
-    const { user, active } = ctx.request.body;
-    const userToSave = await User.findOne({ id: user.id });
-    userToSave.active = active;
-    await userToSave.save();
-    ctx.status = 200;
-  } else {
-    ctx.status = 400;
+
+global.router.put('/api/users/:id', async function(ctx) {
+  const ownUser = await getCurrentUserFromSession(ctx);
+  const user = ctx.request.body;
+  if (user.hasOwnProperty('active') && !ownUser.role.canActivateUser) {
+    throw { message: 'insufficent permissions' };
   }
+  if (user.hasOwnProperty('role') && !ownUser.role.canChangeUserRole) {
+    throw { message: 'insufficent permissions' };
+  }
+  await User.update({ id: ctx.params.id }, user);
+  ctx.body = await User.findOne({ id: ctx.params.id }).populate('role');
+  ctx.status = 200;
 });
 
-global.router.post('/api/saveRole', async function(ctx) {
-  const ownUser = await getUser(ctx);
-  if (ownUser) {
-    if (!ownUser.role.canChangeUserRole) {
-      throw { message: 'insufficent permissions' };
-    }
-    const { user, role } = ctx.request.body;
-    const userToSave = await User.findOne({ id: user.id });
-    const newRole = await Role.findOne({ id: role.id });
-    userToSave.role = newRole.id;
-    await userToSave.save();
-    ctx.status = 200;
-  } else {
-    ctx.status = 400;
+global.router.delete('/api/users/:id', async function(ctx) {
+  const ownUser = await getCurrentUserFromSession(ctx);
+  if (!ownUser.role.canDeleteUser) {
+    throw { message: 'insufficent permissions' };
   }
-});
-
-global.router.post('/api/deleteUser', async function(ctx) {
-  const ownUser = await getUser(ctx);
-  if (ownUser) {
-    if (!ownUser.role.canDeleteUser) {
-      throw { message: 'insufficent permissions' };
-    }
-    const { user } = ctx.request.body;
-    const userToDelete = await User.findOne({ id: user.id });
-    await userToDelete.destroy();
-    ctx.status = 200;
-  } else {
-    ctx.status = 400;
-  }
+  const userToDelete = await User.findOne({ id: ctx.params.id });
+  await userToDelete.destroy();
+  ctx.status = 200;
 });

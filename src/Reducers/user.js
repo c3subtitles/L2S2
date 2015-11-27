@@ -5,7 +5,7 @@ function updateUsers(state, user) {
   const newState: { users: Array<ClientUser> } = {
     users: _.sortBy(state.users.filter(u => u.id !== user.id), 'username'),
   };
-  newState.users.push(user);
+  newState.users = [...newState.users, user];
   if (state.user.id === user.id) {
     newState.user = user;
   }

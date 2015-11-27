@@ -37,7 +37,6 @@
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",
     "redbox-react": "^1.1.1",
-    "redis": "^2.3.1",
     "redux-devtools": "^3.0.0-beta-3",
     "redux-devtools-dock-monitor": "^1.0.0-beta-3",
     "redux-devtools-log-monitor": "^1.0.0-beta-3",
@@ -77,6 +76,7 @@
     "redux-actions": "^0.8.0",
     "redux-promise": "^0.5.0",
     "sails-postgresql": "^0.10.17",
+    "seamless-immutable": "^4.0.2",
     "shallowequal": "^0.2.2",
     "uuid-js": "^0.7.5",
     "waterline": "^0.10.26"

@@ -4,12 +4,12 @@ import RoomSelection from './RoomSelection';
 
 
 @Radium
-export default class WriteSelection extends React.Component {
+export default class ReadSelection extends React.Component {
   static contextTypes = {
     transitionTo: React.PropTypes.func,
   };
   handleRoomClick = room => {
-    this.context.transitionTo(`/write/${room.id}`);
+    this.context.transitionTo(`/${room.id}`);
   };
   render() {
     return (

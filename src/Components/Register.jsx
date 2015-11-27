@@ -16,7 +16,7 @@ export default class Register extends React.Component {
     innerWrap: {
       alignItems: 'center',
       display: 'flex',
-      flex: 1,
+      flex: '1 1 0',
       flexDirection: 'column',
     },
   };

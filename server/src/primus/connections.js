@@ -2,17 +2,20 @@ import _ from 'lodash';
 import { getUserForSessionId } from '../Services/users';
 import { addLine, lineStart, leaveRoom, leaveAllRooms } from '../Services/rooms';
 
-function emitToRoom(spark, roomId, ...params) {
-  _.each(spark.room(roomId).except(spark.id).connections, s => {
+function emitToRoomAuth(spark, roomId, ...params) {
+  _(spark.room(roomId).except(spark.id).connections)
+  .filter(s => s.user)
+  .each(s => {
     s.emit(...params);
-  });
+  })
+  .value();
 }
 
 export function onConnection(spark: Object) {
   spark.on('end', () => {
     if (spark.user) {
       leaveAllRooms(spark.user.id, (roomId) => {
-        emitToRoom(spark, roomId, 'leave', roomId, spark.user.client());
+        emitToRoomAuth(spark, roomId, 'leave', roomId, spark.user.client());
       });
     }
   });
@@ -24,7 +27,7 @@ export function onConnection(spark: Object) {
   spark.on('join', roomId => {
     spark.join(roomId);
     if (spark.user) {
-      emitToRoom(spark, roomId, 'join', roomId, spark.user.client());
+      emitToRoomAuth(spark, roomId, 'join', roomId, spark.user.client());
     }
   });
 
@@ -32,14 +35,14 @@ export function onConnection(spark: Object) {
     spark.leave(roomId);
     if (spark.user) {
       leaveRoom(Number.parseInt(roomId), spark.user.id);
-      emitToRoom(spark, roomId, 'leave', roomId, spark.user.client());
+      emitToRoomAuth(spark, roomId, 'leave', roomId, spark.user.client());
     }
   });
 
   spark.on('lineStart', (roomId, text) => {
     if (spark.user) {
       lineStart(text, spark.user.id, Number.parseInt(roomId));
-      emitToRoom(spark, roomId, 'lineStart', roomId, spark.user.id, text);
+      emitToRoomAuth(spark, roomId, 'lineStart', roomId, spark.user.id, text);
     }
   });
 
@@ -47,7 +50,13 @@ export function onConnection(spark: Object) {
     if (spark.user) {
       lineStart('', spark.user.id, Number.parseInt(roomId));
       addLine(text, Number.parseInt(roomId), spark.user.id);
-      emitToRoom(spark, roomId, 'line', roomId, spark.user.id, text);
+      _.each(spark.room(roomId).except(spark.id).connections, s => {
+        if (s.user) {
+          s.emit('line', roomId, spark.user.id, text);
+        } else {
+          s.emit('lineRead', roomId, text);
+        }
+      });
     }
   });
 }

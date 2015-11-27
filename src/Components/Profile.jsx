@@ -1,8 +1,10 @@
 import { addError } from '../Services/notifications';
 import { changePassword } from '../Services/user';
+import { Permission } from '../Helper';
 import { TextField, RaisedButton } from 'material-ui';
 import React from 'react';
 
+@Permission()
 export default class Profile extends React.Component {
   changePassword = async (e: SyntheticEvent) => {
     e.preventDefault();

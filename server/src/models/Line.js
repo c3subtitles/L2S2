@@ -1,14 +1,16 @@
 import Waterline from 'waterline';
 
 export default Waterline.Collection.extend({
-  identity: 'temporaryvoice',
+  identity: 'line',
   connection: 'default',
   attributes: {
-    room: {
-      model: 'room',
-    },
+    text: 'string',
     user: {
       model: 'user',
     },
+    room: {
+      model: 'room',
+    },
+    roomName: 'string',
   },
 });

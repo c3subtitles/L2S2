@@ -24,7 +24,7 @@ export default class Room extends React.Component {
       padding: 5,
     },
     col: {
-      flex: 1,
+      flex: '1 1 0',
       margin: 5,
     },
   };

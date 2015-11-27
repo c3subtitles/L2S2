@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Connect } from '../Helper';
 import { lineStart, line } from '../Services/socket';
 import Radium from 'radium';
@@ -5,6 +6,8 @@ import React from 'react';
 
 const props = state => ({
   room: state.currentRoom,
+  userInRoom: state.userInRoom,
+  user: state.user,
 });
 
 @Connect(props)
@@ -12,6 +15,8 @@ const props = state => ({
 export default class WriterInput extends React.Component {
   static propTypes = {
     room: React.PropTypes.object,
+    user: React.PropTypes.object,
+    userInRoom: React.PropTypes.array,
   };
   static style = {
     marginBottom: 2,
@@ -31,8 +36,10 @@ export default class WriterInput extends React.Component {
     }
   };
   render() {
+    const { userInRoom, user } = this.props;
+    const currentUserInRoom = _.find(userInRoom, { id: user.id });
     return (
-      <input onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
+      <input value={currentUserInRoom.currentLine} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
     );
   }
 }

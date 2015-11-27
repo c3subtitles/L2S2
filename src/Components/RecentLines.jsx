@@ -12,11 +12,12 @@ const props = state => ({
 export default class RecentLines extends React.Component {
   static propTypes = {
     lines: React.PropTypes.array,
+    style: React.PropTypes.object,
   };
   render() {
-    const { lines } = this.props;
+    const { lines, style } = this.props;
     return (
-      <div>
+      <div style={style}>
         {
           _.takeRight(lines, 3).map((l, index) => (
             <span key={`${index}`} style={{ color: l.user.color }}>{l.line}</span>

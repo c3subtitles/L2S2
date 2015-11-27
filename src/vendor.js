@@ -1,9 +1,9 @@
 import './fonts.css';
 import { addError } from './Services/notifications';
 import axios from 'axios';
-import UUID from 'uuid-js';
-import Radium from 'radium';
 import MaterialUI from 'material-ui';
+import Radium from 'radium';
+import UUID from 'uuid-js';
 
 MaterialUI.Paper = Radium(MaterialUI.Paper);
 

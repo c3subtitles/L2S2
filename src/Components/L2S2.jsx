@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { CSS, Connect } from '../Helper';
 import { fetchUser } from '../Actions/user';
 import { setSystem } from '../Services/notifications';
@@ -7,13 +6,6 @@ import Navbar from './Navbar';
 import NotificationSystem from 'react-notification-system';
 import Radium from 'radium';
 import React from 'react';
-
-function allowedRoute(path: string): bool {
-  if (_.contains(path, 'login') || path === '/' || _.contains(path, 'register')) {
-    return true;
-  }
-  return false;
-}
 
 
 @CSS(GlobalCSS)
@@ -38,7 +30,7 @@ export default class L2S2 extends React.Component {
   static style = {
     childWrap: {
       display: 'flex',
-      flex: 1,
+      flex: '1 1 0',
       flexDirection: 'column',
     },
   };
@@ -54,11 +46,6 @@ export default class L2S2 extends React.Component {
   }
   componentDidMount() {
     setSystem(this.refs.notification);
-  }
-  componentDidUpdate() {
-    if (this.props.ready && !allowedRoute(this.context.location.pathname) && !this.props.loggedIn) {
-      this.context.history.pushState(null, '/login');
-    }
   }
   render() {
     const { children, ready } = this.props;

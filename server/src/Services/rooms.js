@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable';
-import { User } from '../models';
+import { User, Line } from '../models';
 
 let rooms = Map();
 
@@ -12,13 +12,25 @@ export async function getUsersInRoom(roomId: number) {
     })).toArray();
     return {
       userInRoom: users,
-      lines: lines.takeLast(15).toArray(),
+      lines: lines.takeLast(30).toArray(),
     };
   }
   return {
     userInRoom: [],
     lines: [],
   };
+}
+
+export function getLinesForRoom(roomId: number) {
+  let room = rooms.get(roomId);
+  if (!room) {
+    room = {
+      lines: List(),
+      userIds: Map(),
+    };
+    rooms = rooms.set(roomId, room);
+  }
+  return room.lines.takeLast(5).map(l => l.line).toArray();
 }
 
 export function joinRoom(roomId: number, userId: number) {
@@ -76,6 +88,20 @@ export function lineStart(text, userId, roomId: number) {
   }
 }
 
+async function addLineToDatabase(text, room, userId) {
+  try {
+    await Line.create({
+      text,
+      user: userId,
+      room: room.id,
+      roomName: room.name,
+    });
+  } catch (e) {
+    console.error(`lineAddFailed ${e}`);
+    e.stack();
+  }
+}
+
 export function addLine(text, roomId: number, userId) {
   const room = rooms.get(roomId);
   if (room) {
@@ -85,5 +111,6 @@ export function addLine(text, roomId: number, userId) {
       userId,
     });
     rooms = rooms.set(roomId, room);
+    addLineToDatabase(text, room, userId);
   }
 }

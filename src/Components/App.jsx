@@ -92,7 +92,7 @@ export default class App extends React.Component {
   render() {
     const { children } = this.props;
     const monitor = IS_PRODUCTION ? null : renderDevtools();
-    const fullFlex = { display: 'flex', flex: 1, flexDirection: 'column' };
+    const fullFlex = { display: 'flex', flex: '1 1 0', flexDirection: 'column' };
     return (
       <div style={fullFlex}>
         <Provider store={store}>

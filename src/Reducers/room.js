@@ -42,11 +42,13 @@ export default {
     };
   },
   JOIN_ROOM: (state, action) => ({
+    write: true,
     currentRoom: action.payload.room,
     userInRoom: setColors(action.payload.userInRoom),
     lines: processLines(action.payload.lines, action.payload.userInRoom),
   }),
   LEAVE_ROOM: () => ({
+    write: false,
     currentRoom: null,
     userInRoom: null,
     lines: null,
@@ -63,7 +65,8 @@ export default {
     }
   },
   NEW_LINE: (state, { payload: { roomId, userId, text } }) => {
-    if (state.currentRoom && roomId == state.currentRoom.id) {
+    state.readLines.push(text);
+    if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
       const user = _.find(state.userInRoom, { id: userId });
       if (user) {
         user.currentLine = '';
@@ -74,12 +77,16 @@ export default {
       }
       return {
         lines: state.lines.splice(0),
+        readLines: state.readLines.splice(0),
         userInRoom: state.userInRoom.splice(0),
       };
     }
+    return {
+      readLines: state.readLines.splice(0),
+    };
   },
   USER_JOINED: (state, { payload: { roomId, user } }) => {
-    if (state.currentRoom && roomId == state.currentRoom.id) {
+    if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
       const existingUser = _.find(state.userInRoom, { id: user.id });
       if (!existingUser) {
         state.userInRoom.push(user);
@@ -90,10 +97,21 @@ export default {
     }
   },
   USER_LEFT: (state, { payload: { roomId, user } }) => {
-    if (state.currentRoom && roomId == state.currentRoom.id) {
+    if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
       return {
         userInRoom: state.userInRoom.filter(u => u.id !== user.id),
       };
     }
   },
+  JOIN_READ_ROOM: (state, { payload }) => ({
+    read: true,
+    write: false,
+    currentRoom: payload.room,
+    readLines: payload.lines,
+  }),
+  LEAVE_READ_ROOM: () => ({
+    read: false,
+    currentRoom: null,
+    readLines: [],
+  }),
 };

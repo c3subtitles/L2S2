@@ -6,15 +6,16 @@ export default {
   body: {
     display: 'flex',
     flexDirection: 'column',
-    margin: 0,
     height: '100%',
+    margin: 0,
+    overflow: 'hidden',
   },
   '#l2s2': {
     display: 'flex',
     flexDirection: 'column',
-    flex: 1,
+    flex: '1 1 0',
     '> div > div': {
-      flex: 1,
+      flex: '1 1 0',
       display: 'flex',
       flexDirection: 'column',
     },

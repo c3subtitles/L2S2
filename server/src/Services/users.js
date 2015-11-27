@@ -39,8 +39,18 @@ export function getClientUserRepresentation(user: Object): ClientUser {
   });
 }
 
-export async function getUserForSessionId(sessionId: string): ?ClientUser {
-  return await getUserForSessionFromRedis(sessionId);
+export async function getCurrentUserFromSession(ctx) {
+  const user = await getUserForSessionId(ctx.request.headers.sessionid);
+  if (!user) {
+    throw { message: 'User not found' };
+  }
+  return user;
+}
+
+export async function getUserForSessionId(sessionId: ?string): ?ClientUser {
+  if (sessionId) {
+    return await getUserForSessionFromRedis(sessionId);
+  }
 }
 
 export async function register(username: string, password: string, email: string): Object {
