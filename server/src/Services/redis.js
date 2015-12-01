@@ -1,10 +1,22 @@
+/* eslint camelcase: 0 */
+
 import RedisSessions from 'redis-sessions';
+import redis from 'redis';
 import { User } from '../models';
 
-const app = 'L2S2';
+const redisOptions = {
+  enable_offline_queue: false,
+};
+if (process.env.REDIS_PATH) {
+  redisOptions.path = process.env.REDIS_PATH;
+} else {
+  redisOptions.host = process.env.REDIS_HOST;
+  redisOptions.port = process.env.REDIS_PORT;
+}
+const redisClient = redis.createClient(redisOptions);
+const app = 'L2S2-TEST';
 const rs = new RedisSessions({
-  path: process.env.REDIS_PATH,
-  url: process.env.REDIS_URL,
+  client: redisClient,
 });
 
 export async function createSession(userId: number) {

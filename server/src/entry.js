@@ -8,6 +8,7 @@ import koa from 'koa';
 import koaJSON from 'koa-json-body';
 import path from 'path';
 import Primus from 'primus';
+import redis from 'redis';
 import RedisSessions from 'redis-sessions';
 import router from 'koa-66';
 import UUID from 'uuid-js';
@@ -23,6 +24,8 @@ global.encrypt = function(value) {
 };
 
 bluebird.promisifyAll(RedisSessions.prototype);
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
 
 UUID.create = function(old) {
   return function() {
