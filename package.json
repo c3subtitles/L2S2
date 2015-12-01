@@ -72,6 +72,7 @@
     "react-router": "^1.0.0",
     "react-sidebar": "^2.0.0",
     "react-tap-event-plugin": "^0.2.1",
+    "redis": "^2.4.2",
     "redis-sessions": "^0.5.2",
     "redux": "^3.0.4",
     "redux-actions": "^0.8.0",

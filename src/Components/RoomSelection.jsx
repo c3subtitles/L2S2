@@ -1,6 +1,6 @@
 import { Connect } from '../Helper';
 import { fetchRooms } from '../Actions/rooms';
-import { List } from 'immutable';
+import { Map } from 'immutable';
 import { Paper } from 'material-ui';
 import Radium from 'radium';
 import React from 'react';
@@ -14,7 +14,7 @@ const props = state => ({
 export default class RoomSelection extends React.Component {
   static propTypes = {
     onRoomClick: React.PropTypes.func,
-    rooms: React.PropTypes.instanceOf(List),
+    rooms: React.PropTypes.instanceOf(Map),
   };
   static style = {
     wrapper: {
@@ -66,7 +66,7 @@ export default class RoomSelection extends React.Component {
                 </Paper>
               </div>
             );
-          })
+          }).toArray()
         }
       </div>
     );
