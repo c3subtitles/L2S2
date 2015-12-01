@@ -28,6 +28,8 @@ const config = {
   user: process.env.DATABASE_USERNAME,
 };
 
+export default global.models;
+
 global.initPromise = new Promise(resolve => {
   global.waterline.initialize({
     adapters: {
@@ -44,7 +46,6 @@ global.initPromise = new Promise(resolve => {
       return;
     }
     _.each(orm.collections, (model, name: string) => {
-      console.log(_.capitalize(name));
       global.models[_.capitalize(name)] = model;
     });
     resolve();
@@ -53,5 +54,3 @@ global.initPromise = new Promise(resolve => {
 .catch(e => {
   console.error(e.stack);
 });
-
-export default global.models;
