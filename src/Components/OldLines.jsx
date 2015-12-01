@@ -29,7 +29,7 @@ export default class OldLines extends React.Component {
         <div style={OldLines.style}/>
         {
           lines.take(lines.size - 3).map((l, index) => (
-            <span key={`${index}`} style={{ color: l.user.color }}>{l.line}</span>
+            <span key={`${index}`} style={{ color: (l.user && l.user.color) || 'black' }}>{l.line}</span>
           ))
         }
       </div>

@@ -11,6 +11,7 @@ let plugins = [
   new webpack.NoErrorsPlugin(),
   new webpack.DefinePlugin({
     'process.env': {
+      BLUEBIRD_LONG_STACK_TRACES: JSON.stringify(false),
       NODE_ENV: JSON.stringify(node_env),
     },
     IS_PRODUCTION: JSON.stringify(node_env === 'production'),
@@ -43,6 +44,7 @@ const webpackConfig = {
     extensions: ['', '.js', '.jsx', '.json'],
     root: path.resolve('src'),
     alias: {
+      bluebird: 'bluebird/js/release/bluebird.js',
       eventemitter: 'eventemitter3',
     },
   },
