@@ -1,11 +1,10 @@
-import _ from 'lodash';
 import initialState from './initialState';
 
 function updateUsers(state, user) {
-  const newState: { users: Array<ClientUser> } = {
-    users: _.sortBy(state.users.filter(u => u.id !== user.id), 'username'),
+  const newState = {
+    users: state.users.filter(u => u.id !== user.id).sortBy(u => u.username),
   };
-  newState.users = [...newState.users, user];
+  newState.users = newState.users.push(user);
   if (state.user.id === user.id) {
     newState.user = user;
   }
@@ -18,7 +17,7 @@ export default {
     initialized: true,
   }),
   FETCH_USERS: (state, action) => ({
-    users: _.sortBy(action.payload, 'username'),
+    users: action.payload.sortBy(u => u.username),
   }),
   FETCH_ROLES: (state, action) => ({
     roles: action.payload,

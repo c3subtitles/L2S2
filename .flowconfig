@@ -1,5 +1,6 @@
 [ignore]
 .*node_modules/.*/node_modules.*
+.*node_modules/radium.*
 .*server/dist/.*
 
 [include]

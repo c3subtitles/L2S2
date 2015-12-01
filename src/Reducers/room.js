@@ -1,22 +1,30 @@
-import _ from 'lodash';
+import { List, Map } from 'immutable';
 
-const colors = ['magenta', 'teal', 'orange', 'darkblue', 'darkred', 'black', 'darkgreen'];
+const colors: List = List(['magenta', 'teal', 'orange', 'darkblue', 'darkred', 'black', 'darkgreen']);
 
-function setColors(userInRoom: Array) {
-  const usedColors = _(userInRoom).pluck('color').compact().value();
-  let availableColors = _.filter(colors, c => !_.contains(usedColors, c));
-  _(userInRoom).filter(u => !u.color).each(u => {
-    if (availableColors.length <= 0) {
-      availableColors = colors;
+function setColors(userInRoom: Map) {
+  const usedColors: List = userInRoom.map(u => u.color).toList();
+  let availableColors = colors.filter(c => !usedColors.contains(c));
+  return userInRoom.map(u => {
+    if (!u.color) {
+      if (availableColors.size <= 0) {
+        availableColors = colors;
+      }
+      u.color = availableColors.last();
+      availableColors = availableColors.pop();
     }
-    u.color = availableColors.pop();
-  }).value();
-  return userInRoom;
+    return u;
+  });
 }
 
-function processLines(lines: Array, userInRoom: Array) {
-  _(lines).filter(l => !l.user).each(l => l.user = _.find(userInRoom, { id: l.userId })).value();
-  return lines;
+function processLines(lines: List, userInRoom: Map) {
+  return lines.map(l => {
+    if (l.user) {
+      return l;
+    }
+    l.user = userInRoom.get(l.userId);
+    return l;
+  });
 }
 
 export default {
@@ -24,28 +32,27 @@ export default {
     rooms: action.payload,
   }),
   CREATE_ROOM: (state, action) => {
-    state.rooms.push(action.payload);
     return {
-      rooms: state.rooms.splice(0),
+      rooms: state.rooms.push(action.payload),
     };
   },
   DELETE_ROOM: (state, action) => ({
     rooms: state.rooms.filter(r => r.id !== action.payload && r !== action.payload),
   }),
   SAVE_ROOM: (state, action) => {
-    const roomIndex = state.rooms.findIndex(r => r.id === action.payload.id || (r.isNew && r.name === action.payload.name));
-    if (roomIndex !== -1) {
-      state.rooms[roomIndex] = action.payload;
+    const [roomKey] = state.rooms.findEntry(r => r.id === action.payload.id || (r.isNew && r.name === action.payload.name));
+    if (roomKey) {
+      state.rooms = state.rooms.set(roomKey, action.payload);
     }
     return {
       rooms: state.rooms,
     };
   },
-  JOIN_ROOM: (state, action) => ({
+  JOIN_ROOM: (state, { payload: { room, userInRoom, lines } }) => ({
     write: true,
-    currentRoom: action.payload.room,
-    userInRoom: setColors(action.payload.userInRoom),
-    lines: processLines(action.payload.lines, action.payload.userInRoom),
+    currentRoom: room,
+    userInRoom: setColors(userInRoom),
+    lines: processLines(lines, userInRoom),
   }),
   LEAVE_ROOM: () => ({
     write: false,
@@ -55,51 +62,59 @@ export default {
   }),
   LINE_UPDATE: (state, { payload: { roomId, userId, text } }) => {
     if (state.currentRoom && roomId == state.currentRoom.id) {
-      const user = _.find(state.userInRoom, { id: userId });
+      let user = state.userInRoom.get(userId);
       if (user) {
-        user.currentLine = text;
+        user = {
+          ...user,
+          currentLine: text,
+        };
         return {
-          userInRoom: state.userInRoom.splice(0),
+          userInRoom: state.userInRoom.set(userId, user),
+          user: user.id === state.user.id ? user : state.user,
         };
       }
     }
   },
   NEW_LINE: (state, { payload: { roomId, userId, text } }) => {
-    state.readLines.push(text);
+    state.readLines = state.readLines.push(text);
     if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
-      const user = _.find(state.userInRoom, { id: userId });
+      let user = state.userInRoom.get(userId);
       if (user) {
-        user.currentLine = '';
-        state.lines.push({
+        user = {
+          ...user,
+          currentLine: '',
+        };
+        state.userInRoom = state.userInRoom.set(userId, user);
+        state.lines = state.lines.push({
           line: text,
           user,
         });
       }
       return {
-        lines: state.lines.splice(0),
-        readLines: state.readLines.splice(0),
-        userInRoom: state.userInRoom.splice(0),
+        lines: state.lines,
+        readLines: state.readLines,
+        userInRoom: state.userInRoom,
+        user: user.id === state.user.id ? user : state.user,
       };
     }
     return {
-      readLines: state.readLines.splice(0),
+      readLines: state.readLines,
     };
   },
   USER_JOINED: (state, { payload: { roomId, user } }) => {
     if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
-      const existingUser = _.find(state.userInRoom, { id: user.id });
-      if (!existingUser) {
-        state.userInRoom.push(user);
+      if (!state.userInRoom.has(user.id)) {
+        state.userInRoom = state.userInRoom.set(user.id, user);
         return {
-          userInRoom: setColors(state.userInRoom).splice(0),
+          userInRoom: setColors(state.userInRoom),
         };
       }
     }
   },
   USER_LEFT: (state, { payload: { roomId, user } }) => {
-    if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
+    if (state.write && state.currentRoom && roomId == state.currentRoom.id && state.user.id !== user.id) {
       return {
-        userInRoom: state.userInRoom.filter(u => u.id !== user.id),
+        userInRoom: state.userInRoom.delete(user.id),
       };
     }
   },
@@ -112,6 +127,6 @@ export default {
   LEAVE_READ_ROOM: () => ({
     read: false,
     currentRoom: null,
-    readLines: [],
+    readLines: List(),
   }),
 };

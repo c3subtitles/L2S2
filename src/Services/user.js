@@ -7,6 +7,9 @@ export function hasPermission(permission: string|Array<string>): bool {
   if (!user) {
     return false;
   }
+  if (!permission.length) {
+    return true;
+  }
   const permissions: Array<string> = _.isArray(permission) ? permission : [permission];
   return permissions.some(p => user && user.role[p]);
 }

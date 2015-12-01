@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { Map } from 'immutable';
 import { Connect } from '../Helper';
 import { Paper } from 'material-ui';
 import Radium from 'radium';
@@ -12,7 +12,7 @@ const props = state => ({
 @Radium
 export default class UserList extends React.Component {
   static propTypes = {
-    userInRoom: React.PropTypes.arrayOf(ClientUser),
+    userInRoom: React.PropTypes.instanceOf(Map),
   };
   static style = {
     wrapper: {
@@ -31,13 +31,13 @@ export default class UserList extends React.Component {
   };
   render() {
     const style = UserList.style;
-    const { userInRoom } = this.props;
+    const { userInRoom }: { userInRoom: Map<number, Object> } = this.props;
     return (
       <Paper style={style.wrapper}>
         {
-          _.sortBy(userInRoom, 'username').map(user => (
+          userInRoom.sortBy(u => u.username).map(user => (
             <div style={[style.user, { color: user.color }]} key={user.id}>{user.username}</div>
-          ))
+          )).toArray()
         }
       </Paper>
     );

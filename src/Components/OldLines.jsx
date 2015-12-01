@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { List } from 'immutable';
 import { Connect } from '../Helper';
 import React from 'react';
 import Radium from 'radium';
@@ -11,7 +11,7 @@ const props = state => ({
 @Radium
 export default class OldLines extends React.Component {
   static propTypes = {
-    lines: React.PropTypes.array,
+    lines: React.PropTypes.instanceOf(List),
     style: React.PropTypes.object,
   };
   static style = {
@@ -28,7 +28,7 @@ export default class OldLines extends React.Component {
       <div style={[style, { position: 'relative', flex: '1 1 0' }]}>
         <div style={OldLines.style}/>
         {
-          _.take(lines, lines.length - 3).map((l, index) => (
+          lines.take(lines.size - 3).map((l, index) => (
             <span key={`${index}`} style={{ color: l.user.color }}>{l.line}</span>
           ))
         }

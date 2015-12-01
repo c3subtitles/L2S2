@@ -1,6 +1,7 @@
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
 import { updateSessionId } from '../Services/socket';
+import { List } from 'immutable';
 import axios from 'axios';
 
 
@@ -45,10 +46,10 @@ export const fetchUser = createAction('FETCH_USER', async () => {
   };
 });
 export const fetchUsers = createAction('FETCH_USERS', async () => {
-  return await axios.get('/users');
+  return List(await axios.get('/users'));
 });
 export const fetchRoles = createAction('FETCH_ROLES', async () => {
-  return await axios.get('/roles');
+  return List(await axios.get('/roles'));
 });
 export const saveRole = createAction('SAVE_ROLE', async (user: ClientUser, role: RoleType) => {
   user = await axios.put(`/users/${user.id}`, {

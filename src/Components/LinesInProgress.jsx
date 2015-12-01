@@ -1,4 +1,5 @@
 import { Connect } from '../Helper';
+import { Map } from 'immutable';
 import Radium from 'radium';
 import React from 'react';
 
@@ -12,7 +13,7 @@ const props = state => ({
 export default class LinesInProgress extends React.Component {
   static propTypes = {
     spacerStyle: React.PropTypes.object,
-    userInRoom: React.PropTypes.array,
+    userInRoom: React.PropTypes.instanceOf(Map),
   };
   static style = {
     opacity: 0.6,
@@ -28,9 +29,9 @@ export default class LinesInProgress extends React.Component {
               style={[LinesInProgress.style, { color: u.color }]}>
               {u.currentLine}
             </span>
-          ))
+          )).toArray()
         }
-        {filteredUser.length > 0 && <div style={spacerStyle}/>}
+        {filteredUser.size > 0 && <div style={spacerStyle}/>}
       </div>
     );
   }

@@ -69,6 +69,8 @@ export async function register(username: string, password: string, email: string
 }
 
 export async function login(username: string, password: string): Object {
+  console.log(User);
+  console.log(Object.keys(require('../models')));
   const user = await User.findOne({ username })
   .populate('role');
   if (!user || !await checkPassword(password, user)) {

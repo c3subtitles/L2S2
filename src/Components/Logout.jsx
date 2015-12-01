@@ -9,6 +9,7 @@ export default class Logout extends React.Component {
   };
   componentWillMount() {
     logout();
+    this.context.transitionTo('/');
   }
   render() {
     return null;

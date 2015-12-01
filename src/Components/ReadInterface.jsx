@@ -1,6 +1,7 @@
-import { Paper } from 'material-ui';
 import { Connect } from '../Helper';
 import { joinReadRoom, leaveReadRoom } from '../Actions/rooms';
+import { List } from 'immutable';
+import { Paper } from 'material-ui';
 import Loading from 'react-loader';
 import Radium from 'radium';
 import React from 'react';
@@ -13,7 +14,7 @@ const props = state => ({
 @Radium
 export default class ReadInterface extends React.Component {
   static propTypes = {
-    lines: React.PropTypes.arrayOf(React.PropTypes.string),
+    lines: React.PropTypes.instanceOf(List),
     params: React.PropTypes.object,
   };
   static style = {

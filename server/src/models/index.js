@@ -1,9 +1,9 @@
 /* eslint no-sync: 0 */
-import postgresAdapter from 'sails-postgresql';
-import Waterline from 'waterline';
+import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
-import _ from 'lodash';
+import postgresAdapter from 'sails-postgresql';
+import Waterline from 'waterline';
 
 global.waterline = new Waterline();
 
@@ -18,7 +18,6 @@ fs
   });
 
 global.models = {};
-export default global.models;
 
 const config = {
   database: process.env.DATABASE_DATABASE,
@@ -40,10 +39,19 @@ global.initPromise = new Promise(resolve => {
         adapter: 'postgres',
       },
     },
-  }, (e, orm: Object) => {
+  }, (e, orm: ?Object) => {
+    if (e) {
+      return;
+    }
     _.each(orm.collections, (model, name: string) => {
+      console.log(_.capitalize(name));
       global.models[_.capitalize(name)] = model;
     });
     resolve();
   });
+})
+.catch(e => {
+  console.error(e.stack);
 });
+
+export default global.models;

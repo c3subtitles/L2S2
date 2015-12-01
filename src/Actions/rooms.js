@@ -1,10 +1,13 @@
+import _ from 'lodash';
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
 import { joinRoom as joinRoomSocket, leaveRoom as leaveRoomSocket } from '../Services/socket';
+import { List, Map } from 'immutable';
 import axios from 'axios';
 
 export const fetchRooms = createAction('FETCH_ROOMS', async () => {
-  return await axios.get('/rooms');
+  const rooms = await axios.get('/rooms');
+  return Map(_.zipObject(_.pluck(rooms, 'id'), rooms));
 });
 
 export const saveRoom = createAction('SAVE_ROOM', async (room) => {
@@ -36,7 +39,14 @@ export const deleteRoom = createAction('DELETE_ROOM', async (room) => {
 
 export const joinRoom = createAction('JOIN_ROOM', async roomId => {
   joinRoomSocket(roomId);
-  return await axios.get(`/rooms/join/${roomId}`);
+  const joinInformation = await axios.get(`/rooms/join/${roomId}`);
+  let userInRoom: Map<number, ClientUser> = Map();
+  joinInformation.userInRoom.forEach(u => {
+    userInRoom = userInRoom.set(u.id, u);
+  });
+  joinInformation.userInRoom = userInRoom;
+  joinInformation.lines = List(joinInformation.lines);
+  return joinInformation;
 });
 
 export const leaveRoom = createAction('LEAVE_ROOM', roomId => {
@@ -67,7 +77,9 @@ export const userLeft = createAction('USER_LEFT', (roomId, user) => ({
 }));
 
 export const joinReadRoom = createAction('JOIN_READ_ROOM', async roomId => {
-  return await axios.get(`/rooms/joinRead/${roomId}`);
+  const joinInformation = await axios.get(`/rooms/joinRead/${roomId}`);
+  joinInformation.lines = List(joinInformation.lines);
+  return joinInformation;
 });
 
 export const leaveReadRoom = createAction('LEAVE_READ_ROOM', () => {});

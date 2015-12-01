@@ -1,8 +1,11 @@
+import { List, Map } from 'immutable';
+
 export default {
-  roles: [],
-  rooms: [],
+  readLines: List(),
+  roles: List(),
+  rooms: Map(),
   sessionId: localStorage.sessionId || null,
   user: null,
-  users: [],
-  readLines: [],
+  userInRoom: Map(),
+  users: Map(),
 };

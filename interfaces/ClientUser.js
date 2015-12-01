@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 declare class RoleType extends Object {
   name: string,
   canActivateUser: bool,
@@ -14,6 +12,7 @@ declare class RoleType extends Object {
 
 declare class ClientUser extends Object {
   active: bool,
+  currentLine: ?string,
   id: number,
   role: RoleType,
   username: string,

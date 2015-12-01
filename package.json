@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --content-base www/ --history-api-fallback --progress",
     "build": "webpack --bail",
-    "buildServer": "cd server && babel src/ -d dist",
+    "buildServer": "cd server && rimraf dist && babel src/ -d dist",
     "server": "nf start",
-    "devServer": "babel server/src/ -d server/dist -w & nodemon --exec 'nf start'",
+    "devServer": "rimraf server/dist && babel server/src/ -d server/dist -w & nodemon --exec 'nf start'",
     "database": "nf run node server/dist/init/createDatabase.js",
     "travis": "npm run build",
     "travisServer": "npm run buildServer"
@@ -40,6 +40,7 @@
     "redux-devtools": "^3.0.0-beta-3",
     "redux-devtools-dock-monitor": "^1.0.0-beta-3",
     "redux-devtools-log-monitor": "^1.0.0-beta-3",
+    "rimraf": "^2.4.4",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.6",
     "webpack": "^1.12.2",
@@ -75,6 +76,7 @@
     "redux": "^3.0.4",
     "redux-actions": "^0.8.0",
     "redux-promise": "^0.5.0",
+    "reselect": "git+https://github.com/rackt/reselect.git",
     "sails-postgresql": "^0.10.17",
     "seamless-immutable": "^4.0.2",
     "shallowequal": "^0.2.2",
