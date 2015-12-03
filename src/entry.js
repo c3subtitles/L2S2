@@ -1,10 +1,9 @@
 global.Promise = require('bluebird');
 require('babel-runtime/core-js/promise').default = require('bluebird');
 require('./vendor');
-if (!IS_PRODUCTION) {
-  require('../server/src/flowWorkarounds');
-  require('./flowWorkarounds');
-}
+require('../server/src/flowWorkarounds');
+require('./flowWorkarounds');
+
 const render = require('react-dom').render;
 const React = require('react');
 const routes = require('./routes');

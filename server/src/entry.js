@@ -12,9 +12,7 @@ import RedisSessions from 'redis-sessions';
 import router from 'koa-66';
 import UUID from 'uuid-js';
 
-if (process.env.NODE_ENV !== 'production') {
-  require('./flowWorkarounds');
-}
+require('./flowWorkarounds');
 
 global.encrypt = function(value) {
   return new Promise(resolve => {
