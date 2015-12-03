@@ -57,7 +57,7 @@ export default class Room extends React.Component {
     const { room } = this.props;
     const newName = name.getValue();
     if (room.name !== newName) {
-      room.name = name.getValue();
+      room.name = newName;
       saveRoom(room);
     }
   };

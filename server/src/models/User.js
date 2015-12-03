@@ -24,7 +24,6 @@ export default Waterline.Collection.extend({
     },
     toJSON() {
       const user = this.toObject();
-      delete user.id;
       delete user.createdAt;
       delete user.updatedAt;
       delete user.password;

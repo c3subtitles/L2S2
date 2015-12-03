@@ -4,22 +4,28 @@ import { Map } from 'immutable';
 import { Paper } from 'material-ui';
 import Radium from 'radium';
 import React from 'react';
+import lockIcon from '../Lock.svg';
+import unlockIcon from '../unlock.svg';
 
 const props = state => ({
+  canJoinLocked: state.user && state.user.role.canJoinLocked,
   rooms: state.rooms,
 });
 
-@Connect(props)
 @Radium
+@Connect(props)
 export default class RoomSelection extends React.Component {
   static propTypes = {
+    canJoinLocked: React.PropTypes.bool,
     onRoomClick: React.PropTypes.func,
     rooms: React.PropTypes.instanceOf(Map),
+    showLockedState: React.PropTypes.bool,
   };
   static style = {
     wrapper: {
       display: 'flex',
       flexWrap: 'wrap',
+      marginTop: 10,
     },
     room: {
       alignItems: 'center',
@@ -27,6 +33,7 @@ export default class RoomSelection extends React.Component {
       height: 250,
       justifyContent: 'center',
       marginBottom: 10,
+      position: 'relative',
       width: '33.3%',
     },
     innerRoom: {
@@ -40,8 +47,15 @@ export default class RoomSelection extends React.Component {
       height: '100%',
       justifyContent: 'center',
       margin: 10,
+    },
+    normalHover: {
       ':hover': {
-        backgroundColor: 'lightGrey',
+        backgroundColor: 'rgba(0,0,0,0.15)',
+      },
+    },
+    redHover: {
+      ':hover': {
+        backgroundColor: 'rgba(255, 0, 0, 0.25)',
       },
     },
   }
@@ -50,18 +64,38 @@ export default class RoomSelection extends React.Component {
   }
   render() {
     const style = RoomSelection.style;
-    const { rooms, onRoomClick } = this.props;
+    const { rooms, onRoomClick, showLockedState, canJoinLocked } = this.props;
     return (
       <div style={style.wrapper}>
         {
-          rooms.map(room => {
+          rooms.map((room: RoomType) => {
             let roomClick;
+            let lockState;
+            let hoverStyle = style.normalHover;
             if (onRoomClick) {
               roomClick = onRoomClick.bind(this, room);
             }
+            if (showLockedState) {
+              lockState = {
+                backgroundImage: `url(${room.locked || room.speechLocked ? lockIcon : unlockIcon})`,
+                backgroundPosition: '50% 50%',
+                backgroundRepeat: 'no-repeat',
+                bottom: 15,
+                left: 15,
+                position: 'absolute',
+                right: 15,
+                top: 15,
+                opacity: 0.2,
+                zIndex: -1,
+              };
+              if (room.locked && !canJoinLocked) {
+                hoverStyle = style.redHover;
+              }
+            }
             return (
               <div key={room.id} style={style.room}>
-                <Paper onClick={roomClick} style={style.innerRoom}>
+                {lockState && <div style={lockState}/>}
+                <Paper onClick={roomClick} style={{ ...style.innerRoom, ...hoverStyle }}>
                   {room.name}
                 </Paper>
               </div>

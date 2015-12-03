@@ -23,17 +23,26 @@ function processLines(lines: List, userInRoom: Map) {
       return l;
     }
     l.user = userInRoom.get(l.userId);
+    l.color = l.color || 'black';
     return l;
   });
 }
 
+function updateRoom(state: State, { payload }: { payload: RoomType }) {
+  const rooms: Map = state.rooms.set(payload.id, payload);
+  return {
+    currentRoom: payload,
+    rooms: rooms.sortBy(r => r.id),
+  };
+}
+
 export default {
   FETCH_ROOMS: (state, action) => ({
-    rooms: action.payload,
+    rooms: action.payload.sortBy(r => r.id),
   }),
   CREATE_ROOM: (state, action) => {
     return {
-      rooms: state.rooms.push(action.payload),
+      rooms: state.rooms.set(action.payload.id, action.payload).sortBy(r => r.id),
     };
   },
   DELETE_ROOM: (state, action) => ({
@@ -45,7 +54,7 @@ export default {
       state.rooms = state.rooms.set(roomKey, action.payload);
     }
     return {
-      rooms: state.rooms,
+      rooms: state.rooms.sortBy(r => r.id),
     };
   },
   JOIN_ROOM: (state, { payload: { room, userInRoom, lines } }) => ({
@@ -129,4 +138,7 @@ export default {
     currentRoom: null,
     readLines: List(),
   }),
+  LOCK_ROOM: updateRoom,
+  SPEECH_LOCK_ROOM: updateRoom,
+  UPDATE_ROOM: updateRoom,
 };

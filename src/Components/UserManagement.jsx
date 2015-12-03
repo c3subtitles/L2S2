@@ -1,4 +1,5 @@
 import { fetchUsers, fetchRoles } from '../Actions/user';
+import { Map } from 'immutable';
 import { Permission, Connect } from '../Helper';
 import React from 'react';
 import UserLine from './UserLine';
@@ -13,7 +14,7 @@ const props = state => ({
 export default class UserManagement extends React.Component {
   static propTypes = {
     user: React.PropTypes.object,
-    users: React.PropTypes.arrayOf(ClientUser),
+    users: React.PropTypes.instanceOf(Map),
   }
   static style = {
     wrapper: {
@@ -33,7 +34,7 @@ export default class UserManagement extends React.Component {
     return (
       <div style={style.wrapper}>
         {
-          users.map(user => <UserLine key={user.username} user={user}/>)
+          users.map(user => <UserLine key={user.username} user={user}/>).toArray()
         }
       </div>
     );

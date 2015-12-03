@@ -4,7 +4,7 @@ function updateUsers(state, user) {
   const newState = {
     users: state.users.filter(u => u.id !== user.id).sortBy(u => u.username),
   };
-  newState.users = newState.users.push(user);
+  newState.users = newState.users.set(user.id, user);
   if (state.user.id === user.id) {
     newState.user = user;
   }

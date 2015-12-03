@@ -12,5 +12,6 @@ export default Waterline.Collection.extend({
       model: 'room',
     },
     roomName: 'string',
+    color: 'string',
   },
 });

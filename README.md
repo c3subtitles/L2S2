@@ -3,8 +3,34 @@
 [![David](https://img.shields.io/david/c3subtitles/L2S2.svg?style=flat-square)](https://david-dm.org/c3subtitles/l2s2)
 [![Travis](https://img.shields.io/travis/c3subtitles/L2S2.svg?style=flat-square)](https://travis-ci.org/c3subtitles/L2S2)
 
-## Getting Started
+# Getting Started
 
+## Prerequisite
+
+* Redis
+* Postgres
+* node >= 4
+
+## Frontend
+```
+npm install
+npm run dev
+```
+
+## Backend
+Make sure to set the values in the .env file to your needs.  
+For initial Data use the following
+```
+npm run database
+```
+it will create roles and an admin user.  
+Password for the admin user is admin.
+```
+npm install
+npm run devServer
+```
+
+## Detailed Informtion
 ### On GNU/Linux
 
 #### PostgreSQL
@@ -20,14 +46,3 @@ After that, some adjustments may need be needed in order to start a PostgreSQL s
 
 After putting the config files in the right place, you need to initialise the database via `initdb -D "$PGDATA"` (replace "$PGDATA" with the directory manually if it is not set or empty).
 Finally start the PostgreSQL server by `postgres -D "$DATA_DIR"`
-
-## Frontend:
-```
-npm run dev
-```
-
-## Backend:
-```
-npm run buildServer
-npm run server
-```

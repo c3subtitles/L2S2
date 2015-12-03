@@ -17,3 +17,10 @@ declare class ClientUser extends Object {
   role: RoleType,
   username: string,
 }
+
+declare class RoomType extends Object {
+  id: number,
+  locked: bool,
+  name: string,
+  speechLocked: bool,
+}

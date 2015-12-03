@@ -1,8 +1,9 @@
 import { Connect } from '../Helper';
-import { Dialog, Paper, DropDownMenu } from 'material-ui';
 import { deleteUser, saveRole, saveActive } from '../Actions/user';
-import React from 'react';
+import { Dialog, Paper, DropDownMenu } from 'material-ui';
+import { List } from 'immutable';
 import DeleteButton from './DeleteButton';
+import React from 'react';
 
 type State = {
   showDelete: bool,
@@ -16,7 +17,7 @@ const props = state => ({
 @Connect(props)
 export default class UserLine extends React.Component {
   static propTypes = {
-    availableRoles: React.PropTypes.arrayOf(RoleType),
+    availableRoles: React.PropTypes.instanceOf(List),
     ownUser: React.PropTypes.instanceOf(ClientUser),
     user: React.PropTypes.instanceOf(ClientUser),
   };
@@ -64,7 +65,7 @@ export default class UserLine extends React.Component {
     };
     const selectedRole = availableRoles.findIndex(r => r.name === user.role.name);
     const roleOptions = {
-      menuItems: availableRoles.map(r => ({ payload: r, text: r.name })),
+      menuItems: availableRoles.map(r => ({ payload: r, text: r.name })).toArray(),
       selectedIndex: selectedRole,
       onChange: this.handleRoleChange,
     };

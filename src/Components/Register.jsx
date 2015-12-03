@@ -1,11 +1,16 @@
-import { PureRender } from 'Helper';
-import { TextField, RaisedButton } from 'material-ui';
 import { addError } from 'Services/notifications';
-import React from 'react';
+import { PureRender } from 'Helper';
 import { register } from 'Services/user';
+import { TextField, RaisedButton } from 'material-ui';
+import React from 'react';
+import { Connect } from '../Helper';
 
 @PureRender
+@Connect()
 export default class Register extends React.Component {
+  static propTypes = {
+    loggedIn: React.PropTypes.bool,
+  }
   static contextTypes = {
     transitionTo: React.PropTypes.func,
   };
@@ -20,6 +25,12 @@ export default class Register extends React.Component {
       flexDirection: 'column',
     },
   };
+  componentWillMount() {
+    const { loggedIn } = this.props;
+    if (loggedIn) {
+      this.context.transitionTo('/');
+    }
+  }
   register = async (e) => {
     e.preventDefault();
     if (this.loggingIn) {

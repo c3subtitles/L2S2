@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { getUserForSessionId } from '../Services/users';
 import { addLine, lineStart, leaveRoom, leaveAllRooms } from '../Services/rooms';
 
-function emitToRoomAuth(spark, roomId, ...params) {
+export function emitToRoomAuth(spark, roomId, ...params) {
   _(spark.room(roomId).except(spark.id).connections)
   .filter(s => s.user)
   .each(s => {
@@ -46,13 +46,13 @@ export function onConnection(spark: Object) {
     }
   });
 
-  spark.on('line', (roomId, text) => {
+  spark.on('line', (roomId, text, color) => {
     if (spark.user) {
       lineStart('', spark.user.id, Number.parseInt(roomId));
-      addLine(text, Number.parseInt(roomId), spark.user.id);
+      addLine(text, Number.parseInt(roomId), spark.user.id, color);
       _.each(spark.room(roomId).except(spark.id).connections, s => {
         if (s.user) {
-          s.emit('line', roomId, spark.user.id, text);
+          s.emit('line', roomId, spark.user.id, text, color);
         } else {
           s.emit('lineRead', roomId, text);
         }

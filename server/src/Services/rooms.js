@@ -88,10 +88,11 @@ export function lineStart(text, userId, roomId: number) {
   }
 }
 
-async function addLineToDatabase(text, room, userId) {
+async function addLineToDatabase(text, room, userId, color) {
   try {
     await Line.create({
       text,
+      color,
       user: userId,
       room: room.id,
       roomName: room.name,
@@ -102,15 +103,16 @@ async function addLineToDatabase(text, room, userId) {
   }
 }
 
-export function addLine(text, roomId: number, userId) {
+export function addLine(text, roomId: number, userId, color: string) {
   const room = rooms.get(roomId);
   if (room) {
     room.lines = room.lines || List();
     room.lines = room.lines.push({
       line: text,
+      color,
       userId,
     });
     rooms = rooms.set(roomId, room);
-    addLineToDatabase(text, room, userId);
+    addLineToDatabase(text, room, userId, color);
   }
 }

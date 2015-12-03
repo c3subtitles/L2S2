@@ -1,6 +1,7 @@
 import { createRoom, fetchRooms } from '../Actions/rooms';
 import { Permission, Connect } from '../Helper';
 import { RaisedButton } from 'material-ui';
+import { Map } from 'immutable';
 import React from 'react';
 import Room from './Room';
 
@@ -13,7 +14,7 @@ const props = state => ({
 @Connect(props)
 export default class RoomManagement extends React.Component {
   static propTypes = {
-    rooms: React.PropTypes.arrayOf(React.PropTypes.object),
+    rooms: React.PropTypes.instanceOf(Map),
     user: React.PropTypes.object,
   };
   static style = {
@@ -31,14 +32,13 @@ export default class RoomManagement extends React.Component {
   render() {
     const { rooms, user } = this.props;
     const style = RoomManagement.style;
-    console.log(rooms);
     return (
       <div style={style.wrapper}>
         {user.role.canCreateRoom && (
           <RaisedButton primary style={style.new} onClick={createRoom} label="New Room"/>
         )}
         {
-          rooms.map((room, index) => <Room key={room.id || room.name || index} room={room}/>)
+          rooms.map((room, index) => <Room key={room.id || room.name || index} room={room}/>).toArray()
         }
       </div>
     );

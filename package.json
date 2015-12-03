@@ -77,7 +77,6 @@
     "redux": "^3.0.4",
     "redux-actions": "^0.8.0",
     "redux-promise": "^0.5.0",
-    "reselect": "git+https://github.com/rackt/reselect.git",
     "sails-postgresql": "^0.10.17",
     "seamless-immutable": "^4.0.2",
     "shallowequal": "^0.2.2",

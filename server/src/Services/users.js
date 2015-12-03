@@ -39,10 +39,10 @@ export function getClientUserRepresentation(user: Object): ClientUser {
   });
 }
 
-export async function getCurrentUserFromSession(ctx) {
+export async function getCurrentUserFromSession(ctx): ClientUser {
   const user = await getUserForSessionId(ctx.request.headers.sessionid);
   if (!user) {
-    throw { message: 'User not found' };
+    throw { message: 'Expired Session' };
   }
   return user;
 }

@@ -1,10 +1,11 @@
 import { AppBar, IconMenu, RaisedButton, FlatButton } from 'material-ui';
 import { Connect } from '../Helper';
+import { hasPermission } from '../Services/user';
+import { lockRoom, speechLockRoom } from '../Actions/rooms';
 import MenuDivider from 'material-ui/lib/menus/menu-divider';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Radium from 'radium';
 import React from 'react';
-import { hasPermission } from '../Services/user';
 
 
 @Radium
@@ -12,6 +13,7 @@ import { hasPermission } from '../Services/user';
   currentRoom: state.currentRoom,
   readMode: state.read,
   user: state.user,
+  writeMode: state.write,
 }))
 export default class Navbar extends React.Component {
   static propTypes = {
@@ -19,6 +21,7 @@ export default class Navbar extends React.Component {
     loggedIn: React.PropTypes.bool,
     readMode: React.PropTypes.bool,
     user: React.PropTypes.instanceOf(ClientUser),
+    writeMode: React.PropTypes.bool,
   }
   static contextTypes = {
     transitionTo: React.PropTypes.func.isRequired,
@@ -31,6 +34,7 @@ export default class Navbar extends React.Component {
     title: {
       color: '#fff',
       cursor: 'pointer',
+      display: 'flex',
       flex: '1 1 0',
       fontSize: 24,
       fontWeight: 400,
@@ -41,6 +45,11 @@ export default class Navbar extends React.Component {
       position: 'relative',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
+    innerTitle: {
+      flex: '1 1 0',
     },
     menu: {
       alignSelf: 'center',
@@ -58,12 +67,8 @@ export default class Navbar extends React.Component {
       marginLeft: 10,
       marginRight: 10,
     },
-    writeButton: {
+    conditionalButton: {
       height: '75%',
-      position: 'absolute',
-      right: 0,
-      top: '50%',
-      transform: 'translateY(-50%)',
       color: '#fff',
     },
   };
@@ -75,7 +80,6 @@ export default class Navbar extends React.Component {
   };
   writeRoom = (e) => {
     e.stopPropagation();
-    e.preventDefault();
     const { currentRoom } = this.props;
     if (currentRoom) {
       this.context.transitionTo(`/write/${currentRoom.id}`);
@@ -83,6 +87,16 @@ export default class Navbar extends React.Component {
       this.write();
     }
   };
+  lockRoom = e => {
+    e.stopPropagation();
+    const { currentRoom } = this.props;
+    lockRoom(currentRoom.id, !currentRoom.locked);
+  };
+  speechLockRoom = e => {
+    e.stopPropagation();
+    const { currentRoom } = this.props;
+    speechLockRoom(currentRoom.id, !currentRoom.speechLocked);
+  }
   profile: () => void = () => {
     this.context.transitionTo('/profile');
   };
@@ -98,6 +112,9 @@ export default class Navbar extends React.Component {
   login: () => void = () => {
     this.context.transitionTo('/login');
   };
+  register = () => {
+    this.context.transitionTo('/register');
+  };
   getGuestMenu() {
     const style = Navbar.style;
     return (
@@ -105,18 +122,32 @@ export default class Navbar extends React.Component {
           <RaisedButton style={style.menuButton} secondary label="Menu"/>
         }>
         <MenuItem onClick={this.login} primaryText="Login"/>
+        <MenuItem onClick={this.register} primaryText="Register"/>
       </IconMenu>
     );
   }
   getTitle() {
     const style = Navbar.style;
-    const { currentRoom, loggedIn, readMode } = this.props;
+    const { currentRoom, loggedIn, readMode, writeMode } = this.props;
+    let conditionalButton;
+    if (loggedIn) {
+      if (readMode) {
+        conditionalButton = (
+          <FlatButton backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)" onClick={this.writeRoom} style={style.conditionalButton} label="Write"/>
+        );
+      } else if (writeMode && currentRoom) {
+        conditionalButton = [
+          <FlatButton key="s" backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)"
+            onClick={this.speechLockRoom} style={style.conditionalButton} label={currentRoom.speechLocked ? 'Speech unlock' : 'Speech lock'}/>,
+          <FlatButton key="l" backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)"
+            onClick={this.lockRoom} style={style.conditionalButton} label={currentRoom.locked ? 'Unlock' : 'Lock'}/>,
+        ];
+      }
+    }
     return (
       <h1 onClick={this.home} style={style.title}>
-        L2S2{currentRoom && [<span key="s" style={style.room}> - </span>, currentRoom.name]}
-        {loggedIn && readMode && (
-          <FlatButton backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)" onClick={this.writeRoom} style={style.writeButton} label="Write"/>
-        )}
+        <div style={style.innerTitle}>L2S2{currentRoom && [<span key="s" style={style.room}> - </span>, currentRoom.name]}</div>
+        {conditionalButton}
       </h1>
     );
   }

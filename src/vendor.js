@@ -1,4 +1,5 @@
 import './fonts.css';
+import 'font-awesome/css/font-awesome.css';
 import { addError } from './Services/notifications';
 import axios from 'axios';
 import MaterialUI from 'material-ui';
@@ -28,6 +29,8 @@ axios.interceptors.response.use(response => response.data, response => {
   const data = response.data;
   if (data.message) {
     addError({ title: data.title, message: data.message });
+  } else {
+    addError({ message: 'Unknown Error' });
   }
   return Promise.reject(response);
 });

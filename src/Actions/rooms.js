@@ -7,7 +7,11 @@ import axios from 'axios';
 
 export const fetchRooms = createAction('FETCH_ROOMS', async () => {
   const rooms = await axios.get('/rooms');
-  return Map(_.zipObject(_.pluck(rooms, 'id'), rooms));
+  let roomMap = Map();
+  _.each(rooms, r => {
+    roomMap = roomMap.set(r.id, r);
+  });
+  return roomMap;
 });
 
 export const saveRoom = createAction('SAVE_ROOM', async (room) => {
@@ -39,7 +43,7 @@ export const deleteRoom = createAction('DELETE_ROOM', async (room) => {
 
 export const joinRoom = createAction('JOIN_ROOM', async roomId => {
   joinRoomSocket(roomId);
-  const joinInformation = await axios.get(`/rooms/join/${roomId}`);
+  const joinInformation = await axios.get(`/rooms/${roomId}/join`);
   let userInRoom: Map<number, ClientUser> = Map();
   joinInformation.userInRoom.forEach(u => {
     userInRoom = userInRoom.set(u.id, u);
@@ -77,9 +81,23 @@ export const userLeft = createAction('USER_LEFT', (roomId, user) => ({
 }));
 
 export const joinReadRoom = createAction('JOIN_READ_ROOM', async roomId => {
-  const joinInformation = await axios.get(`/rooms/joinRead/${roomId}`);
+  const joinInformation = await axios.get(`/rooms/${roomId}/joinRead`);
   joinInformation.lines = List(joinInformation.lines);
   return joinInformation;
 });
 
 export const leaveReadRoom = createAction('LEAVE_READ_ROOM', () => {});
+
+export const lockRoom = createAction('LOCK_ROOM', async (roomId, locked) => {
+  return await axios.put(`/rooms/${roomId}`, {
+    locked,
+  });
+});
+
+export const speechLockRoom = createAction('SPEECH_LOCK_ROOM', async (roomId, speechLocked) => {
+  return await axios.put(`/rooms/${roomId}`, {
+    speechLocked,
+  });
+});
+
+export const updateRoom = createAction('UPDATE_ROOM', async room => room);

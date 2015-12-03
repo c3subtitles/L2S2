@@ -1,6 +1,7 @@
 import { List, Map } from 'immutable';
 
-export default {
+const initialState: State = {
+  currentRoom: null,
   readLines: List(),
   roles: List(),
   rooms: Map(),
@@ -9,3 +10,5 @@ export default {
   userInRoom: Map(),
   users: Map(),
 };
+
+export default initialState;

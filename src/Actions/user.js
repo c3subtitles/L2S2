@@ -1,7 +1,7 @@
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
 import { updateSessionId } from '../Services/socket';
-import { List } from 'immutable';
+import { Map, List } from 'immutable';
 import axios from 'axios';
 
 
@@ -46,7 +46,12 @@ export const fetchUser = createAction('FETCH_USER', async () => {
   };
 });
 export const fetchUsers = createAction('FETCH_USERS', async () => {
-  return List(await axios.get('/users'));
+  const users = await axios.get('/users');
+  let userMap: Map<number, ClientUser> = Map();
+  users.forEach(user => {
+    userMap = userMap.set(user.id, user);
+  });
+  return userMap;
 });
 export const fetchRoles = createAction('FETCH_ROLES', async () => {
   return List(await axios.get('/roles'));

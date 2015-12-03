@@ -28,9 +28,12 @@ export default class OldLines extends React.Component {
       <div style={[style, { position: 'relative', flex: '1 1 0' }]}>
         <div style={OldLines.style}/>
         {
-          lines.take(lines.size - 3).map((l, index) => (
-            <span key={`${index}`} style={{ color: (l.user && l.user.color) || 'black' }}>{l.line}</span>
-          ))
+          lines.take(lines.size - 3).map((l, index) => {
+            const color = (l.user && l.user.color) || l.color;
+            return (
+              <span key={`${index}`} style={{ color }}>{l.line}</span>
+            );
+          })
         }
       </div>
     );

@@ -1,4 +1,3 @@
-import './flowWorkarounds';
 import bcrypt from 'bcryptjs';
 import bluebird from 'bluebird';
 import fs from 'fs';
@@ -12,6 +11,10 @@ import redis from 'redis';
 import RedisSessions from 'redis-sessions';
 import router from 'koa-66';
 import UUID from 'uuid-js';
+
+if (process.env.NODE_ENV !== 'production') {
+  require('./flowWorkarounds');
+}
 
 global.encrypt = function(value) {
   return new Promise(resolve => {

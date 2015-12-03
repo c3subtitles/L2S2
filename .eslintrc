@@ -16,6 +16,8 @@
     "RoleType": false,
     "SyntheticEvent": false,
     "IS_PRODUCTION": false,
+    "RoomType": false,
+    "State": false,
   },
   "rules": {
     "accessor-pairs": 0,

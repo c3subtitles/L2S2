@@ -28,8 +28,8 @@ export default class WriterInput extends React.Component {
   handleKeyDown = e => {
     console.log(e);
     if (e.key === 'Enter') {
-      const { room } = this.props;
-      line(room.id, e.target.value);
+      const { room, user } = this.props;
+      line(room.id, e.target.value, user.color);
       e.target.value = '';
     }
   };
