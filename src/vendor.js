@@ -1,5 +1,4 @@
 import './fonts.css';
-import 'font-awesome/css/font-awesome.css';
 import { addError } from './Services/notifications';
 import axios from 'axios';
 import MaterialUI from 'material-ui';
