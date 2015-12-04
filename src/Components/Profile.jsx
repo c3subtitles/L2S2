@@ -1,11 +1,20 @@
 import { addError } from '../Services/notifications';
 import { changePassword } from '../Services/user';
+import { Connect } from '../Helper';
 import { Permission } from '../Helper';
 import { TextField, RaisedButton } from 'material-ui';
 import React from 'react';
+import swal from 'sweetalert';
 
 @Permission()
+@Connect(state => ({ user: state.user }))
 export default class Profile extends React.Component {
+  static propTypes = {
+    user: React.PropTypes.Object,
+  };
+  static contextTypes = {
+    location: React.PropTypes.object,
+  };
   changePassword = async (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -22,6 +31,12 @@ export default class Profile extends React.Component {
     newpw1.setValue('');
     newpw2.setValue('');
   };
+  componentWillMount() {
+    const { user } = this.props;
+    if (this.context.location.query.token && user.fromToken) {
+      swal('Login Successfull', 'You\'re now logged in. Please change your password', 'success');
+    }
+  }
   render() {
     return (
       <div>

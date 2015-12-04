@@ -1,7 +1,9 @@
-import { TextField, RaisedButton } from 'material-ui';
-import { login } from '../Actions/user';
+import 'sweetalert/dist/sweetalert.css';
 import { Connect } from '../Helper';
+import { login, resetPassword } from '../Actions/user';
+import { TextField, RaisedButton } from 'material-ui';
 import React from 'react';
+import swal from 'sweetalert';
 
 @Connect()
 export default class Login extends React.Component {
@@ -17,6 +19,10 @@ export default class Login extends React.Component {
       display: 'flex',
       flex: '1 1 0',
       flexDirection: 'column',
+    },
+    pwForgotten: {
+      marginTop: 15,
+      transform: 'scale(0.75)',
     },
   };
   static contextTypes = {
@@ -39,6 +45,32 @@ export default class Login extends React.Component {
     const { username, password } = this.refs;
     login(username.getValue(), password.getValue());
   };
+  resetPassword = () => {
+    swal({
+      closeOnCancel: false,
+      closeOnConfirm: false,
+      confimButtonColor: '#DD6B55',
+      confirmButtonText: 'Reset Password',
+      showCancelButton: true,
+      text: 'Please enter your email Address',
+      title: 'Password Reset',
+      type: 'input',
+    }, inputValue => {
+      if (inputValue) {
+        const emailRegex: RegExp = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        if (!emailRegex.test(inputValue)) {
+          swal.showInputError('Please enter a valid email Address');
+          return;
+        }
+        resetPassword(inputValue);
+        swal('Password Resetted', 'Please Check your mail', 'success');
+      } else if (inputValue === '') {
+        swal.showInputError('Please enter your email Address');
+      } else {
+        swal('Cancelled', 'Guess you remembered your password. Good for you!', 'error');
+      }
+    });
+  };
   render() {
     const style = Login.style;
     return (
@@ -47,6 +79,7 @@ export default class Login extends React.Component {
           <TextField floatingLabelText="Username" ref="username"/>
           <TextField floatingLabelText="Password" ref="password" type="password"/>
           <RaisedButton type="submit" label="Login" primary onClick={this.login}/>
+          <RaisedButton style={style.pwForgotten} label="Password forgotten" secondary onClick={this.resetPassword}/>
         </form>
       </div>
     );

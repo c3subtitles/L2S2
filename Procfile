@@ -1,1 +1,1 @@
-web: node server/dist/entry.js
+api: node server/dist/entry.js

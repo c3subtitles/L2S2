@@ -1,8 +1,59 @@
 import { getUserForSessionFromRedis, createSession, deleteSession } from './redis';
-import { User, Role } from '../models';
+import { User, Role, Onetimetoken } from '../models';
 import bcrypt from 'bcryptjs';
+import UUID from 'uuid-js';
+import nodemailer from 'nodemailer';
+import sparkPostTransport from 'nodemailer-sparkpost-transport';
 
-export function checkPassword(password: string, user: Object): Promise {
+function createNodemailTransport() {
+  /* eslint-disable camelcase */
+  return nodemailer.createTransport(sparkPostTransport({
+    sparkPostApiKey: process.env.SPARKPOST_API_KEY,
+    options: {
+      open_tracking: true,
+      click_tracking: true,
+      transactional: true,
+    },
+    campaign_id: 'l2s2',
+    content: {
+      template_id: 'l2s2-password-reset',
+    },
+  }));
+}
+
+export async function resetPassword(user: ClientUser) {
+  const token = await Onetimetoken.findOrCreate({
+    user: user.id,
+  }, {
+    user: user.id,
+    token: UUID.create(),
+  });
+  const transport = createNodemailTransport();
+  transport.sendMail({
+    substitution_data: {
+      /* eslint-enable camelcase */
+      user: {
+        name: user.username,
+        passwordResetUrl: `${process.env.BASE_URL}profile?token=${token.token}`,
+      },
+    },
+    recipients: [{
+      address: {
+        email: user.email,
+        name: user.username,
+      },
+    }],
+  }, (err, info) => {
+    if (err) {
+      console.error(err);
+    }
+    if (info) {
+      console.log(info);
+    }
+  });
+}
+
+export function checkPassword(password: string, user: ClientUser): Promise {
   return new Promise((resolve) => {
     bcrypt.compare(password, user.password, (err, res) => {
       if (res) {

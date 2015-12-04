@@ -42,7 +42,7 @@ export default class L2S2 extends React.Component {
     };
   }
   componentWillMount() {
-    fetchUser();
+    fetchUser(this.context.location.query.token);
   }
   componentDidMount() {
     setSystem(this.refs.notification);

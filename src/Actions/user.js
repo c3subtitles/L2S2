@@ -24,7 +24,7 @@ export const login = createAction('LOGIN', async (username: string, password: st
   addSuccess({ title: 'Login successful' });
   return result;
 });
-export const fetchUser = createAction('FETCH_USER', async () => {
+export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
   if (localStorage.sessionId) {
     try {
       const userFromServer = await axios.post('/userForSessionId', {
@@ -38,6 +38,23 @@ export const fetchUser = createAction('FETCH_USER', async () => {
       }
     } catch (e) {
       delete localStorage.sessionId;
+    }
+  }
+  if (token) {
+    try {
+      const tokenResult = await axios.post('/userForToken', {
+        token,
+      });
+      if (tokenResult && tokenResult.sessionId) {
+        localStorage.sessionId = tokenResult.sessionId;
+        tokenResult.user.fromToken = true;
+        return {
+          user: tokenResult.user,
+          sessionId: tokenResult.sessionId,
+        };
+      }
+    } catch (e) {
+      /* ignored */
     }
   }
   return {
@@ -74,4 +91,10 @@ export const deleteUser = createAction('DELETE_USER', async (user: ClientUser) =
   await axios.delete(`/users/${user.id}`);
   addSuccess({ message: `${user.username} successfully deleted` });
   return user.id;
+});
+
+export const resetPassword = createAction('RESET_PW', async (email: string) => {
+  await axios.post(`/users/resetPassword`, {
+    email,
+  });
 });

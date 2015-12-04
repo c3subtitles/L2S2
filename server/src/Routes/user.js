@@ -1,5 +1,6 @@
-import { login, getClientUserRepresentation, logout, checkPassword, register, getUsers, getCurrentUserFromSession } from '../Services/users';
-import { User } from '../models';
+import { login, getClientUserRepresentation, logout, checkPassword, register, getUsers, getCurrentUserFromSession, resetPassword } from '../Services/users';
+import { User, Onetimetoken } from '../models';
+import { createSession } from '../Services/redis';
 
 
 global.router.post('/api/login', async function(ctx) {
@@ -14,6 +15,24 @@ global.router.post('/api/login', async function(ctx) {
 global.router.post('/api/userForSessionId', async function(ctx) {
   const user = await getCurrentUserFromSession(ctx);
   ctx.body = getClientUserRepresentation(user);
+});
+
+global.router.post('/api/userForToken', async ctx => {
+  const token = await Onetimetoken.findOne({
+    token: ctx.request.body.token,
+  }).populate('user');
+  if (token) {
+    const user = token.user;
+    const sessionId = await createSession(user.id);
+    ctx.body = {
+      user,
+      sessionId,
+    };
+    ctx.status = 200;
+    await token.destroy();
+  } else {
+    throw { message: 'Invalid Token, please request anotehr token.' };
+  }
 });
 
 global.router.post('/api/logout', (ctx) => {
@@ -72,4 +91,15 @@ global.router.delete('/api/users/:id', async function(ctx) {
   const userToDelete = await User.findOne({ id: ctx.params.id });
   await userToDelete.destroy();
   ctx.status = 200;
+});
+
+global.router.post('/api/users/resetPassword', async function(ctx) {
+  const user = await User.findOne({
+    email: ctx.request.body.email,
+  });
+  ctx.status = 200;
+  if (!user) {
+    return;
+  }
+  resetPassword(user);
 });

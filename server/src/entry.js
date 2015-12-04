@@ -34,7 +34,9 @@ UUID.create = function(old) {
     return uuid.hex;
   };
 }(UUID.create);
-require('pretty-error').start();
+if (process.env.NODE_ENV !== 'production') {
+  require('pretty-error').start();
+}
 
 global.Promise = bluebird;
 
