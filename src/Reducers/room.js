@@ -28,7 +28,7 @@ function processLines(lines: List, userInRoom: Map) {
   });
 }
 
-function updateRoom(state: State, { payload }: { payload: RoomType }) {
+function updateRoom(state: State, { payload }) {
   const rooms: Map = state.rooms.set(payload.id, payload);
   return {
     currentRoom: payload,
