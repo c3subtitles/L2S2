@@ -1,5 +1,8 @@
+/* @flow */
+
 import 'imports?this=>window&define=>false!../../primusClient';
 import { lineUpdate, newLine, userJoined, userLeft, updateRoom } from '../Actions/rooms';
+
 
 const config = require(CONFIGPATH);
 
@@ -32,7 +35,7 @@ primus.on('roomUpdate', room => {
 });
 
 export function updateSessionId() {
-  primus.emit('sessionId', localStorage.sessionId);
+  primus.emit('sessionId', localStorage['sessionId']);
 }
 
 export function lineStart(roomId: number, text: string) {
@@ -43,10 +46,10 @@ export function line(roomId: number, text: string, color: string) {
   primus.emit('line', roomId, text, color);
 }
 
-export function joinRoom(roomId) {
+export function joinRoom(roomId: number) {
   primus.emit('join', roomId);
 }
 
-export function leaveRoom(roomId) {
+export function leaveRoom(roomId: number) {
   primus.emit('leave', roomId);
 }

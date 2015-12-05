@@ -1,3 +1,5 @@
+/* @flow */
+
 import _ from 'lodash';
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
@@ -41,7 +43,7 @@ export const deleteRoom = createAction('DELETE_ROOM', async (room) => {
   return room;
 });
 
-export const joinRoom = createAction('JOIN_ROOM', async roomId => {
+export const joinRoom = createAction('JOIN_ROOM', async (roomId: number) => {
   joinRoomSocket(roomId);
   const joinInformation = await axios.get(`/rooms/${roomId}/join`);
   let userInRoom: Map<number, ClientUser> = Map();
@@ -101,3 +103,11 @@ export const speechLockRoom = createAction('SPEECH_LOCK_ROOM', async (roomId, sp
 });
 
 export const updateRoom = createAction('UPDATE_ROOM', async room => room);
+
+export const setShortcut = createAction('SET_SHORTCUT', (key, shortcut) => {
+  localStorage[`sc${key}`] = shortcut;
+  return {
+    key,
+    shortcut,
+  };
+});

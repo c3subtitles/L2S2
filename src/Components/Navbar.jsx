@@ -128,7 +128,7 @@ export default class Navbar extends React.Component {
   }
   getTitle() {
     const style = Navbar.style;
-    const { currentRoom, loggedIn, readMode, writeMode } = this.props;
+    const { currentRoom, loggedIn, readMode, writeMode, user } = this.props;
     let conditionalButton;
     if (loggedIn) {
       if (readMode) {
@@ -137,10 +137,9 @@ export default class Navbar extends React.Component {
         );
       } else if (writeMode && currentRoom) {
         conditionalButton = [
-          <FlatButton key="s" backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)"
-            onClick={this.speechLockRoom} style={style.conditionalButton} label={currentRoom.speechLocked ? 'Speech unlock' : 'Speech lock'}/>,
-          <FlatButton key="l" backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)"
-            onClick={this.lockRoom} style={style.conditionalButton} label={currentRoom.locked ? 'Unlock' : 'Lock'}/>,
+          false && user.role.canSpeechLock && (<FlatButton key="s" backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)" onClick={this.speechLockRoom} style={style.conditionalButton} label={currentRoom.speechLocked ? 'Speech unlock' : 'Speech lock'}/>),
+          user.role.canLock && (<FlatButton key="l" backgroundColor="transparent" hoverColor="rgba(255, 255, 255, 0.4)"
+            onClick={this.lockRoom} style={style.conditionalButton} label={currentRoom.locked ? 'Unlock' : 'Lock'}/>),
         ];
       }
     }

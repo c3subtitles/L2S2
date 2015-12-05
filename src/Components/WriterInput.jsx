@@ -1,11 +1,13 @@
 import { Connect } from '../Helper';
 import { lineStart, line } from '../Services/socket';
+import { Map } from 'immutable';
 import Radium from 'radium';
 import React from 'react';
 
 const props = state => ({
   room: state.currentRoom,
   user: state.user,
+  shortcuts: state.shortcuts,
 });
 
 @Radium
@@ -13,6 +15,7 @@ const props = state => ({
 export default class WriterInput extends React.Component {
   static propTypes = {
     room: React.PropTypes.object,
+    shortcuts: React.PropTypes.instanceOf(Map),
     user: React.PropTypes.object,
   };
   static style = {
@@ -22,8 +25,12 @@ export default class WriterInput extends React.Component {
     this.refs.input.focus();
   }
   handleChange = e => {
-    const { room } = this.props;
-    lineStart(room.id, e.target.value);
+    const { room, shortcuts }: { room: RoomType, shortcuts: Map<string, string> } = this.props;
+    let line = e.target.value;
+    shortcuts.filter(text => text).forEach((text, key) => {
+      line = line.replace(new RegExp(`#${key}`, 'g'), text);
+    });
+    lineStart(room.id, line);
   };
   handleKeyDown = e => {
     console.log(e);
@@ -36,7 +43,7 @@ export default class WriterInput extends React.Component {
   render() {
     const { user } = this.props;
     return (
-      <input defaultValue={user.currentLine} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
+      <input value={user.currentLine} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
     );
   }
 }

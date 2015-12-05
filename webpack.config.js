@@ -44,6 +44,7 @@ const webpackConfig = {
     extensions: ['', '.js', '.jsx', '.json'],
     root: path.resolve('src'),
     alias: {
+      'babel-runtime/core-js/promise': 'bluebird',
       bluebird: 'bluebird/js/release/bluebird.js',
       eventemitter: 'eventemitter3',
     },

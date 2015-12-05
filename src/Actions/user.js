@@ -1,7 +1,9 @@
+/* @flow */
+
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
-import { updateSessionId } from '../Services/socket';
 import { Map, List } from 'immutable';
+import { updateSessionId } from '../Services/socket';
 import axios from 'axios';
 
 
@@ -14,6 +16,7 @@ export const logout = createAction('LOGOUT', async () => {
   delete localStorage.sessionId;
   return {};
 });
+
 export const login = createAction('LOGIN', async (username: string, password: string) => {
   const result = await axios.post('/login', {
     username,
@@ -24,6 +27,7 @@ export const login = createAction('LOGIN', async (username: string, password: st
   addSuccess({ title: 'Login successful' });
   return result;
 });
+
 export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
   if (localStorage.sessionId) {
     try {

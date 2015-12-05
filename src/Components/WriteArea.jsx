@@ -20,7 +20,7 @@ export default class WriteArea extends React.Component {
       justifyContent: 'flex-end',
     },
     inner: {
-      overflow: 'auto',
+      overflowWrap: 'break-word',
       flex: '1 1 0',
     },
     spacer: {

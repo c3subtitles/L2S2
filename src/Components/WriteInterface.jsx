@@ -3,6 +3,7 @@ import { Connect, Permission } from '../Helper';
 import { joinRoom, leaveRoom } from '../Actions/rooms';
 import Loading from 'react-loader';
 import React from 'react';
+import ShortcutList from './ShortcutList';
 import UserList from './UserList';
 import WriteArea from './WriteArea';
 
@@ -41,12 +42,12 @@ export default class WriteInterface extends React.Component {
     }
   }
   componentWillMount() {
-    const { roomId } = this.props.params;
-    joinRoom(roomId);
+    const { roomId }: { roomId: string } = this.props.params;
+    joinRoom(Number.parseInt(roomId));
   }
   componentWillUnmount() {
-    const { roomId } = this.props.params;
-    leaveRoom(roomId);
+    const { roomId }: { roomId: string } = this.props.params;
+    leaveRoom(Number.parseInt(roomId));
   }
   render() {
     const style = WriteInterface.style;
@@ -58,6 +59,7 @@ export default class WriteInterface extends React.Component {
       <div style={style.wrapper}>
         <WriteArea/>
         <UserList/>
+        <ShortcutList/>
       </div>
     );
   }

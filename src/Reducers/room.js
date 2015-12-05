@@ -141,4 +141,9 @@ export default {
   LOCK_ROOM: updateRoom,
   SPEECH_LOCK_ROOM: updateRoom,
   UPDATE_ROOM: updateRoom,
+  SET_SHORTCUT: (state, { payload: { key, shortcut } }) => {
+    return {
+      shortcuts: state.shortcuts.set(key, shortcut),
+    };
+  },
 };

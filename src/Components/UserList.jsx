@@ -28,12 +28,16 @@ export default class UserList extends React.Component {
         backgroundColor: 'lightgrey',
       },
     },
+    title: {
+      alignSelf: 'center',
+    },
   };
   render() {
     const style = UserList.style;
     const { userInRoom }: { userInRoom: Map<number, Object> } = this.props;
     return (
       <Paper style={style.wrapper}>
+        <h3 style={style.title}>User</h3>
         {
           userInRoom.sortBy(u => u.username).map(user => (
             <div style={[style.user, { color: user.color }]} key={user.id}>{user.username}</div>

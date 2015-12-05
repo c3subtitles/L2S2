@@ -42,6 +42,14 @@ if (IS_PRODUCTION) {
 
 
   const createDevStore = compose(
+    applyMiddleware(() => {
+      return next => action => {
+        if (action.payload instanceof Promise) {
+          action.payload.catch(err => console.error(err.stack));
+        }
+        next(action);
+      };
+    }),
     applyMiddleware(reduxPromise),
     DevTools.instrument(),
     DT.persistState(
