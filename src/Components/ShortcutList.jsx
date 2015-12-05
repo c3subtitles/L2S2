@@ -52,7 +52,7 @@ export default class ShortcutList extends React.Component {
         <h3 style={style.title}>Shortcuts</h3>
         {
           shortcuts.map((text: string, key: string) => (
-            <TextField onChange={this.handleShortcutChange.bind(this, key)} floatingLabelStyle={style.input.label} inputStyle={style.input.input} style={style.input.wrapper} key={key} floatingLabelText={`#${key}`} value={text}/>
+            <TextField onChange={this.handleShortcutChange.bind(this, key)} floatingLabelStyle={style.input.label} inputStyle={style.input.input} style={style.input.wrapper} key={key} floatingLabelText={key} value={text}/>
           )).toArray()
         }
       </Paper>

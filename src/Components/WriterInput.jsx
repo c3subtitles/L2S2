@@ -28,7 +28,7 @@ export default class WriterInput extends React.Component {
     const { room, shortcuts }: { room: RoomType, shortcuts: Map<string, string> } = this.props;
     let line = e.target.value;
     shortcuts.filter(text => text).forEach((text, key) => {
-      line = line.replace(new RegExp(`#${key}`, 'g'), text);
+      line = line.replace(new RegExp(key, 'g'), text);
     });
     lineStart(room.id, line);
   };
