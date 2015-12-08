@@ -21,6 +21,8 @@ export default class ShortcutList extends React.Component {
       display: 'flex',
       flexDirection: 'column',
       padding: 5,
+      overflowX: 'hidden',
+      overflowY: 'auto',
     },
     title: {
       alignSelf: 'center',
@@ -31,6 +33,7 @@ export default class ShortcutList extends React.Component {
     },
     input: {
       wrapper: {
+        flexShrink: 0,
         height: 47,
       },
       input: {

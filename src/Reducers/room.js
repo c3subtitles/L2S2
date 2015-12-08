@@ -1,6 +1,6 @@
 import { List, Map } from 'immutable';
 
-const colors: List = List(['magenta', 'teal', 'orange', 'darkblue', 'darkred', 'black', 'darkgreen']);
+const colors: List = List(['#FFC7C7', '#FFF1C7', '#E3FFC7', '#C7FFD5', '#C7FFFF', '#C7D5FF', '#E3C7FF', '#FFC7F1']);
 
 function setColors(userInRoom: Map) {
   const usedColors: List = userInRoom.map(u => u.color).toList();
@@ -23,7 +23,7 @@ function processLines(lines: List, userInRoom: Map) {
       return l;
     }
     l.user = userInRoom.get(l.userId);
-    l.color = l.color || 'black';
+    l.color = l.color || '#FFC7C7';
     return l;
   });
 }

@@ -30,6 +30,7 @@ export default class WriterInput extends React.Component {
     shortcuts.filter(text => text).forEach((text, key) => {
       line = line.replace(new RegExp(key, 'g'), text);
     });
+    e.target.value = line;
     lineStart(room.id, line);
   };
   handleKeyDown = e => {

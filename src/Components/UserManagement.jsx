@@ -20,6 +20,7 @@ export default class UserManagement extends React.Component {
     wrapper: {
       display: 'flex',
       flexDirection: 'column',
+      overflow: 'auto',
     },
   };
   componentWillMount() {
@@ -34,7 +35,7 @@ export default class UserManagement extends React.Component {
     return (
       <div style={style.wrapper}>
         {
-          users.map(user => <UserLine key={user.username} user={user}/>).toArray()
+          users.sortBy(user => user.username).map(user => <UserLine key={user.username} user={user}/>).toArray()
         }
       </div>
     );

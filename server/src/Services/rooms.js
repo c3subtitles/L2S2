@@ -91,14 +91,13 @@ export function lineStart(text, userId, roomId: number) {
 async function addLineToDatabase(text, roomId, userId, color) {
   try {
     const room = await Room.findOne({ id: roomId });
-    const line = await Line.create({
+    await Line.create({
       text,
       color,
       user: userId,
       room: room.id,
       roomName: room.name,
     });
-    console.log(line);
   } catch (e) {
     console.error(`lineAddFailed ${e}`);
     e.stack();

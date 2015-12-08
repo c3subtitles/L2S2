@@ -17,7 +17,8 @@ export default class LinesInProgress extends React.Component {
   };
   static style = {
     entry: {
-      opacity: 0.6,
+      color: 'black',
+      paddingLeft: 15,
     },
     wrapper: {
       display: 'flex',
@@ -30,15 +31,15 @@ export default class LinesInProgress extends React.Component {
     const filteredUser = userInRoom.filter(u => u.currentLine);
     return (
       <div style={style.wrapper}>
-        {filteredUser.size > 0 && <div style={spacerStyle}/>}
         {
           filteredUser.map(u => (
             <span key={u.id}
-              style={[style.entry, { color: u.color }]}>
+              style={[style.entry, { backgroundColor: u.color }]}>
               {u.currentLine}
             </span>
           )).toArray()
         }
+        {filteredUser.size > 0 && <div style={spacerStyle}/>}
       </div>
     );
   }

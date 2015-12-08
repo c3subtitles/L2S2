@@ -30,6 +30,7 @@ export default class WriteInterface extends React.Component {
     wrapper: {
       display: 'flex',
       flex: '1 1 0',
+      overflow: 'hidden',
     },
     mainContent: {
       flex: '1 1 0',

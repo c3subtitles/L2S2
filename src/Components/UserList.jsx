@@ -16,16 +16,17 @@ export default class UserList extends React.Component {
   };
   static style = {
     wrapper: {
-      width: '15%',
       display: 'flex',
       flexDirection: 'column',
+      overflow: 'auto',
       padding: 5,
+      width: '15%',
     },
     user: {
-      borderRadius: 5,
+      color: 'black',
       padding: 2,
       ':hover': {
-        backgroundColor: 'lightgrey',
+        opacity: 0.6,
       },
     },
     title: {
@@ -38,11 +39,11 @@ export default class UserList extends React.Component {
     return (
       <Paper style={style.wrapper}>
         <h3 style={style.title}>User</h3>
-        {
-          userInRoom.sortBy(u => u.username).map(user => (
-            <div style={[style.user, { color: user.color }]} key={user.id}>{user.username}</div>
-          )).toArray()
-        }
+          {
+            userInRoom.sortBy(u => u.username).map(user => (
+              <div style={[style.user, { backgroundColor: user.color }]} key={user.id}>{user.username}</div>
+            )).toArray()
+          }
       </Paper>
     );
   }

@@ -13,6 +13,7 @@ export default class WriteArea extends React.Component {
       display: 'flex',
       flex: '1 1 0',
       flexDirection: 'column',
+      overflow: 'hidden',
     },
     lineContainer: {
       display: 'flex',
@@ -21,10 +22,13 @@ export default class WriteArea extends React.Component {
     },
     inner: {
       overflowWrap: 'break-word',
+      marginBottom: 5,
       flex: '1 1 0',
+      overflow: 'hidden',
     },
     spacer: {
-      background: 'red',
+      marginTop: 5,
+      marginBottom: 5,
       height: 1,
     },
   };
@@ -34,7 +38,6 @@ export default class WriteArea extends React.Component {
       <Paper style={style.wrapper}>
         <div style={[style.lineContainer, style.inner]}>
           <RecentLines style={style.lineContainer}/>
-          <div style={style.spacer}/>
           <LinesInProgress spacerStyle={style.spacer} style={style.lineContainer}/>
         </div>
         <WriterInput/>
