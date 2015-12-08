@@ -50,13 +50,16 @@ export function onConnection(spark: Object) {
     if (spark.user) {
       lineStart('', spark.user.id, Number.parseInt(roomId));
       addLine(text, Number.parseInt(roomId), spark.user.id, color);
-      _.each(spark.room(roomId).except(spark.id).connections, s => {
+      _(spark.room(roomId).connections)
+      .filter(s => s.id !== spark.id)
+      .each(s => {
         if (s.user) {
-          s.emit('line', roomId, spark.user.id, text, color);
+          s.emit('line', roomId, text, spark.user.id, color);
         } else {
-          s.emit('lineRead', roomId, text);
+          s.emit('line', roomId, text);
         }
-      });
+      })
+      .value();
     }
   });
 }

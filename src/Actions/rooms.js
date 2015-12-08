@@ -60,7 +60,7 @@ export const leaveRoom = createAction('LEAVE_ROOM', roomId => {
   return roomId;
 });
 
-function lineUpdateFunc(roomId: number, userId: number, text: string) {
+function lineUpdateFunc(roomId: number, userId: ?number, text: string) {
   return {
     roomId,
     userId,

@@ -34,16 +34,16 @@ export default class WriterInput extends React.Component {
   };
   handleKeyDown = e => {
     console.log(e);
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && e.target.value.trim().length > 0) {
       const { room, user } = this.props;
-      line(room.id, e.target.value, user.color);
+      line(room.id, e.target.value, user);
       e.target.value = '';
     }
   };
   render() {
     const { user } = this.props;
     return (
-      <input value={user.currentLine} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
+      <input defaultValue={user.currentLine} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
     );
   }
 }

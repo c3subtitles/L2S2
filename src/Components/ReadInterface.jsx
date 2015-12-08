@@ -24,6 +24,7 @@ export default class ReadInterface extends React.Component {
       flex: '1 1 0',
       flexDirection: 'column',
       justifyContent: 'flex-end',
+      overflow: 'hidden',
     },
     line: {
       alignItems: 'center',

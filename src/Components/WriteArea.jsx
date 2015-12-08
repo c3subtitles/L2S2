@@ -4,7 +4,7 @@ import LinesInProgress from './LinesInProgress';
 import React from 'react';
 import WriterInput from './WriterInput';
 import Radium from 'radium';
-import OldLines from './OldLines';
+// import OldLines from './OldLines';
 
 @Radium
 export default class WriteArea extends React.Component {
@@ -33,10 +33,9 @@ export default class WriteArea extends React.Component {
     return (
       <Paper style={style.wrapper}>
         <div style={[style.lineContainer, style.inner]}>
-          <OldLines style={style.lineContainer}/>
+          <RecentLines style={style.lineContainer}/>
           <div style={style.spacer}/>
           <LinesInProgress spacerStyle={style.spacer} style={style.lineContainer}/>
-          <RecentLines style={style.lineContainer}/>
         </div>
         <WriterInput/>
       </Paper>

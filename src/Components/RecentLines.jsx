@@ -19,7 +19,7 @@ export default class RecentLines extends React.Component {
     return (
       <div style={style}>
         {
-          lines.takeLast(3).map((l, index) => {
+          lines.map((l, index) => {
             const color = (l.user && l.user.color) || l.color;
             return (
               <span key={`${index}`} style={{ color }}>{l.line}</span>

@@ -84,7 +84,7 @@ export default {
       }
     }
   },
-  NEW_LINE: (state, { payload: { roomId, userId, text } }) => {
+  NEW_LINE: (state, { payload: { roomId, userId, text, color } }) => {
     state.readLines = state.readLines.push(text);
     if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
       let user = state.userInRoom.get(userId);
@@ -97,6 +97,7 @@ export default {
         state.lines = state.lines.push({
           line: text,
           user,
+          color,
         });
       }
       return {

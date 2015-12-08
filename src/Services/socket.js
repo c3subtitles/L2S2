@@ -16,9 +16,9 @@ primus.on('lineStart', (roomId, userId, text) => {
   lineUpdate(roomId, userId, text);
 });
 
-primus.on('line', (roomId, userId, text) => {
+primus.on('line', (roomId, text, userId, color) => {
   if (text && text.trim().length > 0) {
-    newLine(roomId, userId, text);
+    newLine(roomId, userId, text, color);
   }
 });
 
@@ -42,8 +42,9 @@ export function lineStart(roomId: number, text: string) {
   primus.emit('lineStart', roomId, text);
 }
 
-export function line(roomId: number, text: string, color: string) {
-  primus.emit('line', roomId, text, color);
+export function line(roomId: number, text: string, user: ClientUser) {
+  primus.emit('line', roomId, text, user.color);
+  newLine(roomId, user.id, text, user.color);
 }
 
 export function joinRoom(roomId: number) {
