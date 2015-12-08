@@ -1,5 +1,5 @@
 import { Map, List } from 'immutable';
-import { User, Line } from '../models';
+import { User, Line, Room } from '../models';
 
 let rooms = Map();
 
@@ -88,15 +88,17 @@ export function lineStart(text, userId, roomId: number) {
   }
 }
 
-async function addLineToDatabase(text, room, userId, color) {
+async function addLineToDatabase(text, roomId, userId, color) {
   try {
-    await Line.create({
+    const room = await Room.findOne({ id: roomId });
+    const line = await Line.create({
       text,
       color,
       user: userId,
       room: room.id,
       roomName: room.name,
     });
+    console.log(line);
   } catch (e) {
     console.error(`lineAddFailed ${e}`);
     e.stack();
@@ -113,6 +115,6 @@ export function addLine(text, roomId: number, userId, color: string) {
       userId,
     });
     rooms = rooms.set(roomId, room);
-    addLineToDatabase(text, room, userId, color);
+    addLineToDatabase(text, roomId, userId, color);
   }
 }
