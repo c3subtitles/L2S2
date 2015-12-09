@@ -19,7 +19,7 @@
     "babel-eslint": "^4.1.4",
     "babel-loader": "^5.0.0",
     "babel-plugin-react-transform": "^1.1.1",
-    "babel-plugin-typecheck": "^2.0.0",
+    "babel-plugin-typecheck": "^3.4.7",
     "babel-runtime": "^5.8.34",
     "css-loader": "^0.23.0",
     "eslint": "^1.9.0",
