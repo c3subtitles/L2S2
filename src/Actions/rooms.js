@@ -60,11 +60,12 @@ export const leaveRoom = createAction('LEAVE_ROOM', roomId => {
   return roomId;
 });
 
-function lineUpdateFunc(roomId: number, userId: ?number, text: string) {
+function lineUpdateFunc(roomId: number, userId: ?number, text: string, color: ?string) {
   return {
     roomId,
     userId,
     text,
+    color,
   };
 }
 
@@ -110,4 +111,21 @@ export const setShortcut = createAction('SET_SHORTCUT', (key, shortcut) => {
     key,
     shortcut,
   };
+});
+
+export const changeReadColor = createAction('CHANGE_READ_COLOR', ({ gradient, color, backgroundColor, enableGradient }: { gradient?: string, color?: string, backgroundColor?: string, enableGradient?: bool }) => {
+  const newState = {};
+  if (gradient != null) {
+    localStorage['gradientColor'] = newState.gradientColor = gradient;
+  }
+  if (backgroundColor != null) {
+    localStorage['readbgColor'] = newState.readBackgroundColor = backgroundColor;
+  }
+  if (color != null) {
+    localStorage['readColor'] = newState.readColor = color;
+  }
+  if (enableGradient != null) {
+    localStorage['readGradient'] = newState.readGradient = enableGradient;
+  }
+  return newState;
 });

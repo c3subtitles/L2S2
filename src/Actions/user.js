@@ -1,5 +1,4 @@
 /* @flow */
-
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
 import { Map, List } from 'immutable';

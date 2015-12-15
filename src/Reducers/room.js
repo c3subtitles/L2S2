@@ -147,4 +147,5 @@ export default {
       shortcuts: state.shortcuts.set(key, shortcut),
     };
   },
+  CHANGE_READ_COLOR: (state, { payload }) => payload,
 };

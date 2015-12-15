@@ -7,14 +7,17 @@ const shortcuts = Map({
   '#4': localStorage['sc#4'] || '',
   '#5': localStorage['sc#5'] || '',
   '#6': localStorage['sc#6'] || '',
-  '#7': localStorage['sc#7'] || '',
-  '#8': localStorage['sc#8'] || '',
-  '#9': localStorage['sc#9'] || '',
-  '#0': localStorage['sc#0'] || '',
+  '#g': localStorage['sc#g'] || '*gelächter*',
+  '#a': localStorage['sc#a'] || '*applaus*',
 });
 
+const readGradient = JSON.parse(localStorage['readGradient']);
 const initialState: State = {
   currentRoom: null,
+  gradientColor: localStorage['gradientColor'] || 'rgba(255,255,255,1), rgba(255,255,255,0.7)',
+  readBackgroundColor: localStorage['readbgColor'] || 'white',
+  readColor: localStorage['readColor'] || 'black',
+  readGradient: readGradient == undefined ? true : readGradient,
   readLines: List(),
   roles: List(),
   rooms: Map(),

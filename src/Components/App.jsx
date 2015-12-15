@@ -31,11 +31,11 @@ if (IS_PRODUCTION) {
   )(createStore)(reducer);
 } else {
   const DT = require('redux-devtools');
-  const DockMonitor = require('redux-devtools-dock-monitor');
-  const LogMonitor = require('redux-devtools-log-monitor');
+  const DockMonitor = require('redux-devtools-dock-monitor').default;
+  const LogMonitor = require('redux-devtools-log-monitor').default;
 
   const DevTools = DT.createDevTools(
-    <DockMonitor toggleVisibilityKey="H" changePositionKey="Q">
+    <DockMonitor toggleVisibilityKey="ctrl-h" changePositionKey="ctrl-q">
       <LogMonitor/>
     </DockMonitor>
   );

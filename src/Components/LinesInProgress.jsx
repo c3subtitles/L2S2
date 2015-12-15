@@ -5,15 +5,15 @@ import React from 'react';
 
 
 const props = state => ({
-  userInRoom: state.userInRoom,
+  filteredUser: state.userInRoom.filter(u => u.currentLine),
 });
 
 @Connect(props)
 @Radium
 export default class LinesInProgress extends React.Component {
   static propTypes = {
+    filteredUser: React.PropTypes.instanceOf(Map),
     spacerStyle: React.PropTypes.object,
-    userInRoom: React.PropTypes.instanceOf(Map),
   };
   static style = {
     entry: {
@@ -27,8 +27,7 @@ export default class LinesInProgress extends React.Component {
   }
   render() {
     const style = LinesInProgress.style;
-    const { spacerStyle, userInRoom } = this.props;
-    const filteredUser = userInRoom.filter(u => u.currentLine);
+    const { spacerStyle, filteredUser } = this.props;
     return (
       <div style={style.wrapper}>
         {

@@ -34,7 +34,6 @@ export default class WriterInput extends React.Component {
     lineStart(room.id, line);
   };
   handleKeyDown = e => {
-    console.log(e);
     if (e.key === 'Enter' && e.target.value.trim().length > 0) {
       const { room, user } = this.props;
       line(room.id, e.target.value, user);
