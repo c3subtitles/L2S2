@@ -46,7 +46,7 @@
     "webpack-dev-server": "^1.12.1"
   },
   "dependencies": {
-    "axios": "^0.7.0",
+    "axios": "^0.8.1",
     "bcryptjs": "^2.3.0",
     "bluebird": "^3.0.5",
     "classnames": "^2.2.1",
