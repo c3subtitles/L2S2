@@ -80,7 +80,7 @@
     "redis": "^2.4.2",
     "redis-sessions": "^0.5.2",
     "redux": "^3.0.4",
-    "redux-actions": "^0.8.0",
+    "redux-actions": "^0.9.0",
     "redux-promise": "^0.5.0",
     "sails-postgresql": "^0.10.17",
     "seamless-immutable": "^4.0.2",
