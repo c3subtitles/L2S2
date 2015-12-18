@@ -1,9 +1,18 @@
+import bcrypt from 'bcryptjs';
 import { Role, User } from '../models';
-
+global.encrypt = function(value) {
+  return new Promise(resolve => {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(value, salt, (err, hash) => {
+        resolve(hash);
+      });
+    });
+  });
+};
 global.initPromise.then(() => {
 
   async function createRoles() {
-    return await* [
+    const roles = await Promise.all([
       Role.findOrCreate({ name: 'Admin' }, {
         name: 'admin',
         canActivateUser: true,
@@ -30,11 +39,12 @@ global.initPromise.then(() => {
       Role.findOrCreate({ name: 'User' }, {
         name: 'User',
       }),
-    ];
+    ]);
+    return roles;
   }
 
   async function createAdmin(roles: Array<RoleType>) {
-    const adminRole = roles.find({ name: 'admin' });
+    const adminRole = roles.find(x => x.name === 'admin');
     return await User.findOrCreate({ username: 'admin' }, {
       username: 'admin',
       password: 'admin',

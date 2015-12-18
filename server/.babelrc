@@ -19,7 +19,7 @@
     "production": {
       "optional": [
         "minification.removeConsole",
-        "minification.removeDebugger",
+        "minification.removeDebugger"
       ]
     },
     "development": {
