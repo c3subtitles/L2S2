@@ -11,7 +11,8 @@ const shortcuts = Map({
   '#a': localStorage['sc#a'] || '*applaus*',
 });
 
-const readGradient = JSON.parse(localStorage['readGradient']);
+const rawReadGradient = localStorage['readGradient'] || '';
+const readGradient = JSON.parse(rawReadGradient);
 const initialState: State = {
   currentRoom: null,
   gradientColor: localStorage['gradientColor'] || 'rgba(255,255,255,1), rgba(255,255,255,0.7)',
