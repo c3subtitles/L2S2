@@ -11,14 +11,14 @@ const shortcuts = Map({
   '#a': localStorage['sc#a'] || '*applaus*',
 });
 
-const rawReadGradient = localStorage['readGradient'] || '';
-const readGradient = JSON.parse(rawReadGradient);
+const rawReadGradient = localStorage['readGradient'];
+const readGradient = rawReadGradient ? JSON.parse(rawReadGradient) : true;
 const initialState: State = {
   currentRoom: null,
   gradientColor: localStorage['gradientColor'] || 'rgba(255,255,255,1), rgba(255,255,255,0.7)',
   readBackgroundColor: localStorage['readbgColor'] || 'white',
   readColor: localStorage['readColor'] || 'black',
-  readGradient: readGradient == undefined ? true : readGradient,
+  readGradient,
   readLines: List(),
   roles: List(),
   rooms: Map(),
