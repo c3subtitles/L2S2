@@ -53,7 +53,7 @@
     "color-js": "^1.0.3",
     "engine.io": "^1.5.4",
     "eventemitter3": "^1.1.1",
-    "history": "1.13.0",
+    "history": "1.17.0",
     "immutable": "^3.7.5",
     "koa": "^2.0.0-alpha.3",
     "koa-66": "^0.8.0",
