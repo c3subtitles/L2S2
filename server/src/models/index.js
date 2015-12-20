@@ -30,6 +30,7 @@ const config = {
 
 export default global.models;
 
+
 global.initPromise = new Promise(resolve => {
   global.waterline.initialize({
     adapters: {
@@ -43,7 +44,8 @@ global.initPromise = new Promise(resolve => {
     },
   }, (e, orm: ?Object) => {
     if (e) {
-      return;
+      console.log(e);
+      throw e;
     }
     _.each(orm.collections, (model, name: string) => {
       global.models[_.capitalize(name)] = model;

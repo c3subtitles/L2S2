@@ -1,14 +1,14 @@
-import _ from 'lodash';
 import { getUserForSessionId } from '../Services/users';
 import { addLine, lineStart, leaveRoom, leaveAllRooms } from '../Services/rooms';
 
 export function emitToRoomAuth(spark, roomId, ...params) {
-  _(spark.room(roomId).except(spark.id).connections)
-  .filter(s => s.user)
-  .each(s => {
-    s.emit(...params);
+  spark.room(roomId).transform(function(packet, done) {
+    if (this.user && this.id !== spark.id) {
+      this.emit(...packet.data[0]);
+    }
+    done(undefined, false);
   })
-  .value();
+  .write(params);
 }
 
 export function onConnection(spark: Object) {
@@ -46,20 +46,17 @@ export function onConnection(spark: Object) {
     }
   });
 
+
   spark.on('line', (roomId, text, color) => {
     if (spark.user) {
       lineStart('', spark.user.id, Number.parseInt(roomId));
       addLine(text, Number.parseInt(roomId), spark.user.id, color);
-      _(spark.room(roomId).connections)
-      .filter(s => s.id !== spark.id)
-      .each(s => {
-        if (s.user) {
-          s.emit('line', roomId, text, spark.user.id, color);
-        } else {
-          s.emit('line', roomId, text);
+      spark.room(roomId).transform(function(packet, done) {
+        if (this.id !== spark.id) {
+          this.emit(...packet.data[0]);
+          done(undefined, false);
         }
-      })
-      .value();
+      }).write(['line', roomId, text, spark.user.id, color]);
     }
   });
 }

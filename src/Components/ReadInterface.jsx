@@ -64,18 +64,26 @@ export default class ReadInterface extends React.Component {
       background: 'none',
     },
   };
+  static contextTypes = {
+    location: React.PropTypes.object,
+  };
   state: {
     settingsOpen: false,
   };
   componentWillMount() {
     const { roomId } = this.props.params;
-    joinReadRoom(roomId);
+    joinReadRoom(Number.parseInt(roomId));
   }
   componentWillUnmount() {
     leaveReadRoom();
   }
   getWrapperStyle() {
-    const { backgroundColor, color } = this.props;
+    let { backgroundColor, color } = this.props;
+    const { location } = this.context;
+    if (location.query.clean != null) {
+      backgroundColor = 'black';
+      color = 'white';
+    }
     return {
       ...ReadInterface.style.wrapper,
       backgroundColor,
@@ -83,7 +91,11 @@ export default class ReadInterface extends React.Component {
     };
   }
   getGradientStyle() {
-    const { gradientColor } = this.props;
+    let { gradientColor } = this.props;
+    const { location } = this.context;
+    if (location.query.clean != null) {
+      gradientColor = 'rgba(0,0,0,1),rgba(0,0,0,0.6)';
+    }
     return {
       ...ReadInterface.style.gradient,
       background: `linear-gradient(${gradientColor}, transparent)`,
@@ -104,17 +116,27 @@ export default class ReadInterface extends React.Component {
     if (!lines) {
       return <Loading/>;
     }
+    const { location } = this.context;
     const { settingsOpen } = this.state;
     const style = ReadInterface.style;
     return (
       <Paper style={this.getWrapperStyle()}>
-        {gradient && (<div style={this.getGradientStyle()}/>)}
-        <Dock dimStyle={style.dim} onVisibleChange={this.handleVisibleChange} isVisible={settingsOpen} position="right">
-          <ReadSettings enableGradient={gradient} backgroundColor={backgroundColor} color={color} gradientColor={gradientColor}/>
-        </Dock>
-        <IconButton style={style.settings} onClick={this.openSettings} tooltip="Settings">
-          <FontIcon color={backgroundColor} className="material-icons">settings</FontIcon>
-        </IconButton>
+        {(gradient || location.query.clean != null) && (<div style={this.getGradientStyle()}/>)}
+        {
+          location.query.clean == null &&
+          [
+            (
+              <Dock dimStyle={style.dim} onVisibleChange={this.handleVisibleChange} isVisible={settingsOpen} position="right">
+                <ReadSettings enableGradient={gradient} backgroundColor={backgroundColor} color={color} gradientColor={gradientColor}/>
+              </Dock>
+            ),
+            (
+              <IconButton style={style.settings} onClick={this.openSettings} tooltip="Settings">
+                <FontIcon color={backgroundColor} className="material-icons">settings</FontIcon>
+              </IconButton>
+            ),
+          ]
+        }
         {
           lines.map((l, i) => (
             <div style={style.line} key={i}>

@@ -1,8 +1,9 @@
 import { List, Map } from 'immutable';
+import _ from 'lodash';
 
 const colors: List = List(['#FFC7C7', '#FFF1C7', '#E3FFC7', '#C7FFD5', '#C7FFFF', '#C7D5FF', '#E3C7FF', '#FFC7F1']);
 
-function setColors(userInRoom: Map) {
+function setColors(userInRoom: Map, user: ?ClientUser) {
   const usedColors: List = userInRoom.map(u => u.color).toList();
   let availableColors = colors.filter(c => !usedColors.contains(c));
   return userInRoom.map(u => {
@@ -12,6 +13,9 @@ function setColors(userInRoom: Map) {
       }
       u.color = availableColors.last();
       availableColors = availableColors.pop();
+      if (user && user.id === u.id) {
+        user.color = u.color;
+      }
     }
     return u;
   });
@@ -57,12 +61,16 @@ export default {
       rooms: state.rooms.sortBy(r => r.id),
     };
   },
-  JOIN_ROOM: (state, { payload: { room, userInRoom, lines } }) => ({
-    write: true,
-    currentRoom: room,
-    userInRoom: setColors(userInRoom),
-    lines: processLines(lines, userInRoom),
-  }),
+  JOIN_ROOM: (state, { payload: { room, userInRoom, lines } }) => {
+    userInRoom = setColors(userInRoom, state.user);
+    return {
+      currentRoom: room,
+      lines: processLines(lines, userInRoom),
+      user: _.clone(state.user),
+      userInRoom,
+      write: true,
+    };
+  },
   LEAVE_ROOM: () => ({
     write: false,
     currentRoom: null,

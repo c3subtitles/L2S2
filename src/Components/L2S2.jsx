@@ -49,12 +49,14 @@ export default class L2S2 extends React.Component {
   }
   render() {
     const { children, ready } = this.props;
+    const { location } = this.context;
+    const clean = location.query.clean != null;
     const style = L2S2.style;
     return (
       <div>
         <NotificationSystem ref="notification"/>
         {ready && [
-          <Navbar key="nav"/>,
+          clean ? null : (<Navbar key="nav"/>),
           <div key="wrap" style={style.childWrap}>
             {children}
           </div>,

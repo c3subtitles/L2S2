@@ -6,6 +6,7 @@ import React from 'react';
 
 const props = state => ({
   userInRoom: state.userInRoom,
+  canBan: state.user.canBan,
 });
 
 @Connect(props)
@@ -35,13 +36,13 @@ export default class UserList extends React.Component {
   };
   render() {
     const style = UserList.style;
-    const { userInRoom }: { userInRoom: Map<number, Object> } = this.props;
+    const { userInRoom, canBan } = this.props;
     return (
       <Paper style={style.wrapper}>
         <h3 style={style.title}>User</h3>
           {
             userInRoom.sortBy(u => u.username).map(user => (
-              <div style={[style.user, { backgroundColor: user.color }]} key={user.id}>{user.username}</div>
+              <div style={[style.user, { backgroundColor: user.color }, canBan && { cursor: 'pointer' }]} key={user.id}>{user.username}</div>
             )).toArray()
           }
       </Paper>

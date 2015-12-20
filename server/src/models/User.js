@@ -19,6 +19,10 @@ export default Waterline.Collection.extend({
     role: {
       model: 'role',
     },
+    canBan: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
     client() {
       return getClientUserRepresentation(this);
     },

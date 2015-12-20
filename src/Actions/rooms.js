@@ -83,7 +83,8 @@ export const userLeft = createAction('USER_LEFT', (roomId, user) => ({
   user,
 }));
 
-export const joinReadRoom = createAction('JOIN_READ_ROOM', async roomId => {
+export const joinReadRoom = createAction('JOIN_READ_ROOM', async (roomId: number) => {
+  joinRoomSocket(roomId);
   const joinInformation = await axios.get(`/rooms/${roomId}/joinRead`);
   joinInformation.lines = List(joinInformation.lines);
   return joinInformation;

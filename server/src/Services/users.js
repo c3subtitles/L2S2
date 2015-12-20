@@ -84,6 +84,7 @@ export function activateUser(user: Object, u: Object): Promise {
 export function getClientUserRepresentation(user: Object): ClientUser {
   return new Object({
     active: user.active,
+    canBan: user.canBan,
     id: user.id,
     role: user.role,
     username: user.username,

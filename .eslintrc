@@ -17,7 +17,7 @@
     "SyntheticEvent": false,
     "IS_PRODUCTION": false,
     "RoomType": false,
-    "State": false,
+    "State": false
   },
   "rules": {
     "accessor-pairs": 0,

@@ -16,6 +16,7 @@ declare class ClientUser extends Object {
   id: number,
   role: RoleType,
   username: string,
+  canBan: bool,
 }
 
 declare class RoomType extends Object {
