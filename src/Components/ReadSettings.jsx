@@ -1,3 +1,4 @@
+/* @flow */
 import React from 'react';
 import { Connect } from '../Helper';
 import Radium from 'radium';
@@ -14,9 +15,11 @@ type Props = {
   enableGradient?: bool,
 };
 
+/*::`*/
 @Connect(props)
 @Radium
-export default class ReadSettings extends React.Component<void, Props, {}> {
+/*::`*/
+export default class ReadSettings extends React.Component<void, Props, void> {
   static style = {
     wrapper: {
       display: 'flex',
@@ -32,6 +35,7 @@ export default class ReadSettings extends React.Component<void, Props, {}> {
       flex: '1 1 0',
     },
   };
+  colorChangeTimeout: ?number;
   handleBgChange = (e) => {
     clearTimeout(this.colorChangeTimeout);
     this.colorChangeTimeout = setTimeout(changeReadColor.bind(null, {
@@ -49,7 +53,7 @@ export default class ReadSettings extends React.Component<void, Props, {}> {
       enableGradient: toggled,
     });
   };
-  render() {
+  render(): ReactElement {
     const { backgroundColor, color, enableGradient } = this.props;
     const style = ReadSettings.style;
     const wrapperStyle = {

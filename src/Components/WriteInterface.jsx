@@ -13,8 +13,10 @@ const props = state => ({
 });
 
 
+/*::`*/
 @Permission()
 @Connect(props)
+/*::`*/
 export default class WriteInterface extends React.Component {
   static contextTypes = {
     transitionTo: React.PropTypes.func,

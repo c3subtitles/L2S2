@@ -12,7 +12,7 @@ export const logout = createAction('LOGOUT', async () => {
   } catch (e) {
     /* ignored */
   }
-  delete localStorage.sessionId;
+  localStorage.removeItem('sessionId');
   return {};
 });
 
@@ -21,7 +21,7 @@ export const login = createAction('LOGIN', async (username: string, password: st
     username,
     password,
   });
-  localStorage.sessionId = result.sessionId;
+  localStorage.setItem('sessionId', result.sessionId);
   updateSessionId();
   addSuccess({ title: 'Login successful' });
   return result;
@@ -36,11 +36,11 @@ export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
       if (userFromServer) {
         return {
           user: userFromServer,
-          sessionId: localStorage.sessionId,
+          sessionId: localStorage.getItem('sessionId'),
         };
       }
     } catch (e) {
-      delete localStorage.sessionId;
+      localStorage.removeItem('sessionId');
     }
   }
   if (token) {
@@ -49,7 +49,7 @@ export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
         token,
       });
       if (tokenResult && tokenResult.sessionId) {
-        localStorage.sessionId = tokenResult.sessionId;
+        localStorage.setItem('sessionId', tokenResult.sessionId);
         tokenResult.user.fromToken = true;
         return {
           user: tokenResult.user,

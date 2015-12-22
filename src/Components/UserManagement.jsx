@@ -9,8 +9,10 @@ const props = state => ({
   user: state.user,
 });
 
+/*::`*/
 @Permission('canActivateUser', 'canDeleteUser')
 @Connect(props)
+/*::`*/
 export default class UserManagement extends React.Component {
   static propTypes = {
     user: React.PropTypes.object,

@@ -1,3 +1,4 @@
+/* @flow */
 import { Connect } from '../Helper';
 import { joinReadRoom, leaveReadRoom } from '../Actions/rooms';
 import { List } from 'immutable';
@@ -19,17 +20,24 @@ const props = state => ({
   lines: state.readLines,
 });
 
+type Props = {
+  backgroundColor: string,
+  color: string,
+  gradient: bool,
+  gradientColor: string,
+  lines: List,
+  params: Object,
+};
+
+type State = {
+  settingsOpen: bool,
+};
+
+/*::`*/
 @Connect(props)
 @Radium
-export default class ReadInterface extends React.Component {
-  static propTypes = {
-    backgroundColor: React.PropTypes.string,
-    color: React.PropTypes.string,
-    gradient: React.PropTypes.bool,
-    gradientColor: React.PropTypes.string,
-    lines: React.PropTypes.instanceOf(List),
-    params: React.PropTypes.object,
-  };
+/*::`*/
+export default class ReadInterface extends React.Component<void, Props, State> {
   static style = {
     wrapper: {
       alignItems: 'center',
@@ -77,7 +85,7 @@ export default class ReadInterface extends React.Component {
   componentWillUnmount() {
     leaveReadRoom();
   }
-  getWrapperStyle() {
+  getWrapperStyle(): Object {
     let { backgroundColor, color } = this.props;
     const { location } = this.context;
     if (location.query.clean != null) {
@@ -90,7 +98,7 @@ export default class ReadInterface extends React.Component {
       color,
     };
   }
-  getGradientStyle() {
+  getGradientStyle(): Object {
     let { gradientColor } = this.props;
     const { location } = this.context;
     if (location.query.clean != null) {

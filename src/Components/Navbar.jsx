@@ -1,3 +1,4 @@
+/* @flow */
 import { AppBar, IconMenu, RaisedButton, FlatButton } from 'material-ui';
 import { Connect } from '../Helper';
 import { hasPermission } from '../Services/user';
@@ -7,7 +8,15 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import Radium from 'radium';
 import React from 'react';
 
+type Props = {
+  currentRoom: Object,
+  loggedIn: bool,
+  readMode: bool,
+  user: ClientUser,
+  writeMode: bool,
+};
 
+/*::`*/
 @Radium
 @Connect(state => ({
   currentRoom: state.currentRoom,
@@ -15,14 +24,8 @@ import React from 'react';
   user: state.user,
   writeMode: state.write,
 }))
-export default class Navbar extends React.Component {
-  static propTypes = {
-    currentRoom: React.PropTypes.object,
-    loggedIn: React.PropTypes.bool,
-    readMode: React.PropTypes.bool,
-    user: React.PropTypes.instanceOf(ClientUser),
-    writeMode: React.PropTypes.bool,
-  }
+/*::`*/
+export default class Navbar extends React.Component<void, Props, void> {
   static contextTypes = {
     transitionTo: React.PropTypes.func.isRequired,
   };
@@ -96,7 +99,7 @@ export default class Navbar extends React.Component {
     e.stopPropagation();
     const { currentRoom } = this.props;
     speechLockRoom(currentRoom.id, !currentRoom.speechLocked);
-  }
+  };
   profile: () => void = () => {
     this.context.transitionTo('/profile');
   };
@@ -126,7 +129,7 @@ export default class Navbar extends React.Component {
       </IconMenu>
     );
   }
-  getTitle() {
+  getTitle(): ReactElement {
     const style = Navbar.style;
     const { currentRoom, loggedIn, readMode, writeMode, user } = this.props;
     let conditionalButton;

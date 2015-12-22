@@ -1,3 +1,4 @@
+/* @flow */
 import { addError } from 'Services/notifications';
 import { PureRender } from 'Helper';
 import { register } from 'Services/user';
@@ -5,12 +6,15 @@ import { TextField, RaisedButton } from 'material-ui';
 import React from 'react';
 import { Connect } from '../Helper';
 
+type Props = {
+  loggedIn: bool,
+};
+
+/*::`*/
 @PureRender
 @Connect()
-export default class Register extends React.Component {
-  static propTypes = {
-    loggedIn: React.PropTypes.bool,
-  }
+/*::`*/
+export default class Register extends React.Component<void, Props, void> {
   static contextTypes = {
     transitionTo: React.PropTypes.func,
   };
@@ -31,6 +35,7 @@ export default class Register extends React.Component {
       this.context.transitionTo('/');
     }
   }
+  loggingIn: bool = false;
   register = async (e) => {
     e.preventDefault();
     if (this.loggingIn) {
@@ -52,12 +57,12 @@ export default class Register extends React.Component {
     } finally {
       this.loggingIn = false;
     }
-  }
-  render() {
+  };
+  render(): ReactElement {
     const style = Register.style;
     return (
       <div style={style.wrapper}>
-        <form onSubmit={this.login} style={style.innerWrap}>
+        <form onSubmit={this.register} style={style.innerWrap}>
           <TextField floatingLabelText="Username" ref="username"/>
           <TextField floatingLabelText="Email" ref="email" type="email"/>
           <TextField floatingLabelText="Password" ref="password1" type="password"/>

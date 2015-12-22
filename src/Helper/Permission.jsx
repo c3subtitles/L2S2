@@ -1,9 +1,9 @@
-
+/* @flow */
 import { hasPermission } from '../Services/user';
 import React from 'react';
 
 
-export default function(...permissions): Function {
+export function Permission(...permissions: Array<string>): Function {
   return function(component) {
     return class Permission extends component {
       static displayName = component.displayName || component.name;

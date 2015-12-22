@@ -1,3 +1,4 @@
+/* @flow */
 import { Connect } from '../Helper';
 import { Map } from 'immutable';
 import { Paper, TextField } from 'material-ui';
@@ -9,12 +10,15 @@ const props = state => ({
   shortcuts: state.shortcuts,
 });
 
+type Props = {
+  shortcuts: Map,
+};
+
+/*::`*/
 @Radium
 @Connect(props)
-export default class ShortcutList extends React.Component {
-  static propTypes = {
-    shortcuts: React.PropTypes.instanceOf(Map),
-  };
+/*::`*/
+export default class ShortcutList extends React.Component<void, Props, void> {
   static style = {
     wrapper: {
       width: '15%',
@@ -44,7 +48,8 @@ export default class ShortcutList extends React.Component {
       },
     },
   };
-  handleShortcutChange = (key: string, e: SyntheticEvent) => {
+  handleShortcutChange = (key: string, e: SyntheticKeyboardEvent) => {
+    /* $FlowFixMe */
     setShortcut(key, e.target.value);
   };
   render() {

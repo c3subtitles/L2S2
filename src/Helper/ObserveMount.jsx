@@ -1,6 +1,4 @@
-
-
-export default function(component) {
+export function ObserveMount(component) {
   return class ObserveMount extends component {
     _mounted = false;
     _checkMounted = false;

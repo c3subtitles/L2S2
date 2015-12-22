@@ -9,6 +9,7 @@
  * presents an Object-Oriented API familiar to JavaScript engineers and closely
  * mirroring that of Array, Map, and Set. It is easy and efficient to convert to
  * and from plain JavaScript types.
+
  * Note: all examples are presented in [ES6][]. To run in all browsers, they
  * need to be translated to ES3. For example:
  *
@@ -102,10 +103,13 @@ declare module 'immutable' {
     * Create a new immutable List containing the values of the provided
     * iterable-like.
     */
-    static <T>(iter?: IndexedIterable<T>): List<T>;
-    static <T>(iter?: SetIterable<T>): List<T>;
-    static <T>(iterator?: Iterator<T>): List<T>;
-    static <T>(iterable?: Iterable<number, T>): List<T>;
+    static <T>(): List<T>;
+    static <T>(iter: IndexedIterable<T>): List<T>;
+    static <T>(iter: SetIterable<T>): List<T>;
+    static <K, V>(iter: KeyedIterable<K, V>): List</*[K,V]*/any>;
+    static <T>(array: Array<T>): List<T>;
+    static <T>(iterator: Iterator<T>): List<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): List<T>;
 
     /**
      * True if the provided value is a List
@@ -257,8 +261,8 @@ declare module 'immutable' {
      * Index numbers are used as keys to determine the path to follow in
      * the List.
      */
-    setIn(keyPath: Array<any>, value: T): List<T>;
-    setIn(keyPath: Iterable<any, any>, value: T): List<T>;
+    setIn(keyPath: Array<any>, value: any): List<T>;
+    setIn(keyPath: Iterable<any, any>, value: any): List<T>;
 
     /**
      * Returns a new List having removed the value at this `keyPath`. If any
@@ -380,10 +384,13 @@ declare module 'immutable' {
     *     var newMap = Map([["key", "value"]]);
     *
     */
-    static <K, V>(iter?: KeyedIterable<K, V>): Map<K, V>;
-    static <V>(obj?: {[key: string]: V}): Map<string, V>;
-    static <K, V>(iterator?: Iterator<[K,V]>): Map<K, V>;
-    static <K, V>(iterable?: Iterable<[K,V]>): Map<K, V>;
+    static <K, V>(): Map<K, V>;
+    static <K, V>(iter: KeyedIterable<K, V>): Map<K, V>;
+    static <K, V>(iter: Iterable<any, /*[K,V]*/Array<any>>): Map<K, V>;
+    static <K, V>(array: Array</*[K,V]*/Array<any>>): Map<K, V>;
+    static <V>(obj: {[key: string]: V}): Map<string, V>;
+    static <K, V>(iterator: Iterator</*[K,V]*/Array<any>>): Map<K, V>;
+    static <K, V>(iterable: /*Iterable<[K,V]>*/Object): Map<K, V>;
 
     /**
      * True if the provided value is a Map
@@ -675,10 +682,13 @@ declare module 'immutable' {
     *     var newOrderedMap = OrderedMap([["key", "value"]]);
     *
     */
-    static <K, V>(iter?: KeyedIterable<K, V>): Map<K, V>;
-    static <V>(obj?: {[key: string]: V}): Map<string, V>;
-    static <K, V>(iterator?: Iterator<[K,V]>): Map<K, V>;
-    static <K, V>(iterable?: Iterable<[K,V]>): Map<K, V>;
+    static <K, V>(): OrderedMap<K, V>;
+    static <K, V>(iter: KeyedIterable<K, V>): OrderedMap<K, V>;
+    static <K, V>(iter: Iterable<any, /*[K,V]*/Array<any>>): OrderedMap<K, V>;
+    static <K, V>(array: Array</*[K,V]*/Array<any>>): OrderedMap<K, V>;
+    static <V>(obj: {[key: string]: V}): OrderedMap<string, V>;
+    static <K, V>(iterator: Iterator</*[K,V]*/Array<any>>): OrderedMap<K, V>;
+    static <K, V>(iterable: /*Iterable<[K,V]>*/Object): OrderedMap<K, V>;
 
     /**
      * True if the provided value is an OrderedMap.
@@ -703,11 +713,13 @@ declare module 'immutable' {
     * Create a new immutable Set containing the values of the provided
     * iterable-like.
     */
-    static <T>(iter?: SetIterable<T>): Set<T>;
-    static <T>(iter?: IndexedIterable<T>): Set<T>;
-    static <K, V>(iter?: KeyedIterable<K, V>): Set<any>;
-    static <T>(iterator?: Iterator<T>): Set<T>;
-    static <T>(iterable?: Iterable<number, T>): Set<T>;
+    static <T>(): Set<T>;
+    static <T>(iter: SetIterable<T>): Set<T>;
+    static <T>(iter: IndexedIterable<T>): Set<T>;
+    static <K, V>(iter: KeyedIterable<K, V>): Set</*[K,V]*/any>;
+    static <T>(array: Array<T>): Set<T>;
+    static <T>(iterator: Iterator<T>): Set<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): Set<T>;
 
     /**
      * True if the provided value is a Set
@@ -805,11 +817,13 @@ declare module 'immutable' {
     * Create a new immutable OrderedSet containing the values of the provided
     * iterable-like.
     */
-    static <T>(iter?: SetIterable<T>): OrderedSet<T>;
-    static <T>(iter?: IndexedIterable<T>): OrderedSet<T>;
-    static <K, V>(iter?: KeyedIterable<K, V>): OrderedSet<any>;
-    static <T>(iterator?: Iterator<T>): OrderedSet<T>;
-    static <T>(iterable?: Iterable<number, T>): OrderedSet<T>;
+    static <T>(): OrderedSet<T>;
+    static <T>(iter: SetIterable<T>): OrderedSet<T>;
+    static <T>(iter: IndexedIterable<T>): OrderedSet<T>;
+    static <K, V>(iter: KeyedIterable<K, V>): OrderedSet</*[K,V]*/any>;
+    static <T>(array: Array<T>): OrderedSet<T>;
+    static <T>(iterator: Iterator<T>): OrderedSet<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): OrderedSet<T>;
 
     /**
      * True if the provided value is an OrderedSet.
@@ -850,11 +864,13 @@ declare module 'immutable' {
     * The iteration order of the provided iterable is preserved in the
     * resulting `Stack`.
     */
-    static <T>(iter?: SetIterable<T>): Stack<T>;
-    static <T>(iter?: IndexedIterable<T>): Stack<T>;
-    static <K, V>(iter?: KeyedIterable<K, V>): Stack<any>;
-    static <T>(iterator?: Iterator<T>): Stack<T>;
-    static <T>(iterable?: Iterable<number, T>): Stack<T>;
+    static <T>(): Stack<T>;
+    static <T>(iter: IndexedIterable<T>): Stack<T>;
+    static <T>(iter: SetIterable<T>): Stack<T>;
+    static <K, V>(iter: KeyedIterable<K, V>): Stack</*[K,V]*/any>;
+    static <T>(array: Array<T>): Stack<T>;
+    static <T>(iterator: Iterator<T>): Stack<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): Stack<T>;
 
     /**
      * True if the provided value is a Stack
@@ -1046,7 +1062,7 @@ declare module 'immutable' {
    *     // { x: 0, y: 2, z: 4 }
    */
 
-  declare interface Seq<K, V> extends Iterable<K, V> {
+  declare class Seq<K, V> extends Iterable<K, V> {
     /**
     * Creates a Seq.
     *
@@ -1060,9 +1076,13 @@ declare module 'immutable' {
     *   * If an Object, a `KeyedSeq`.
     *
     */
-    static <K, V>(iterable?: Iterable<K, V>): Seq<K, V>;
-    static <T>(iterator?: Iterator<T>): IndexedSeq<T>;
-    static <V>(obj?: {[key: string]: V}): KeyedSeq<string, V>;
+    static <K, V>(): Seq<K, V>;
+    static <K, V>(seq: Seq<K, V>): Seq<K, V>;
+    static <K, V>(iterable: Iterable<K, V>): Seq<K, V>;
+    static <T>(array: Array<T>): IndexedSeq<T>;
+    static <V>(obj: {[key: string]: V}): KeyedSeq<string, V>;
+    static <T>(iterator: Iterator<T>): IndexedSeq<T>;
+    static <T>(iterable: /*ES6Iterable<T>*/Object): IndexedSeq<T>;
 
     /**
      * True if `maybeSeq` is a Seq, it is not backed by a concrete
@@ -1085,7 +1105,7 @@ declare module 'immutable' {
      * Note: `Range`, `Repeat` and `Seq`s made from `Array`s and `Object`s will
      * always have a size.
      */
-    size: number;
+    size: number/*?*/;
 
 
     // Force evaluation
@@ -1110,41 +1130,48 @@ declare module 'immutable' {
      *
      * Note: after calling `cacheResult`, a Seq will always have a `size`.
      */
-    cacheResult(): Seq<K, V>;
+    cacheResult(): /*this*/Seq<K, V>;
   }
 
 
   /**
    * `Seq` which represents key-value pairs.
    */
-  declare interface KeyedSeq<K, V> extends Seq<K, V>, KeyedIterable<K, V> {
+  declare class KeyedSeq<K, V> extends Seq<K, V> mixins KeyedIterable<K, V> {
     /**
     * Always returns a KeyedSeq, if input is not keyed, expects an
     * iterable of [K, V] tuples.
     */
-    static <K, V>(iterator?: Iterator<V>): KeyedSeq<K, V>;
-    static <K, V>(iterable?: KeyedIterable<K, V>): KeyedSeq<K, V>;
-    static <V>(obj?: {[key: string]: V}): KeyedSeq<string, V>;
+    static <K, V>(): KeyedSeq<K, V>;
+    static <K, V>(seq: KeyedIterable<K, V>): KeyedSeq<K, V>;
+    static <K, V>(seq: Iterable<any, /*[K,V]*/any>): KeyedSeq<K, V>;
+    static <K, V>(array: Array</*[K,V]*/any>): KeyedSeq<K, V>;
+    static <V>(obj: {[key: string]: V}): KeyedSeq<string, V>;
+    static <K, V>(iterator: Iterator</*[K,V]*/any>): KeyedSeq<K, V>;
+    static <K, V>(iterable: /*Iterable<[K,V]>*/Object): KeyedSeq<K, V>;
 
     /**
      * Returns itself
      */
-    toSeq(): KeyedSeq<K, V>;
+    toSeq(): /*this*/KeyedSeq<K, V>
   }
 
 
   /**
    * `Seq` which represents an ordered indexed list of values.
    */
-  declare interface IndexedSeq<T> extends Seq<number, T>, IndexedIterable<T> {
+  declare class IndexedSeq<T> extends Seq<number, T> mixins IndexedIterable<T> {
     /**
     * Always returns IndexedSeq, discarding associated keys and
     * supplying incrementing indices.
     */
-    static <T>(seq?: IndexedIterable<T>): IndexedSeq<T>;
-    static <T>(seq?: SetIterable<T>): IndexedSeq<T>;
-    static <K, V>(seq?: KeyedIterable<K, V>): IndexedSeq<any>;
-    static <T>(iterator?: Iterator<T>): IndexedSeq<T>;
+    static <T>(): IndexedSeq<T>;
+    static <T>(seq: IndexedIterable<T>): IndexedSeq<T>;
+    static <T>(seq: SetIterable<T>): IndexedSeq<T>;
+    static <K, V>(seq: KeyedIterable<K, V>): IndexedSeq</*[K,V]*/any>;
+    static <T>(array: Array<T>): IndexedSeq<T>;
+    static <T>(iterator: Iterator<T>): IndexedSeq<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): IndexedSeq<T>;
 
 
     /**
@@ -1155,7 +1182,7 @@ declare module 'immutable' {
     /**
      * Returns itself
      */
-    toSeq(): IndexedSeq<T>;
+    toSeq(): /*this*/IndexedSeq<T>
   }
 
 
@@ -1165,14 +1192,17 @@ declare module 'immutable' {
    * Because `Seq` are often lazy, `SetSeq` does not provide the same guarantee
    * of value uniqueness as the concrete `Set`.
    */
-  declare interface SetSeq<T> extends Seq<T, T>, SetIterable<T> {
+  declare class SetSeq<T> extends Seq<T, T> mixins SetIterable<T> {
     /**
     * Always returns a SetSeq, discarding associated indices or keys.
     */
-    static <T>(seq?: SetIterable<T>): SetSeq<T>;
-    static <T>(seq?: IndexedIterable<T>): SetSeq<T>;
-    static <K, V>(seq: KeyedIterable<K, V>): SetSeq<any>;
-    static <T>(iterator?: Iterator<T>): SetSeq<T>;
+    static <T>(): SetSeq<T>;
+    static <T>(seq: SetIterable<T>): SetSeq<T>;
+    static <T>(seq: IndexedIterable<T>): SetSeq<T>;
+    static <K, V>(seq: KeyedIterable<K, V>): SetSeq</*[K,V]*/any>;
+    static <T>(array: Array<T>): SetSeq<T>;
+    static <T>(iterator: Iterator<T>): SetSeq<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): SetSeq<T>;
 
 
     /**
@@ -1183,7 +1213,7 @@ declare module 'immutable' {
     /**
      * Returns itself
      */
-    toSeq(): /*this*/SetSeq<T>;
+    toSeq(): /*this*/SetSeq<T>
   }
 
 
@@ -1195,7 +1225,7 @@ declare module 'immutable' {
    * Note: An iterable is always iterated in the same order, however that order
    * may not always be well defined, as is the case for the `Map` and `Set`.
    */
-  declare interface Iterable<K, V> {
+  declare class Iterable<K, V> {
     /**
     * Creates an Iterable.
     *
@@ -1211,9 +1241,12 @@ declare module 'immutable' {
     * If you want to ensure that a Iterable of one item is returned, use
     * `Seq.of`.
     */
-    static <K, V>(iterable?: Iterable<K, V>): Iterable<K, V>;
-    static <V>(obj?: {[key: string]: V}): KeyedIterable<string, V>;
-    static <T>(iterator?: Iterator<T>): IndexedIterable<T>;
+    static <K, V>(iterable: Iterable<K, V>): Iterable<K, V>;
+    static <T>(array: Array<T>): IndexedIterable<T>;
+    static <V>(obj: {[key: string]: V}): KeyedIterable<string, V>;
+    static <T>(iterator: Iterator<T>): IndexedIterable<T>;
+    static <T>(iterable: /*ES6Iterable<T>*/Object): IndexedIterable<T>;
+    static <V>(value: V): IndexedIterable<V>;
 
     /**
      * True if `maybeIterable` is an Iterable, or any of its subclasses.
@@ -1938,7 +1971,7 @@ declare module 'immutable' {
    * in other words, `Iterable#entries` is the default iterator for Keyed
    * Iterables.
    */
-  declare interface KeyedIterable<K, V> extends Iterable<K, V> {
+  declare class KeyedIterable<K, V> extends Iterable<K, V> {
     /**
     * Creates a KeyedIterable
     *
@@ -1951,6 +1984,8 @@ declare module 'immutable' {
     static <V>(obj: {[key: string]: V}): KeyedIterable<string, V>;
     static <K, V>(iterator: Iterator</*[K,V]*/any>): KeyedIterable<K, V>;
     static <K, V>(iterable: /*Iterable<[K,V]>*/Object): KeyedIterable<K, V>;
+
+    @@iterator(): Iterator<[K, V]>;
 
     /**
      * Returns KeyedSeq.
@@ -2050,14 +2085,18 @@ declare module 'immutable' {
    * preserve indices, using them as keys, convert to a KeyedIterable by calling
    * `toKeyedSeq`.
    */
-  declare interface IndexedIterable<T> extends Iterable<number, T> {
+  declare class IndexedIterable<T> extends Iterable<number, T> {
     /**
     * Creates a new IndexedIterable.
     */
-    static <T>(iter?: IndexedIterable<T>): IndexedIterable<T>;
-    static <T>(iter?: SetIterable<T>): IndexedIterable<T>;
-    static <K, V>(iter: KeyedIterable<K, V>): IndexedIterable<any>;
-    static <T>(iterator?: Iterator<T>): IndexedIterable<T>;
+    static <T>(iter: IndexedIterable<T>): IndexedIterable<T>;
+    static <T>(iter: SetIterable<T>): IndexedIterable<T>;
+    static <K, V>(iter: KeyedIterable<K, V>): IndexedIterable</*[K,V]*/any>;
+    static <T>(array: Array<T>): IndexedIterable<T>;
+    static <T>(iterator: Iterator<T>): IndexedIterable<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): IndexedIterable<T>;
+
+    @@iterator(): Iterator<T>;
 
     // Reading values
 
@@ -2217,14 +2256,18 @@ declare module 'immutable' {
    *     assert.equal(seq.every((v, k) => v === k), true);
    *
    */
-  declare interface SetIterable<T> extends Iterable<T, T> {
+  declare class SetIterable<T> extends Iterable<T, T> {
     /**
     * Similar to `Iterable()`, but always returns a SetIterable.
     */
-    static <T>(iterator?: Iterator<T>): SetIterable<T>;
-    static <T>(iter?: SetIterable<T>): SetIterable<T>;
-    static <T>(iter?: IndexedIterable<T>): SetIterable<T>;
-    static <K, V>(iter: KeyedIterable<K, V>): SetIterable<any>;
+    static <T>(iter: SetIterable<T>): SetIterable<T>;
+    static <T>(iter: IndexedIterable<T>): SetIterable<T>;
+    static <K, V>(iter: KeyedIterable<K, V>): SetIterable</*[K,V]*/any>;
+    static <T>(array: Array<T>): SetIterable<T>;
+    static <T>(iterator: Iterator<T>): SetIterable<T>;
+    static <T>(iterable: /*Iterable<T>*/Object): SetIterable<T>;
+
+    @@iterator(): Iterator<T>;
 
     /**
      * Returns SetSeq.
@@ -2241,7 +2284,7 @@ declare module 'immutable' {
    * Implementations should extend one of the subclasses, `KeyedCollection`,
    * `IndexedCollection`, or `SetCollection`.
    */
-  declare interface Collection<K, V> extends Iterable<K, V> {
+  declare class Collection<K, V> extends Iterable<K, V> {
 
     /**
      * All collections maintain their current `size` as an integer.
@@ -2253,7 +2296,7 @@ declare module 'immutable' {
   /**
    * `Collection` which represents key-value pairs.
    */
-  declare interface KeyedCollection<K, V> extends Collection<K, V>, KeyedIterable<K, V> {
+  declare class KeyedCollection<K, V> extends Collection<K, V> mixins KeyedIterable<K, V> {
 
     /**
      * Returns KeyedSeq.
@@ -2266,7 +2309,7 @@ declare module 'immutable' {
   /**
    * `Collection` which represents ordered indexed values.
    */
-  declare interface IndexedCollection<T> extends Collection<number, T>, IndexedIterable<T> {
+  declare class IndexedCollection<T> extends Collection<number, T> mixins IndexedIterable<T> {
 
     /**
      * Returns IndexedSeq.
@@ -2281,7 +2324,7 @@ declare module 'immutable' {
    *
    * `SetCollection` implementations should guarantee value uniqueness.
    */
-  declare interface SetCollection<T> extends Collection<T, T>, SetIterable<T> {
+  declare class SetCollection<T> extends Collection<T, T> mixins SetIterable<T> {
 
     /**
      * Returns SetSeq.

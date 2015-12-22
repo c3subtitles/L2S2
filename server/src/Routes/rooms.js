@@ -1,3 +1,4 @@
+/* @flow */
 import _ from 'lodash';
 import { getCurrentUserFromSession } from '../Services/users';
 import { getUsersInRoom, joinRoom, getLinesForRoom } from '../Services/rooms';

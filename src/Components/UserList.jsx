@@ -9,9 +9,15 @@ const props = state => ({
   canBan: state.user.canBan,
 });
 
+type Props = {
+  userInRoom: Map,
+};
+
+/*::`*/
 @Connect(props)
 @Radium
-export default class UserList extends React.Component {
+/*::`*/
+export default class UserList extends React.Component<void, Props, void> {
   static propTypes = {
     userInRoom: React.PropTypes.instanceOf(Map),
   };

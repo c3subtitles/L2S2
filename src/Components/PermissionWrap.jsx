@@ -1,17 +1,14 @@
-
-
+/* @flow */
 import React from 'react';
 import { hasPermission } from '../Services/user';
 
-export default class PermissionWrap extends React.Component {
-  static propTypes = {
-    children: React.PropTypes.any.isRequired,
-    permission: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.arrayOf(React.PropTypes.string),
-    ]).isRequired,
-  };
-  render() {
+type Props = {
+  children: any,
+  permission: string|Array<string>,
+};
+
+export default class PermissionWrap extends React.Component<void, Props, void> {
+  render(): ?ReactElement {
     const { permission, children } = this.props;
     if (hasPermission(permission)) {
       if (React.Children.count(children) > 1) {

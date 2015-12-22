@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-export default function(reducer) {
+export function Connect(reducer) {
   reducer = function(old = () => null) {
     return function(state) {
       return {

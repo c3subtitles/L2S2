@@ -1,5 +1,5 @@
+/* @flow */
 import axios from 'axios';
-import _ from 'lodash';
 import { addSuccess, addError } from './notifications';
 
 export function hasPermission(permission: string|Array<string>): bool {
@@ -10,11 +10,11 @@ export function hasPermission(permission: string|Array<string>): bool {
   if (!permission.length) {
     return true;
   }
-  const permissions: Array<string> = _.isArray(permission) ? permission : [permission];
+  const permissions: Array<string> = Array.isArray(permission) ? permission : [permission];
   return permissions.some(p => user && user.role[p]);
 }
 
-export async function changePassword(oldPassword: string, newPassword: string) {
+export async function changePassword(oldPassword: string, newPassword: string): Promise {
   const { user, sessionId } = store.getState();
   if (user) {
     try {
@@ -30,7 +30,7 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 }
 
-export async function register(username: string, email: string, password: string) {
+export async function register(username: string, email: string, password: string): Promise {
   await axios.post('/register', {
     username,
     email,

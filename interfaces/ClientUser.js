@@ -1,27 +1,29 @@
 declare class RoleType extends Object {
-  name: string,
-  canActivateUser: bool,
-  canChangeUserRole: bool,
-  canCreateRoom: bool,
-  canDeleteRoom: bool,
-  canDeleteUser: bool,
-  canJoinLocked: bool,
-  canLock: bool,
-  canSpeechLock: bool
+  canActivateUser: bool;
+  canChangeUserRole: bool;
+  canCreateRoom: bool;
+  canDeleteRoom: bool;
+  canDeleteUser: bool;
+  canJoinLocked: bool;
+  canLock: bool;
+  canSpeechLock: bool;
+  id: number;
+  name: string;
 }
 
 declare class ClientUser extends Object {
-  active: bool,
-  currentLine: ?string,
-  id: number,
-  role: RoleType,
-  username: string,
-  canBan: bool,
+  active: bool;
+  canBan: bool;
+  color?: string;
+  currentLine: ?string;
+  id: number;
+  role: RoleType;
+  username: string;
 }
 
 declare class RoomType extends Object {
-  id: number,
-  locked: bool,
-  name: string,
-  speechLocked: bool,
+  id: number;
+  locked: bool;
+  name: string;
+  speechLocked: bool;
 }

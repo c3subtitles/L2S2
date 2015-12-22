@@ -1,3 +1,4 @@
+/* @flow */
 import { Connect } from '../Helper';
 import { Paper, Dialog, TextField } from 'material-ui';
 import { deleteRoom, saveRoom } from '../Actions/rooms';
@@ -9,9 +10,20 @@ const props = state => ({
   user: state.user,
 });
 
+type Props = {
+  room: RoomType,
+  user: Object,
+};
+
+type State = {
+  showDelete: bool,
+}
+
+/*::`*/
 @Radium
 @Connect(props)
-export default class Room extends React.Component {
+/*::`*/
+export default class Room extends React.Component<void, Props, State> {
   static propTypes = {
     room: React.PropTypes.object,
     user: React.PropTypes.object,
@@ -41,7 +53,7 @@ export default class Room extends React.Component {
   };
   hideDelete = () => {
     this.setState({ showDelete: false });
-  }
+  };
   delete = () => {
     this.setState({ showDelete: false });
     deleteRoom(this.props.room);

@@ -1,11 +1,10 @@
-
-
+/* @flow */
 import ObserveMount from './ObserveMount';
 import shallowequal from 'shallowequal';
 import _ from 'lodash';
 
 function pureRender({ state, props }) {
-  return function(component: Function) {
+  return function(component: any) {
     class PureRender extends component {
       static displayName = component.displayName || component.name;
       shouldComponentUpdate(nextProps, nextState) {
@@ -34,7 +33,7 @@ function pureRender({ state, props }) {
   };
 }
 
-export default function(optionsOrComponent: Object|Function): Function {
+export function PureRender(optionsOrComponent: Object|Function): Function {
   if (_.isFunction(optionsOrComponent)) {
     return pureRender({})(optionsOrComponent);
   }

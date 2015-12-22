@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 
-declare class State extends Object {
+declare class ReduxState extends Object {
   currentRoom: ?RoomType,
   readLines: List<string>,
   roles: List<RoleType>,

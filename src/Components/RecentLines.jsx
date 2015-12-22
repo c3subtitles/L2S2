@@ -1,3 +1,4 @@
+/* @flow */
 import { List } from 'immutable';
 import { Connect } from '../Helper';
 import React from 'react';
@@ -7,14 +8,17 @@ const props = state => ({
   lines: state.lines,
 });
 
+type Props = {
+  lines: List,
+  style: Object,
+};
+
+/*::`*/
 @Radium
 @Connect(props)
-export default class RecentLines extends React.Component {
-  static propTypes = {
-    lines: React.PropTypes.instanceOf(List),
-    style: React.PropTypes.object,
-  };
-  render() {
+/*::`*/
+export default class RecentLines extends React.Component<void, Props, void> {
+  render(): ReactElement {
     const { lines, style } = this.props;
     return (
       <div style={style}>

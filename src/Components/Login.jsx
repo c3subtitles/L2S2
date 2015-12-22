@@ -1,3 +1,5 @@
+/* @flow */
+/* $FlowFixMe */
 import 'sweetalert/dist/sweetalert.css';
 import { Connect } from '../Helper';
 import { login, resetPassword } from '../Actions/user';
@@ -5,11 +7,14 @@ import { TextField, RaisedButton } from 'material-ui';
 import React from 'react';
 import swal from 'sweetalert';
 
+type Props = {
+  loggedIn: bool,
+};
+
+/*::`*/
 @Connect()
-export default class Login extends React.Component {
-  static propTypes = {
-    loggedIn: React.PropTypes.bool,
-  };
+/*::`*/
+export default class Login extends React.Component<void, Props, void> {
   static style = {
     wrapper: {
       display: 'flex',
@@ -71,7 +76,7 @@ export default class Login extends React.Component {
       }
     });
   };
-  render() {
+  render(): ReactElement {
     const style = Login.style;
     return (
       <div style={style.wrapper}>

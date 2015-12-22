@@ -1,7 +1,14 @@
+/* @flow */
 import React from 'react';
 import { FlatButton } from 'material-ui';
 
-export default class DeleteButton extends React.Component {
+type Props = {
+  label?: string,
+  onClick?: Function,
+  style?: Object,
+}
+
+export default class DeleteButton extends React.Component<void, Props, void> {
   static propTypes = {
     label: React.PropTypes.string,
     onClick: React.PropTypes.func,

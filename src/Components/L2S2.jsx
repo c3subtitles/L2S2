@@ -1,3 +1,4 @@
+/* @flow */
 import { CSS, Connect } from '../Helper';
 import { fetchUser } from '../Actions/user';
 import { setSystem } from '../Services/notifications';
@@ -7,19 +8,21 @@ import NotificationSystem from 'react-notification-system';
 import Radium from 'radium';
 import React from 'react';
 
+type Props = {
+  children?: any,
+  dispatch?: Function,
+  loggedIn?: bool,
+  ready?: bool,
+  user?: ClientUser,
+}
 
+/*::`*/
 @CSS(GlobalCSS)
 @Radium
 @Connect(state => ({ ready: state.initialized }))
-export default class L2S2 extends React.Component {
+/*::`*/
+export default class L2S2 extends React.Component<void, Props, void> {
   static _globalCSS = true;
-  static propTypes = {
-    children: React.PropTypes.any,
-    dispatch: React.PropTypes.func,
-    loggedIn: React.PropTypes.bool,
-    ready: React.PropTypes.bool,
-    user: React.PropTypes.instanceOf(ClientUser),
-  };
   static contextTypes = {
     history: React.PropTypes.any,
     location: React.PropTypes.any,
@@ -47,7 +50,7 @@ export default class L2S2 extends React.Component {
   componentDidMount() {
     setSystem(this.refs.notification);
   }
-  render() {
+  render(): ReactElement {
     const { children, ready } = this.props;
     const { location } = this.context;
     const clean = location.query.clean != null;

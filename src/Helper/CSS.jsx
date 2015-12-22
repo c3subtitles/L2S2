@@ -1,5 +1,4 @@
-
-
+/* @flow */
 import { isUnitlessNumber } from 'react/lib/CSSProperty';
 import { Style } from 'radium';
 import React from 'react';
@@ -20,9 +19,9 @@ function appendUnits(style: Object) {
   return style;
 }
 
-export default function(...rules): Function {
+export function CSS(...rules: Array<Object>): Function {
   return function(component) {
-    rules = appendUnits(_.reduce(rules, (prev, rules) => _.merge({}, prev, rules)));
+    const processedRules = appendUnits(_.reduce(rules, (prev, _rules) => _.merge({}, prev, _rules)));
     return class CSS extends component {
       static displayName = component.displayName || component.name;
       render() {
@@ -35,9 +34,9 @@ export default function(...rules): Function {
         const styleId = UUID.create();
         let styleElement;
         if (component._globalCSS) {
-          styleElement = (<Style key={styleId} rules={rules}/>);
+          styleElement = (<Style key={styleId} rules={processedRules}/>);
         } else {
-          styleElement = (<Style key={styleId} rules={rules} scopeSelector={`#${rid}`}/>);
+          styleElement = (<Style key={styleId} rules={processedRules} scopeSelector={`#${rid}`}/>);
         }
         return React.createElement(element.type, _.extend({
           key: element.key,

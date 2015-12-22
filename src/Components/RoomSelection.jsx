@@ -1,10 +1,13 @@
+/* @flow */
 import { Connect } from '../Helper';
 import { fetchRooms } from '../Actions/rooms';
 import { Map } from 'immutable';
 import { Paper } from 'material-ui';
 import Radium from 'radium';
 import React from 'react';
+/* $FlowFixMe */
 import lockIcon from '../Lock.svg';
+/* $FlowFixMe */
 import unlockIcon from '../unlock.svg';
 
 const props = state => ({
@@ -12,15 +15,18 @@ const props = state => ({
   rooms: state.rooms,
 });
 
+type Props = {
+  canJoinLocked: bool,
+  onRoomClick: Function,
+  rooms: Map,
+  showLockedState: bool,
+};
+
+/*::`*/
 @Radium
 @Connect(props)
-export default class RoomSelection extends React.Component {
-  static propTypes = {
-    canJoinLocked: React.PropTypes.bool,
-    onRoomClick: React.PropTypes.func,
-    rooms: React.PropTypes.instanceOf(Map),
-    showLockedState: React.PropTypes.bool,
-  };
+/*::`*/
+export default class RoomSelection extends React.Component<void, Props, void> {
   static style = {
     wrapper: {
       display: 'flex',
@@ -58,11 +64,11 @@ export default class RoomSelection extends React.Component {
         backgroundColor: 'rgba(255, 0, 0, 0.25)',
       },
     },
-  }
+  };
   componentWillMount() {
     fetchRooms();
   }
-  render() {
+  render(): ReactElement {
     const style = RoomSelection.style;
     const { rooms, onRoomClick, showLockedState, canJoinLocked } = this.props;
     return (

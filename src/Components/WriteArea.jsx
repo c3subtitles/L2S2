@@ -1,3 +1,4 @@
+/* @flow */
 import { Paper } from 'material-ui';
 import RecentLines from './RecentLines';
 import LinesInProgress from './LinesInProgress';
@@ -5,7 +6,9 @@ import React from 'react';
 import WriterInput from './WriterInput';
 import Radium from 'radium';
 
+/*::`*/
 @Radium
+/*::`*/
 export default class WriteArea extends React.Component {
   static style = {
     wrapper: {
@@ -31,7 +34,7 @@ export default class WriteArea extends React.Component {
       height: 1,
     },
   };
-  shouldComponentUpdate() {
+  shouldComponentUpdate(): false {
     return false;
   }
   render() {

@@ -1,3 +1,4 @@
+/* @flow */
 import { addError } from '../Services/notifications';
 import { changePassword } from '../Services/user';
 import { Connect } from '../Helper';
@@ -6,12 +7,15 @@ import { TextField, RaisedButton } from 'material-ui';
 import React from 'react';
 import swal from 'sweetalert';
 
+type Props = {
+  user: ClientUser,
+};
+
+/*::`*/
 @Permission()
 @Connect(state => ({ user: state.user }))
-export default class Profile extends React.Component {
-  static propTypes = {
-    user: React.PropTypes.Object,
-  };
+/*::`*/
+export default class Profile extends React.Component<void, Props, void> {
   static contextTypes = {
     location: React.PropTypes.object,
   };
@@ -37,7 +41,7 @@ export default class Profile extends React.Component {
       swal('Login Successfull', 'You\'re now logged in. Please change your password', 'success');
     }
   }
-  render() {
+  render(): ReactElement {
     return (
       <div>
         <h2>Change Password</h2>

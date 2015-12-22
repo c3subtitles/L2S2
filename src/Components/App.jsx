@@ -1,8 +1,10 @@
+/* @flow */
 import _ from 'lodash';
 import { createStore, bindActionCreators, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import React from 'react';
 import reduxPromise from 'redux-promise';
+import L2S2 from './L2s2';
 
 let store;
 let renderDevtools;
@@ -83,13 +85,11 @@ reduxActions.createAction = function(old) {
 }(reduxActions.createAction);
 
 
-const L2S2 = require('./L2S2');
-
 export default class App extends React.Component {
   static childContextTypes = {
     store: React.PropTypes.any,
   };
-  getChildContext() {
+  getChildContext(): any {
     return {
       store,
     };
@@ -97,7 +97,7 @@ export default class App extends React.Component {
   static propTypes = {
     children: React.PropTypes.any,
   };
-  render() {
+  render(): ReactElement {
     const { children } = this.props;
     const monitor = IS_PRODUCTION ? null : renderDevtools();
     const fullFlex = { display: 'flex', flex: '1 1 0', flexDirection: 'column' };

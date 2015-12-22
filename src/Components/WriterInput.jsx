@@ -1,3 +1,4 @@
+/* @flow */
 import { Connect } from '../Helper';
 import { lineStart, line } from '../Services/socket';
 import { Map } from 'immutable';
@@ -10,8 +11,10 @@ const props = state => ({
   shortcuts: state.shortcuts,
 });
 
+/*::`*/
 @Radium
 @Connect(props)
+/*::`*/
 export default class WriterInput extends React.Component {
   static propTypes = {
     room: React.PropTypes.object,
@@ -40,7 +43,7 @@ export default class WriterInput extends React.Component {
       e.target.value = '';
     }
   };
-  render() {
+  render(): ReactElement {
     const { user } = this.props;
     return (
       <input defaultValue={user.currentLine} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>

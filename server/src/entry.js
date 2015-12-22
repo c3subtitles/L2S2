@@ -1,8 +1,7 @@
+/* @flow */
 import bcrypt from 'bcryptjs';
 import bluebird from 'bluebird';
-import fs from 'fs';
 import http from 'http';
-import https from 'https';
 import koa from 'koa';
 import koaJSON from 'koa-json-body';
 import path from 'path';
@@ -43,17 +42,7 @@ global.Promise = bluebird;
 
 
 global.app = new koa();
-let server;
-if (process.env.SSLKEY && process.env.SSLCERT) {
-  /* eslint-disable no-sync */
-  server = https.createServer({
-    key: fs.readFileSync(process.env.SSLKEY),
-    cert: fs.readFileSync(process.env.SSLCERT),
-  }, global.app.callback());
-  /* eslint-enable no-sync */
-} else {
-  server = http.createServer(global.app.callback());
-}
+const server = http.createServer(global.app.callback());
 const options = {
   transformer: 'engine.io',
   compression: true,
@@ -64,6 +53,7 @@ global.primus = new Primus(server, options);
 global.primus.use('emit', require('primus-emit'));
 global.primus.use('rooms', require('primus-rooms'));
 
+/* $FlowFixMe */
 global.primus.on('connection', require('./primus/connections').onConnection);
 
 global.primus.save(path.resolve('./primusClient.js'));

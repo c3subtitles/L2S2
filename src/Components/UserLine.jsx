@@ -1,3 +1,4 @@
+/* @flow */
 import { Connect } from '../Helper';
 import { deleteUser, saveRole, saveActive } from '../Actions/user';
 import { Dialog, Paper, DropDownMenu } from 'material-ui';
@@ -14,8 +15,16 @@ const props = state => ({
   ownUser: state.user,
 });
 
+type Props = {
+  availableRoles: List,
+  ownUser: ClientUser,
+  user: ClientUser,
+};
+
+/*::`*/
 @Connect(props)
-export default class UserLine extends React.Component {
+/*::`*/
+export default class UserLine extends React.Component<void, Props, State> {
   static propTypes = {
     availableRoles: React.PropTypes.instanceOf(List),
     ownUser: React.PropTypes.instanceOf(ClientUser),
@@ -32,7 +41,7 @@ export default class UserLine extends React.Component {
       flex: '1 1 0',
       margin: 5,
     },
-  }
+  };
   state: State = {
     showDelete: false,
   };
@@ -49,7 +58,7 @@ export default class UserLine extends React.Component {
   };
   hideDelete = () => {
     this.setState({ showDelete: false });
-  }
+  };
   delete = () => {
     this.setState({ showDelete: false });
     deleteUser(this.props.user);

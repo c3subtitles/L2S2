@@ -1,5 +1,4 @@
 /* @flow */
-
 import _ from 'lodash';
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
@@ -117,16 +116,21 @@ export const setShortcut = createAction('SET_SHORTCUT', (key, shortcut) => {
 export const changeReadColor = createAction('CHANGE_READ_COLOR', ({ gradient, color, backgroundColor, enableGradient }: { gradient?: string, color?: string, backgroundColor?: string, enableGradient?: bool }) => {
   const newState = {};
   if (gradient != null) {
-    localStorage['gradientColor'] = newState.gradientColor = gradient;
+    localStorage.setItem('gradientColor', gradient);
+    newState.gradientColor = gradient;
   }
   if (backgroundColor != null) {
-    localStorage['readbgColor'] = newState.readBackgroundColor = backgroundColor;
+    localStorage.setItem('readbgColor', backgroundColor);
+    newState.readBackgroundColor = backgroundColor;
   }
   if (color != null) {
-    localStorage['readColor'] = newState.readColor = color;
+    localStorage.setItem('readColor', color);
+    newState.readColor = color;
   }
   if (enableGradient != null) {
-    localStorage['readGradient'] = newState.readGradient = enableGradient;
+    const rawReadGradient = String(enableGradient);
+    localStorage.setItem('readGradient', rawReadGradient);
+    newState.readGradient = rawReadGradient;
   }
   return newState;
 });

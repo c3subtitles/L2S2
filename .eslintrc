@@ -14,7 +14,6 @@
     "CONFIGPATH": false,
     "ClientUser": false,
     "RoleType": false,
-    "SyntheticEvent": false,
     "IS_PRODUCTION": false,
     "RoomType": false,
     "State": false
@@ -226,9 +225,12 @@
     "react/require-extension": 2,
     "react/self-closing-comp": 2,
     "react/sort-comp": 0,
-    "react/wrap-multilines": 2
+    "react/wrap-multilines": 2,
+    "flow-vars/define-flow-type": 1,
+    "flow-vars/use-flow-type": 1
   },
   "plugins": [
-    "react"
+    "react",
+    "flow-vars"
   ]
 }
