@@ -7,4 +7,17 @@ script:
   - "npm run travis"
   - "npm run travisServer"
 env:
-  - NO_WATCH_TESTS=1
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+notifications:
+  irc:
+    channels:
+      - "irc.hackint.eu#subtitles"
+    on_success: change
+    on_failure: change
+  email: false
