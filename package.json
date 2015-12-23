@@ -14,7 +14,7 @@
   },
   "license": "GPL-3.0",
   "devDependencies": {
-    "babel": "^5.8.34",
+    "babel": "^6.3.13",
     "babel-core": "^5.0.0",
     "babel-eslint": "^4.1.4",
     "babel-loader": "^5.0.0",
