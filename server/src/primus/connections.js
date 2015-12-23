@@ -1,3 +1,4 @@
+/* @flow */
 import { getUserForSessionId } from '../Services/users';
 import { addLine, lineStart, leaveRoom, leaveAllRooms } from '../Services/rooms';
 
@@ -11,7 +12,7 @@ export function emitToRoomAuth(spark, roomId, ...params) {
   .write(params);
 }
 
-export function onConnection(spark: Object) {
+export function onConnection(spark) {
   spark.on('end', () => {
     if (spark.user) {
       leaveAllRooms(spark.user.id, (roomId) => {

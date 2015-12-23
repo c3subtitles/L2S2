@@ -20,6 +20,7 @@ const initialState: State = {
   readColor: localStorage['readColor'] || 'black',
   readGradient,
   readLines: List(),
+  ready: false,
   roles: List(),
   rooms: Map(),
   sessionId: localStorage.sessionId || null,

@@ -1,5 +1,5 @@
 /* eslint camelcase: 0 */
-
+/* @flow */
 import RedisSessions from 'redis-sessions';
 import redis from 'redis';
 import { User } from '../models';
@@ -19,7 +19,7 @@ const rs = new RedisSessions({
   client: redisClient,
 });
 
-export async function createSession(userId: number) {
+export async function createSession(userId: number): Promise<string> {
   const result = await rs.createAsync({
     app,
     id: userId,
@@ -29,7 +29,7 @@ export async function createSession(userId: number) {
   return result.token;
 }
 
-export async function getUserForSessionFromRedis(token: string) {
+export async function getUserForSessionFromRedis(token: string): Promise<?ClientUser> {
   const { id } = await rs.getAsync({
     app,
     token,
@@ -39,7 +39,7 @@ export async function getUserForSessionFromRedis(token: string) {
   }
 }
 
-export async function deleteSession(token: string) {
+export async function deleteSession(token: string): Promise<void> {
   await rs.killAsync({
     app,
     token,

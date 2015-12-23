@@ -28,7 +28,7 @@ export default class WriterInput extends React.Component {
     this.refs.input.focus();
   }
   handleChange = e => {
-    const { room, shortcuts }: { room: RoomType, shortcuts: Map<string, string> } = this.props;
+    const { room, shortcuts } = this.props;
     let line = e.target.value;
     shortcuts.filter(text => text).forEach((text, key) => {
       line = line.replace(new RegExp(key, 'g'), text);

@@ -15,7 +15,7 @@ import WriteSelection from './Components/WriteSelection';
 
 export default (
   <Router history={createHistory()}>
-    <Route component={App}>
+    <Route path="/" component={App}>
       <Route path="/" component={ReadSelection}/>
       <Route path="/write" component={WriteSelection}/>
       <Route path="/write/:roomId" component={WriteInterface}/>

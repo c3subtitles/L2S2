@@ -4,7 +4,6 @@ import { createStore, bindActionCreators, compose, applyMiddleware } from 'redux
 import { Provider } from 'react-redux';
 import React from 'react';
 import reduxPromise from 'redux-promise';
-import L2S2 from './L2s2';
 
 let store;
 let renderDevtools;
@@ -24,7 +23,7 @@ reduxActions.handleActions = function(old) {
     return old.call(this, reducerMap, ...rest);
   };
 }(reduxActions.handleActions);
-const reducer = require('../Reducers');
+const reducer = require('../Reducers').default;
 
 
 if (IS_PRODUCTION) {
@@ -84,6 +83,7 @@ reduxActions.createAction = function(old) {
   };
 }(reduxActions.createAction);
 
+const L2S2 = require('./L2S2').default;
 
 export default class App extends React.Component {
   static childContextTypes = {

@@ -1,3 +1,4 @@
+/* @flow */
 import { getUserForSessionFromRedis, createSession, deleteSession } from './redis';
 import { User, Role, Onetimetoken } from '../models';
 import bcrypt from 'bcryptjs';

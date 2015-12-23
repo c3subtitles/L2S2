@@ -4,7 +4,7 @@ require('./flowWorkarounds');
 
 const render = require('react-dom').render;
 const React = require('react');
-const routes = require('./routes');
+const routes = require('./routes').default;
 
 global.isDev = process.env.NODE_ENV !== 'production';
 

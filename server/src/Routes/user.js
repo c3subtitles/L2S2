@@ -1,3 +1,4 @@
+/* @flow */
 import { login, getClientUserRepresentation, logout, checkPassword, register, getUsers, getCurrentUserFromSession, resetPassword } from '../Services/users';
 import { User, Onetimetoken } from '../models';
 import { createSession } from '../Services/redis';

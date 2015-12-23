@@ -1,5 +1,5 @@
 /* @flow */
-import ObserveMount from './ObserveMount';
+import { ObserveMount } from './ObserveMount';
 import shallowequal from 'shallowequal';
 import _ from 'lodash';
 

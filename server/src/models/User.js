@@ -1,5 +1,4 @@
 import Waterline from 'waterline';
-import { getClientUserRepresentation } from '../Services/users';
 
 export default Waterline.Collection.extend({
   identity: 'user',
@@ -24,6 +23,7 @@ export default Waterline.Collection.extend({
       defaultsTo: false,
     },
     client() {
+      const getClientUserRepresentation = require('../Services/users').getClientUserRepresentation;
       return getClientUserRepresentation(this);
     },
     toJSON() {

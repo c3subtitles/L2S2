@@ -86,6 +86,13 @@ const webpackConfig = {
         ws: true,
         secure: false,
       },
+      '/primus/*': {
+        target: 'http://localhost:9500/',
+        changeOrigin: true,
+        xfwd: true,
+        ws: true,
+        secure: false,
+      },
     },
   },
 };

@@ -6,10 +6,10 @@ let rooms = Map();
 export async function getUsersInRoom(roomId: number) {
   const { userIds, lines } = rooms.get(roomId);
   if (userIds) {
-    const users = await* userIds.map(async u => ({
+    const users = await Promise.all(userIds.map(async u => ({
       ...(await User.findOne({ id: u.id })).client(),
       currentLine: u.currentLine,
-    })).toArray();
+    })).toArray());
     return {
       userInRoom: users,
       lines: lines.takeLast(30).toArray(),

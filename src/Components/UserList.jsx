@@ -1,3 +1,4 @@
+/* @flow */
 import { Map } from 'immutable';
 import { Connect } from '../Helper';
 import { Paper } from 'material-ui';
@@ -11,6 +12,7 @@ const props = state => ({
 
 type Props = {
   userInRoom: Map,
+  canBan: bool,
 };
 
 /*::`*/
@@ -18,9 +20,6 @@ type Props = {
 @Radium
 /*::`*/
 export default class UserList extends React.Component<void, Props, void> {
-  static propTypes = {
-    userInRoom: React.PropTypes.instanceOf(Map),
-  };
   static style = {
     wrapper: {
       display: 'flex',
