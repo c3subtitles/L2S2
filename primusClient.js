@@ -2901,7 +2901,8 @@ Primus.prototype.ark["emit"] = function client(primus) {
     var data = packet.data;
 
     if (
-         'object' !== typeof data                       // Events are objects.
+         this !== primus                                // Incorrect context.
+      || 'object' !== typeof data                       // Events are objects.
       || !~toString.call(data.emit).indexOf(' Array]')  // Not an emit object.
     ) {
       return;
