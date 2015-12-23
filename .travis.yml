@@ -19,7 +19,7 @@ addons:
 notifications:
   irc:
     channels:
-      - "irc.hackint.org#subtitles"
+      - "ircs://irc.hackint.eu:9999#subtitles"
     on_success: change
     on_failure: always
   email: false
