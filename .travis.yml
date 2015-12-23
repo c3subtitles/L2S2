@@ -8,6 +8,7 @@ script:
   - "npm run travisServer"
 env:
   - CXX=g++-4.8
+cache: apt
 addons:
   apt:
     sources:
@@ -17,7 +18,7 @@ addons:
 notifications:
   irc:
     channels:
-      - "irc.hackint.eu#subtitles"
+      - "ircs://irc.hackint.eu:9999#subtitles"
     on_success: change
-    on_failure: change
+    on_failure: always
   email: false
