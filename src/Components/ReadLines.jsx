@@ -5,19 +5,24 @@ import Radium from 'radium';
 export default class ReadLines extends React.Component {
   static style = {
     line: {
-      WebkitAlignItems: 'center',
-      alignItems: 'center',
+      WebkitAlignSelf: 'center',
+      alignSelf: 'center',
       display: 'flex',
       fontSize: 32,
       fontWeight: 'bold',
       minHeight: '4em',
     },
+    wrapper: {
+      display: 'flex',
+      flexDirection: 'column',
+      WebkitFlexDirection: 'column',
+    }
   }
   render() {
     const style = ReadLines.style;
     const { lines } = this.props;
     return (
-      <div>
+      <div style={style.wrapper}>
         {
           lines.map((l, i) => (
             <div style={style.line} key={i}>
