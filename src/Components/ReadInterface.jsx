@@ -40,15 +40,20 @@ type State = {
 export default class ReadInterface extends React.Component<void, Props, State> {
   static style = {
     wrapper: {
+      WebkitAlignItems: 'center',
       alignItems: 'center',
       display: 'flex',
+      WebkitFlex: '1 1 0',
       flex: '1 1 0',
+      WebkitFlexDirection: 'column',
       flexDirection: 'column',
+      WebkitJustifyContent: 'flex-end',
       justifyContent: 'flex-end',
       overflow: 'hidden',
       position: 'relative',
     },
     line: {
+      WebkitAlignItems: 'center',
       alignItems: 'center',
       display: 'flex',
       fontSize: 32,

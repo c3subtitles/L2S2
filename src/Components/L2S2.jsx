@@ -34,7 +34,8 @@ export default class L2S2 extends React.Component<void, Props, void> {
     childWrap: {
       display: 'flex',
       flex: '1 1 0',
-      flexDirection: 'column',
+      'WebkitFlex': '1 1 0',
+      'WebkitFlexDirection': 'column',
     },
   };
   getChildContext(): Object {

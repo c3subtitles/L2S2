@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import { createStore, bindActionCreators, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import Radium from 'radium';
 import React from 'react';
 import reduxPromise from 'redux-promise';
 
@@ -85,6 +86,7 @@ reduxActions.createAction = function(old) {
 
 const L2S2 = require('./L2S2').default;
 
+@Radium
 export default class App extends React.Component {
   static childContextTypes = {
     store: React.PropTypes.any,
@@ -100,7 +102,13 @@ export default class App extends React.Component {
   render(): ReactElement {
     const { children } = this.props;
     const monitor = IS_PRODUCTION ? null : renderDevtools();
-    const fullFlex = { display: 'flex', flex: '1 1 0', flexDirection: 'column' };
+    const fullFlex = {
+      display: 'flex',
+      WebkitFlex: '1 1 0',
+      flex: '1 1 0',
+      WebkitFlexDirection: 'column',
+      flexDirection: 'column',
+    };
     return (
       <div style={fullFlex}>
         <Provider store={store}>
