@@ -2,6 +2,7 @@ require('./vendor');
 require('../server/src/flowWorkarounds');
 require('./flowWorkarounds');
 
+
 const render = require('react-dom').render;
 const React = require('react');
 const routes = require('./routes').default;
