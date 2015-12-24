@@ -67,4 +67,5 @@ global.app
 })
 .use(global.router.routes());
 
+// require ('./fahrplan/parse');
 server.listen(process.env.PORT || 9500);

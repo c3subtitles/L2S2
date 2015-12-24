@@ -22,6 +22,11 @@ let plugins = [
     template: 'src/index.html',
     minify: {},
   }),
+  new HtmlWebpackPlugin({
+    filename: 'clean/index.html',
+    template: 'src/Clean/index.html',
+    minify: {},
+  }),
 ];
 
 let jsLoader = 'babel!eslint';
@@ -50,6 +55,7 @@ const webpackConfig = {
   },
   entry: {
     'Common': path.resolve('src/entry.js'),
+    'Clean': path.resolve('src/Clean/entry.js'),
   },
   output: {
     path: path.resolve('www'),

@@ -12,8 +12,8 @@ const props = state => ({
 });
 
 /*::`*/
-@Radium
 @Connect(props)
+@Radium
 /*::`*/
 export default class WriterInput extends React.Component {
   static propTypes = {

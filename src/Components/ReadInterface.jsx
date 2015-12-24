@@ -8,6 +8,7 @@ import Dock from 'react-dock';
 import Loading from 'react-loader';
 import Radium from 'radium';
 import React from 'react';
+import ReadLines from './ReadLines';
 import ReadSettings from './ReadSettings';
 
 global.Color = Color;
@@ -51,6 +52,15 @@ export default class ReadInterface extends React.Component<void, Props, State> {
       justifyContent: 'flex-end',
       overflow: 'hidden',
       position: 'relative',
+    },
+    innerWrapper: {
+      display: 'flex',
+      flex: '1 1 0',
+      WebkitFlex: '1 1 0',
+      WebkitFlexDirection: 'column',
+      flexDirection: 'column',
+      justifyContent: 'flex-end',
+      WebkitJustifyContent: 'flex-end',
     },
     line: {
       WebkitAlignItems: 'center',
@@ -134,29 +144,25 @@ export default class ReadInterface extends React.Component<void, Props, State> {
     const style = ReadInterface.style;
     return (
       <Paper style={this.getWrapperStyle()}>
-        {(gradient || location.query.clean != null) && (<div style={this.getGradientStyle()}/>)}
-        {
-          location.query.clean == null &&
-          [
-            (
-              <Dock dimStyle={style.dim} onVisibleChange={this.handleVisibleChange} isVisible={settingsOpen} position="right">
-                <ReadSettings enableGradient={gradient} backgroundColor={backgroundColor} color={color} gradientColor={gradientColor}/>
-              </Dock>
-            ),
-            (
-              <IconButton style={style.settings} onClick={this.openSettings} tooltip="Settings">
-                <FontIcon color={backgroundColor} className="material-icons">settings</FontIcon>
-              </IconButton>
-            ),
-          ]
-        }
-        {
-          lines.map((l, i) => (
-            <div style={style.line} key={i}>
-              {l}
-            </div>
-          ))
-        }
+        <div style={style.innerWrapper}>
+          {(gradient || location.query.clean != null) && (<div style={this.getGradientStyle()}/>)}
+          {
+            location.query.clean == null &&
+            [
+              (
+                <Dock dimStyle={style.dim} onVisibleChange={this.handleVisibleChange} isVisible={settingsOpen} position="right">
+                  <ReadSettings enableGradient={gradient} backgroundColor={backgroundColor} color={color} gradientColor={gradientColor}/>
+                </Dock>
+              ),
+              (
+                <IconButton style={style.settings} onClick={this.openSettings} tooltip="Settings">
+                  <FontIcon color={backgroundColor} className="material-icons">settings</FontIcon>
+                </IconButton>
+              ),
+            ]
+          }
+          <ReadLines lines={lines}/>
+        </div>
       </Paper>
     );
   }

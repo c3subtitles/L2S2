@@ -15,20 +15,22 @@ type Props = {
 };
 
 /*::`*/
-@Radium
 @Connect(props)
+@Radium
 /*::`*/
 export default class ShortcutList extends React.Component<void, Props, void> {
   static style = {
     wrapper: {
       width: '15%',
       display: 'flex',
+      WebkitFlexDirection: 'column',
       flexDirection: 'column',
       padding: 5,
       overflowX: 'hidden',
       overflowY: 'auto',
     },
     title: {
+      WebkitAlignSelf: 'center',
       alignSelf: 'center',
     },
     shortcut: {
@@ -37,6 +39,7 @@ export default class ShortcutList extends React.Component<void, Props, void> {
     },
     input: {
       wrapper: {
+        WebkitFlexShrink: 0,
         flexShrink: 0,
         height: 47,
       },

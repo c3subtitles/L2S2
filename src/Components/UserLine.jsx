@@ -5,6 +5,7 @@ import { Dialog, Paper, DropDownMenu } from 'material-ui';
 import { List } from 'immutable';
 import DeleteButton from './DeleteButton';
 import React from 'react';
+import Radium from 'radium';
 
 type State = {
   showDelete: bool,
@@ -23,6 +24,7 @@ type Props = {
 
 /*::`*/
 @Connect(props)
+@Radium
 /*::`*/
 export default class UserLine extends React.Component<void, Props, State> {
   static propTypes = {

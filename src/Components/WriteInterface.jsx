@@ -3,6 +3,7 @@ import { addError } from '../Services/notifications';
 import { Connect, Permission } from '../Helper';
 import { joinRoom, leaveRoom } from '../Actions/rooms';
 import Loading from 'react-loader';
+import Radium from 'radium';
 import React from 'react';
 import ShortcutList from './ShortcutList';
 import UserList from './UserList';
@@ -24,6 +25,7 @@ type Props = {
 /*::`*/
 @Permission()
 @Connect(props)
+@Radium
 /*::`*/
 export default class WriteInterface extends React.Component<void, Props, void> {
   static contextTypes = {
@@ -39,10 +41,12 @@ export default class WriteInterface extends React.Component<void, Props, void> {
   static style = {
     wrapper: {
       display: 'flex',
+      WebkitFlex: '1 1 0',
       flex: '1 1 0',
       overflow: 'hidden',
     },
     mainContent: {
+      WebkitFlex: '1 1 0',
       flex: '1 1 0',
     },
   };

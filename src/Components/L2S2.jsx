@@ -18,8 +18,8 @@ type Props = {
 
 /*::`*/
 @CSS(GlobalCSS)
-@Radium
 @Connect(state => ({ ready: state.initialized }))
+@Radium
 /*::`*/
 export default class L2S2 extends React.Component<void, Props, void> {
   static _globalCSS = true;
@@ -34,8 +34,8 @@ export default class L2S2 extends React.Component<void, Props, void> {
     childWrap: {
       display: 'flex',
       flex: '1 1 0',
-      'WebkitFlex': '1 1 0',
-      'WebkitFlexDirection': 'column',
+      WebkitFlex: '1 1 0',
+      WebkitFlexDirection: 'column',
     },
   };
   getChildContext(): Object {

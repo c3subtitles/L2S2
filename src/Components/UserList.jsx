@@ -23,6 +23,7 @@ export default class UserList extends React.Component<void, Props, void> {
   static style = {
     wrapper: {
       display: 'flex',
+      WebkitFlexDirection: 'column',
       flexDirection: 'column',
       overflow: 'auto',
       padding: 5,

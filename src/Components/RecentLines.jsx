@@ -14,8 +14,8 @@ type Props = {
 };
 
 /*::`*/
-@Radium
 @Connect(props)
+@Radium
 /*::`*/
 export default class RecentLines extends React.Component<void, Props, void> {
   render(): ReactElement {

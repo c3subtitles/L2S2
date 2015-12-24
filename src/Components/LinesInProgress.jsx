@@ -25,6 +25,7 @@ export default class LinesInProgress extends React.Component<void, Props, void> 
     },
     wrapper: {
       display: 'flex',
+      WebkitFlexDirection: 'column-reverse',
       flexDirection: 'column-reverse',
     },
   };

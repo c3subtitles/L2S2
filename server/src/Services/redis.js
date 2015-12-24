@@ -13,7 +13,7 @@ if (process.env.REDIS_PATH) {
   redisOptions.host = process.env.REDIS_HOST;
   redisOptions.port = process.env.REDIS_PORT;
 }
-const redisClient = redis.createClient(redisOptions);
+export const redisClient = redis.createClient(redisOptions);
 const app = 'L2S2-TEST';
 const rs = new RedisSessions({
   client: redisClient,
