@@ -15,6 +15,8 @@ export default class Read extends React.Component {
       flex: '1 1 0',
       flexDirection: 'column',
       justifyContent: 'flex-end',
+      marginLeft: 50,
+      marginRight: 50,
       overflow: 'hidden',
       position: 'relative',
       WebkitAlignItems: 'center',
@@ -29,6 +31,9 @@ export default class Read extends React.Component {
     .split('=')[1];
     this.roomId = Number.parseInt(rawRoomId);
     joinReadRoom(this.roomId).then(lines => {
+      while (lines.length > 3) {
+        lines.shift();
+      }
       this.setState({
         lines,
       });
@@ -36,7 +41,7 @@ export default class Read extends React.Component {
     primus.on('line', (roomId, text) => {
       if (roomId == this.roomId && text && text.trim().length > 0) {
         const { lines } = this.state;
-        if (lines.length > 7) {
+        if (lines.length > 3) {
           lines.shift();
         }
         lines.push(text);
@@ -63,7 +68,7 @@ export default class Read extends React.Component {
     return (
       <div>
         <div style={style.wrapper}>
-          <ReadLines alwaysUpdate lines={lines}/>
+          <ReadLines fontSize="5em" alwaysUpdate lines={lines}/>
         </div>
       </div>
     );
