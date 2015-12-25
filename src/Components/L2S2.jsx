@@ -41,7 +41,7 @@ export default class L2S2 extends React.Component<void, Props, void> {
   getChildContext(): Object {
     return {
       transitionTo: url => {
-        this.context.history.pushState(null, url);
+        this.context.history.push({ pathname: url });
       },
     };
   }

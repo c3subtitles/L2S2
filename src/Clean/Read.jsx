@@ -22,7 +22,7 @@ export default class Read extends React.Component {
       WebkitFlexDirection: 'column',
       WebkitJustifyContent: 'flex-end',
     },
-  }
+  };
   componentWillMount() {
     const rawRoomId = location.search
     .substr(1, location.search.length)
@@ -57,7 +57,7 @@ export default class Read extends React.Component {
   componentWillUnmount() {
     leaveReadRoom();
   }
-  render() {
+  render(): ReactElement {
     const style = Read.style;
     const { lines } = this.state;
     return (

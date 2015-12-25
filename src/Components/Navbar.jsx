@@ -1,10 +1,8 @@
 /* @flow */
-import { AppBar, IconMenu, RaisedButton, FlatButton } from 'material-ui';
+import { Divider, MenuItem, AppBar, IconMenu, RaisedButton, FlatButton } from 'material-ui';
 import { Connect } from '../Helper';
 import { hasPermission } from '../Services/user';
 import { lockRoom, speechLockRoom } from '../Actions/rooms';
-import MenuDivider from 'material-ui/lib/menus/menu-divider';
-import MenuItem from 'material-ui/lib/menus/menu-item';
 import Radium from 'radium';
 import React from 'react';
 
@@ -166,7 +164,7 @@ export default class Navbar extends React.Component<void, Props, void> {
         conditionalMenu.push(<MenuItem key="u" onClick={this.users} primaryText="Usermanagement"/>);
       }
       if (conditionalMenu.length > 0) {
-        conditionalMenu.push(<MenuDivider key="d"/>);
+        conditionalMenu.push(<Divider key="d"/>);
       }
       iconElementRight = (
         <IconMenu desktop iconButtonElement={
@@ -174,7 +172,7 @@ export default class Navbar extends React.Component<void, Props, void> {
           }>
           <MenuItem onClick={this.profile} primaryText="Profile"/>
           <MenuItem onClick={this.write} primaryText="Write"/>
-          <MenuDivider/>
+          <Divider/>
           {conditionalMenu}
           <MenuItem primaryText="Logout" onClick={this.logout}/>
         </IconMenu>
