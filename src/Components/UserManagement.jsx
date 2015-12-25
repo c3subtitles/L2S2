@@ -1,3 +1,4 @@
+/* @flow */
 import { fetchUsers, fetchRoles } from '../Actions/user';
 import { Map } from 'immutable';
 import { Permission, Connect } from '../Helper';
@@ -21,6 +22,7 @@ export default class UserManagement extends React.Component {
   static style = {
     wrapper: {
       display: 'flex',
+      flex: '1 1 0',
       flexDirection: 'column',
       overflow: 'auto',
     },

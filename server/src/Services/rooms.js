@@ -10,9 +10,10 @@ export async function getUsersInRoom(roomId: number) {
       ...(await User.findOne({ id: u.id })).client(),
       currentLine: u.currentLine,
     })).toArray());
+    const refDate = new Date();
     return {
       userInRoom: users,
-      lines: lines.takeLast(30).toArray(),
+      lines: lines.filter(l => l.timeout < refDate).takeLast(30).toArray(),
     };
   }
   return {
@@ -108,9 +109,12 @@ export function addLine(text, roomId: number, userId, color: string) {
   const room = rooms.get(roomId);
   if (room) {
     room.lines = room.lines || List();
+    const timeout = new Date();
+    timeout.setMinutes(timeout.getMinutes() + 10);
     room.lines = room.lines.push({
-      line: text,
       color,
+      timeout,
+      line: text,
       userId,
     });
     rooms = rooms.set(roomId, room);

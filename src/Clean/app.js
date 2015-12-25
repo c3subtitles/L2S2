@@ -1,5 +1,6 @@
 require('../../server/src/flowWorkarounds');
 require('../flowWorkarounds');
+require('../fonts.css');
 
 
 const render = require('react-dom').render;

@@ -42,8 +42,17 @@ export const deleteRoom = createAction('DELETE_ROOM', async (room) => {
   return room;
 });
 
+function joinRoomCheck(roomId) {
+  joinRoomSocket(roomId);
+}
+
+let joinRoomTimeout;
 export const joinRoom = createAction('JOIN_ROOM', async (roomId: number) => {
   joinRoomSocket(roomId);
+  if (joinRoomTimeout) {
+    clearTimeout(joinRoomTimeout);
+  }
+  joinRoomTimeout = setTimeout(() => joinRoomCheck(roomId), 2500);
   const joinInformation = await axios.get(`/rooms/${roomId}/join`);
   let userInRoom: Map<number, ClientUser> = Map();
   joinInformation.userInRoom.forEach(u => {
@@ -56,6 +65,9 @@ export const joinRoom = createAction('JOIN_ROOM', async (roomId: number) => {
 
 export const leaveRoom = createAction('LEAVE_ROOM', roomId => {
   leaveRoomSocket(roomId);
+  if (joinRoomTimeout) {
+    clearTimeout(joinRoomTimeout);
+  }
   return roomId;
 });
 
@@ -113,6 +125,18 @@ export const setShortcut = createAction('SET_SHORTCUT', (key, shortcut) => {
   };
 });
 
+export const reconnected = createAction('RECONNECTED', async () => {
+  const room: ?RoomType = global.store.getState().currentRoom;
+  const write = global.store.getState().write;
+  if (room) {
+    if (write) {
+      joinRoom(room.id);
+    } else {
+      joinReadRoom(room.id);
+    }
+  }
+});
+
 export const changeReadColor = createAction('CHANGE_READ_COLOR', ({ gradient, color, backgroundColor, enableGradient }: { gradient?: string, color?: string, backgroundColor?: string, enableGradient?: bool }) => {
   const newState = {};
   if (gradient != null) {
@@ -128,9 +152,8 @@ export const changeReadColor = createAction('CHANGE_READ_COLOR', ({ gradient, co
     newState.readColor = color;
   }
   if (enableGradient != null) {
-    const rawReadGradient = String(enableGradient);
-    localStorage.setItem('readGradient', rawReadGradient);
-    newState.readGradient = rawReadGradient;
+    localStorage.setItem('readGradient', JSON.stringify(enableGradient));
+    newState.readGradient = enableGradient;
   }
   return newState;
 });

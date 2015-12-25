@@ -40,7 +40,7 @@ export default class RoomManagement extends React.Component<void, Props, void> {
           <RaisedButton primary style={style.new} onClick={createRoom} label="New Room"/>
         )}
         {
-          rooms.map((room, index) => <Room key={room.id || room.name || index} room={room}/>).toArray()
+          rooms.toList().map((room, index) => <Room key={room.id || `i${index}`} room={room}/>).toArray()
         }
       </div>
     );

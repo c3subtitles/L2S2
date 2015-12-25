@@ -10,7 +10,7 @@ type Props = {
 };
 
 const props = state => ({
-  filteredUser: state.userInRoom.filter(u => u.currentLine),
+  filteredUser: state.userInRoom.filter(u => u.currentLine).sort(user => user.id !== state.user),
 });
 
 /*::`*/

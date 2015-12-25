@@ -1,8 +1,14 @@
-import React from 'react';
+/* @flow */
+import { List } from 'immutable';
 import Radium from 'radium';
+import React from 'react';
+
+type Props = {
+  lines: List<string>
+};
 
 @Radium
-export default class ReadLines extends React.Component {
+export default class ReadLines extends React.Component<void, Props, void> {
   static style = {
     line: {
       WebkitAlignSelf: 'center',
@@ -16,9 +22,12 @@ export default class ReadLines extends React.Component {
       display: 'flex',
       flexDirection: 'column',
       WebkitFlexDirection: 'column',
-    }
+    },
+  };
+  shouldComponentUpdate(nextProps: Props): bool {
+    return this.props.lines !== nextProps.lines;
   }
-  render() {
+  render(): ReactElement {
     const style = ReadLines.style;
     const { lines } = this.props;
     return (

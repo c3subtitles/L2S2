@@ -1,15 +1,19 @@
 /* @flow */
 /* $FlowFixMe */
 import 'imports?this=>window&define=>false!../../primusClient';
-import { lineUpdate, newLine, userJoined, userLeft, updateRoom } from '../Actions/rooms';
+import { reconnected, lineUpdate, newLine, userJoined, userLeft, updateRoom } from '../Actions/rooms';
 
 /* $FlowFixMe */
 const config = require(CONFIGPATH).default;
-
 const primus = global.Primus.connect(config.primusLocation);
 
 primus.on('open', () => {
   updateSessionId();
+});
+
+primus.on('reconnected', () => {
+  updateSessionId();
+  reconnected();
 });
 
 primus.on('lineStart', (roomId, userId, text) => {
@@ -35,11 +39,12 @@ primus.on('roomUpdate', room => {
 });
 
 export function updateSessionId() {
-  primus.emit('sessionId', localStorage['sessionId']);
+  primus.emit('sessionId', localStorage.getItem('sessionId'));
 }
 
-export function lineStart(roomId: number, text: string) {
+export function lineStart(roomId: number, text: string, userId: number) {
   primus.emit('lineStart', roomId, text);
+  lineUpdate(roomId, userId, text);
 }
 
 export function line(roomId: number, text: string, user: ClientUser) {

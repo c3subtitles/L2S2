@@ -10,8 +10,8 @@ const props = state => ({
 });
 
 type Props = {
-  backgroundColor?: string,
-  color?: string,
+  backgroundColor: string,
+  color: string,
   enableGradient?: bool,
 };
 
@@ -36,19 +36,25 @@ export default class ReadSettings extends React.Component<void, Props, void> {
     },
   };
   colorChangeTimeout: ?number;
-  handleBgChange = (e) => {
+  handleBgChange: Function = (e) => {
     clearTimeout(this.colorChangeTimeout);
-    this.colorChangeTimeout = setTimeout(changeReadColor.bind(null, {
-      backgroundColor: e.target.value,
-    }), 100);
+    this.colorChangeTimeout = setTimeout(() => {
+      const rawColor = e.target.value;
+      changeReadColor({
+        backgroundColor: rawColor,
+      });
+    }, 100);
   };
-  handleColorChange = (e) => {
+  handleColorChange: Function = (e) => {
     clearTimeout(this.colorChangeTimeout);
-    this.colorChangeTimeout = setTimeout(changeReadColor.bind(null, {
-      color: e.target.value,
-    }), 100);
+    this.colorChangeTimeout = setTimeout(() => {
+      const rawColor = e.target.value;
+      changeReadColor({
+        color: rawColor,
+      });
+    }, 100);
   };
-  handleGradient = (e, toggled) => {
+  handleGradient: Function = (e, toggled) => {
     changeReadColor({
       enableGradient: toggled,
     });

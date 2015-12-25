@@ -52,8 +52,8 @@ export default class Register extends React.Component<void, Props, void> {
     }
     try {
       await register(username, email, password1);
-      this.refs.each(r => r.setValue(''));
       this.context.transitionTo('/');
+      this.refs.each(r => r.setValue(''));
     } finally {
       this.loggingIn = false;
     }

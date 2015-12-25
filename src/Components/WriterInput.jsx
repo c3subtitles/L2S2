@@ -28,21 +28,26 @@ export default class WriterInput extends React.Component {
     this.refs.input.focus();
   }
   handleChange = e => {
-    const { room, shortcuts } = this.props;
+    const { room, shortcuts, user } = this.props;
     let line = e.target.value;
     shortcuts.filter(text => text).forEach((text, key) => {
       line = line.replace(new RegExp(key, 'g'), text);
     });
     e.target.value = line;
-    lineStart(room.id, line);
+    lineStart(room.id, line, user.id);
   };
-  handleKeyDown = e => {
+  handleKeyDown = (e: SyntheticKeyboardEvent) => {
     if (e.key === 'Enter' && e.target.value.trim().length > 0) {
       const { room, user } = this.props;
       line(room.id, e.target.value, user);
       e.target.value = '';
+    } else if ((e.metaKey || e.ctrlKey) && e.key === 'Backspace') {
+      e.target.value == '';
     }
   };
+  shouldComponentUpdate(nextProps) {
+    return this.props.shortcuts !== nextProps.shortcuts;
+  }
   render(): ReactElement {
     const { user } = this.props;
     return (

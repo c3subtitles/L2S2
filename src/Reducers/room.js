@@ -32,7 +32,7 @@ function processLines(lines: List, userInRoom: Map) {
   });
 }
 
-function updateRoom(state: State, { payload }) {
+function updateRoom(state: ReduxState, { payload }) {
   const rooms: Map = state.rooms.set(payload.id, payload);
   return {
     currentRoom: payload,
@@ -41,27 +41,25 @@ function updateRoom(state: State, { payload }) {
 }
 
 export default {
-  FETCH_ROOMS: (state, action) => ({
+  FETCH_ROOMS: (state: ReduxState, action) => ({
     rooms: action.payload.sortBy(r => r.id),
   }),
-  CREATE_ROOM: (state, action) => {
+  CREATE_ROOM: (state: ReduxState, action) => {
     return {
       rooms: state.rooms.set(action.payload.id, action.payload).sortBy(r => r.id),
     };
   },
-  DELETE_ROOM: (state, action) => ({
+  DELETE_ROOM: (state: ReduxState, action) => ({
     rooms: state.rooms.filter(r => r.id !== action.payload && r !== action.payload),
   }),
-  SAVE_ROOM: (state, action) => {
-    const [roomKey] = state.rooms.findEntry(r => r.id === action.payload.id || (r.isNew && r.name === action.payload.name));
-    if (roomKey) {
-      state.rooms = state.rooms.set(roomKey, action.payload);
-    }
+  SAVE_ROOM: (state: ReduxState, action) => {
+    state.rooms = state.rooms.set(action.payload.id, action.payload);
+    state.rooms = state.rooms.delete(undefined);
     return {
       rooms: state.rooms.sortBy(r => r.id),
     };
   },
-  JOIN_ROOM: (state, { payload: { room, userInRoom, lines } }) => {
+  JOIN_ROOM: (state: ReduxState, { payload: { room, userInRoom, lines } }) => {
     userInRoom = setColors(userInRoom, state.user);
     return {
       currentRoom: room,
@@ -77,7 +75,7 @@ export default {
     userInRoom: null,
     lines: null,
   }),
-  LINE_UPDATE: (state, { payload: { roomId, userId, text } }) => {
+  LINE_UPDATE: (state: ReduxState, { payload: { roomId, userId, text } }) => {
     if (state.currentRoom && roomId == state.currentRoom.id) {
       let user = state.userInRoom.get(userId);
       if (user) {
@@ -92,8 +90,11 @@ export default {
       }
     }
   },
-  NEW_LINE: (state, { payload: { roomId, userId, text, color } }) => {
+  NEW_LINE: (state: ReduxState, { payload: { roomId, userId, text, color } }) => {
     state.readLines = state.readLines.push(text);
+    if (state.readLines.size > 30) {
+      state.readLines = state.readLines.takeLast(30);
+    }
     if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
       let user = state.userInRoom.get(userId);
       if (user) {
@@ -119,7 +120,7 @@ export default {
       readLines: state.readLines,
     };
   },
-  USER_JOINED: (state, { payload: { roomId, user } }) => {
+  USER_JOINED: (state: ReduxState, { payload: { roomId, user } }) => {
     if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
       if (!state.userInRoom.has(user.id)) {
         state.userInRoom = state.userInRoom.set(user.id, user);
@@ -129,14 +130,14 @@ export default {
       }
     }
   },
-  USER_LEFT: (state, { payload: { roomId, user } }) => {
+  USER_LEFT: (state: ReduxState, { payload: { roomId, user } }) => {
     if (state.write && state.currentRoom && roomId == state.currentRoom.id && state.user.id !== user.id) {
       return {
         userInRoom: state.userInRoom.delete(user.id),
       };
     }
   },
-  JOIN_READ_ROOM: (state, { payload }) => ({
+  JOIN_READ_ROOM: (state: ReduxState, { payload }) => ({
     read: true,
     write: false,
     currentRoom: payload.room,
@@ -150,10 +151,10 @@ export default {
   LOCK_ROOM: updateRoom,
   SPEECH_LOCK_ROOM: updateRoom,
   UPDATE_ROOM: updateRoom,
-  SET_SHORTCUT: (state, { payload: { key, shortcut } }) => {
+  SET_SHORTCUT: (state: ReduxState, { payload: { key, shortcut } }) => {
     return {
       shortcuts: state.shortcuts.set(key, shortcut),
     };
   },
-  CHANGE_READ_COLOR: (state, { payload }) => payload,
+  CHANGE_READ_COLOR: (state: ReduxState, { payload }) => payload,
 };

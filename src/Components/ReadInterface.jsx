@@ -13,6 +13,17 @@ import ReadSettings from './ReadSettings';
 
 global.Color = Color;
 
+function RGBFromRaw(rawColor: string): string {
+  rawColor = rawColor.substr(1);
+  let r = rawColor.substr(0, 2);
+  let g = rawColor.substr(2, 2);
+  let b = rawColor.substr(4, 2);
+  r = Number.parseInt(r, 16);
+  g = Number.parseInt(g, 16);
+  b = Number.parseInt(b, 16);
+  return `${r},${g},${b}`;
+}
+
 const props = state => ({
   backgroundColor: state.readBackgroundColor,
   color: state.readColor,
@@ -25,7 +36,6 @@ type Props = {
   backgroundColor: string,
   color: string,
   gradient: bool,
-  gradientColor: string,
   lines: List,
   params: Object,
 };
@@ -114,10 +124,12 @@ export default class ReadInterface extends React.Component<void, Props, State> {
     };
   }
   getGradientStyle(): Object {
-    let { gradientColor } = this.props;
     const { location } = this.context;
+    const { backgroundColor } = this.props;
+    const RGBBackground = RGBFromRaw(backgroundColor);
+    let gradientColor = `rgba(${RGBBackground},1), rgba(${RGBBackground}, 0.5), rgba(${RGBBackground}, 0)`;
     if (location.query.clean != null) {
-      gradientColor = 'rgba(0,0,0,1),rgba(0,0,0,0.6)';
+      gradientColor = 'rgba(0,0,0,1),rgba(0,0,0,0.5), rgba(0,0,0,0)';
     }
     return {
       ...ReadInterface.style.gradient,
@@ -150,12 +162,12 @@ export default class ReadInterface extends React.Component<void, Props, State> {
             location.query.clean == null &&
             [
               (
-                <Dock dimStyle={style.dim} onVisibleChange={this.handleVisibleChange} isVisible={settingsOpen} position="right">
+                <Dock key="Dock" dimStyle={style.dim} onVisibleChange={this.handleVisibleChange} isVisible={settingsOpen} position="right">
                   <ReadSettings enableGradient={gradient} backgroundColor={backgroundColor} color={color} gradientColor={gradientColor}/>
                 </Dock>
               ),
               (
-                <IconButton style={style.settings} onClick={this.openSettings} tooltip="Settings">
+                <IconButton key="Settings" style={style.settings} onClick={this.openSettings} tooltip="Settings">
                   <FontIcon color={backgroundColor} className="material-icons">settings</FontIcon>
                 </IconButton>
               ),
