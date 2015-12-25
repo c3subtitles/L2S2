@@ -45,6 +45,14 @@ export default class Read extends React.Component {
         });
       }
     });
+    primus.on('reconnect', () => {
+      joinReadRoom(this.roomId).then(lines => {
+        lines = this.state.lines.concat(lines);
+        this.setState({
+          lines,
+        });
+      });
+    });
   }
   componentWillUnmount() {
     leaveReadRoom();
@@ -55,7 +63,7 @@ export default class Read extends React.Component {
     return (
       <div>
         <div style={style.wrapper}>
-          <ReadLines lines={lines}/>
+          <ReadLines alwaysUpdate lines={lines}/>
         </div>
       </div>
     );
