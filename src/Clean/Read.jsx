@@ -41,7 +41,7 @@ export default class Read extends React.Component {
     primus.on('line', (roomId, text) => {
       if (roomId == this.roomId && text && text.trim().length > 0) {
         const { lines } = this.state;
-        if (lines.length > 3) {
+        if (lines.length >= 3) {
           lines.shift();
         }
         lines.push(text);
