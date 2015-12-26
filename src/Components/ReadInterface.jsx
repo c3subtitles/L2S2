@@ -1,6 +1,6 @@
 /* @flow */
 import { Connect } from '../Helper';
-import { joinReadRoom, leaveReadRoom } from '../Actions/rooms';
+import { joinReadRoom, leaveReadRoom, getNextTalk } from '../Actions/rooms';
 import { List } from 'immutable';
 import { Paper, FontIcon, IconButton } from 'material-ui';
 import Color from 'color-js';
@@ -10,6 +10,8 @@ import Radium from 'radium';
 import React from 'react';
 import ReadLines from './ReadLines';
 import ReadSettings from './ReadSettings';
+import NextTalk from './NextTalk';
+
 
 global.Color = Color;
 
@@ -30,6 +32,7 @@ const props = state => ({
   gradient: state.readGradient,
   gradientColor: state.gradientColor,
   lines: state.readLines,
+  nextTalk: state.nextTalk,
 });
 
 type Props = {
@@ -37,6 +40,7 @@ type Props = {
   color: string,
   gradient: bool,
   lines: List,
+  nextTalk: Talk,
   params: Object,
 };
 
@@ -147,9 +151,12 @@ export default class ReadInterface extends React.Component<void, Props, State> {
     });
   };
   render() {
-    const { lines, backgroundColor, color, gradientColor, gradient } = this.props;
+    const { nextTalk, lines, backgroundColor, color, gradientColor, gradient } = this.props;
     if (!lines) {
       return <Loading/>;
+    }
+    if (lines.size <= 0 && !nextTalk) {
+      getNextTalk();
     }
     const { location } = this.context;
     const { settingsOpen } = this.state;
@@ -173,7 +180,12 @@ export default class ReadInterface extends React.Component<void, Props, State> {
               ),
             ]
           }
-          <ReadLines lines={lines}/>
+          {lines.size <= 0 && (
+            <NextTalk talk={nextTalk}/>
+          )}
+          {lines.size > 0 && (
+            <ReadLines lines={lines.map(l => l.text)}/>
+          )}
         </div>
       </Paper>
     );

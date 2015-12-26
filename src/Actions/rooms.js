@@ -5,6 +5,18 @@ import { createAction } from 'redux-actions';
 import { joinRoom as joinRoomSocket, leaveRoom as leaveRoomSocket } from '../Services/socket';
 import { List, Map } from 'immutable';
 import axios from 'axios';
+import moment from 'moment';
+
+function convertTalk(talk: RawTalk): Talk {
+  return {
+    ...talk,
+    date: moment(talk.date),
+    duration: moment.duration(talk.duration),
+  };
+}
+
+
+export const checkLines = createAction('CHECK_LINES', () => {});
 
 export const fetchRooms = createAction('FETCH_ROOMS', async () => {
   const rooms = await axios.get('/rooms');
@@ -71,12 +83,13 @@ export const leaveRoom = createAction('LEAVE_ROOM', roomId => {
   return roomId;
 });
 
-function lineUpdateFunc(roomId: number, userId: ?number, text: string, color: ?string) {
+function lineUpdateFunc(roomId: number, userId: ?number, text: string, color: ?string, timeout: ?Date) {
   return {
     roomId,
     userId,
     text,
     color,
+    timeout,
   };
 }
 
@@ -98,6 +111,9 @@ export const joinReadRoom = createAction('JOIN_READ_ROOM', async (roomId: number
   joinRoomSocket(roomId);
   const joinInformation = await axios.get(`/rooms/${roomId}/joinRead`);
   joinInformation.lines = List(joinInformation.lines);
+  if (joinInformation.lines.size <= 0) {
+    getNextTalk(roomId);
+  }
   return joinInformation;
 });
 
@@ -122,6 +138,13 @@ export const setShortcut = createAction('SET_SHORTCUT', (key, shortcut) => {
   return {
     key,
     shortcut,
+  };
+});
+
+export const getNextTalk = createAction('GET_NEXT_TALK', async (roomId: number) => {
+  const nextTalk = await axios.get(`/nextTalk/${roomId}`);
+  return {
+    nextTalk: convertTalk(nextTalk),
   };
 });
 

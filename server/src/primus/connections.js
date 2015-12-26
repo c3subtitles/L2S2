@@ -51,13 +51,15 @@ export function onConnection(spark) {
   spark.on('line', (roomId, text, color) => {
     if (spark.user) {
       lineStart('', spark.user.id, Number.parseInt(roomId));
-      addLine(text, Number.parseInt(roomId), spark.user.id, color);
+      const timeout = new Date();
+      timeout.setMinutes(timeout.getMinutes() + 5);
+      addLine(text, Number.parseInt(roomId), spark.user.id, color, timeout);
       spark.room(roomId).transform(function(packet, done) {
         if (this.id !== spark.id) {
           this.emit(...packet.data[0]);
           done(undefined, false);
         }
-      }).write(['line', roomId, text, spark.user.id, color]);
+      }).write(['line', roomId, text, spark.user.id, color, timeout]);
     }
   });
 }

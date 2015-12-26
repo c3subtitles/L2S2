@@ -41,6 +41,13 @@ function updateRoom(state: ReduxState, { payload }) {
 }
 
 export default {
+  CHECK_LINES: (state: ReduxState) => {
+    const refDate = new Date();
+    const readLines = state.readLines.filter(l => l.timeout > refDate);
+    return {
+      readLines,
+    };
+  },
   FETCH_ROOMS: (state: ReduxState, action) => ({
     rooms: action.payload.sortBy(r => r.id),
   }),
@@ -59,6 +66,9 @@ export default {
       rooms: state.rooms.sortBy(r => r.id),
     };
   },
+  GET_NEXT_TALK: (state: ReduxState, { payload: { nextTalk } }) => ({
+    nextTalk,
+  }),
   JOIN_ROOM: (state: ReduxState, { payload: { room, userInRoom, lines } }) => {
     userInRoom = setColors(userInRoom, state.user);
     return {
@@ -90,8 +100,11 @@ export default {
       }
     }
   },
-  NEW_LINE: (state: ReduxState, { payload: { roomId, userId, text, color } }) => {
-    state.readLines = state.readLines.push(text);
+  NEW_LINE: (state: ReduxState, { payload: { roomId, userId, text, color, timeout } }) => {
+    state.readLines = state.readLines.push({
+      text,
+      timeout,
+    });
     if (state.readLines.size > 30) {
       state.readLines = state.readLines.takeLast(30);
     }
@@ -114,10 +127,12 @@ export default {
         readLines: state.readLines,
         userInRoom: state.userInRoom,
         user: user.id === state.user.id ? user : state.user,
+        nextTalk: null,
       };
     }
     return {
       readLines: state.readLines,
+      nextTalk: null,
     };
   },
   USER_JOINED: (state: ReduxState, { payload: { roomId, user } }) => {

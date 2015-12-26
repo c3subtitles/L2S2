@@ -20,9 +20,13 @@ primus.on('lineStart', (roomId, userId, text) => {
   lineUpdate(roomId, userId, text);
 });
 
-primus.on('line', (roomId, text, userId, color) => {
+primus.on('line', (roomId, text, userId, color, rawTimeout) => {
   if (text && text.trim().length > 0) {
-    newLine(roomId, userId, text, color);
+    let timeout;
+    if (rawTimeout) {
+      timeout = new Date(rawTimeout);
+    }
+    newLine(roomId, userId, text, color, timeout);
   }
 });
 

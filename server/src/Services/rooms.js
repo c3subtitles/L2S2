@@ -31,7 +31,11 @@ export function getLinesForRoom(roomId: number) {
     };
     rooms = rooms.set(roomId, room);
   }
-  return room.lines.takeLast(5).map(l => l.line).toArray();
+  const refDate = new Date();
+  return room.lines.takeLast(5).filter(l => l.timeout > refDate).map(l => ({
+    text: l.line,
+    timeout: l.timeout,
+  })).toArray();
 }
 
 export function joinRoom(roomId: number, userId: number) {
@@ -110,7 +114,7 @@ export function addLine(text, roomId: number, userId, color: string) {
   if (room) {
     room.lines = room.lines || List();
     const timeout = new Date();
-    timeout.setMinutes(timeout.getMinutes() + 10);
+    timeout.setMinutes(timeout.getMinutes() + 5);
     room.lines = room.lines.push({
       color,
       timeout,

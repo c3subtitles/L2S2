@@ -1,4 +1,5 @@
-import { joinReadRoom, leaveReadRoom, primus } from './Service';
+import { joinReadRoom, nextTalk, leaveReadRoom, primus } from './Service';
+import NextTalk from '../Components/NextTalk';
 import Radium from 'radium';
 import React from 'react';
 import ReadLines from '../Components/ReadLines';
@@ -24,8 +25,37 @@ export default class Read extends React.Component {
       WebkitFlexDirection: 'column',
       WebkitJustifyContent: 'flex-end',
     },
+    outer: {
+      alignItems: 'center',
+      display: 'flex',
+      flex: '1 1 0',
+      justifyContent: 'center',
+      WebkitAlignItems: 'center',
+      WebkitFlex: '1 1 0',
+      WebkitJustifyContent: 'center',
+      flexDirection: 'column',
+      WebkitFlexDirection: 'colun',
+    },
   };
+  setState(state, cb) {
+    if (state.lines && state.lines.length <= 0) {
+      nextTalk(this.roomId).then(talk => {
+        this.setState({
+          nextTalk: talk,
+        });
+      });
+    }
+    super.setState(state, cb);
+  }
   componentWillMount() {
+    setInterval(() => {
+      let { lines } = this.state;
+      const refDate = new Date();
+      lines = lines.filter(l => !l.timeut || l.timeout > refDate);
+      this.setState({
+        lines,
+      });
+    }, 45000);
     const rawRoomId = location.search
     .substr(1, location.search.length)
     .split('=')[1];
@@ -38,13 +68,20 @@ export default class Read extends React.Component {
         lines,
       });
     });
-    primus.on('line', (roomId, text) => {
+    primus.on('line', (roomId, text, userId, color, rawTimeout) => {
       if (roomId == this.roomId && text && text.trim().length > 0) {
         const { lines } = this.state;
         if (lines.length >= 3) {
           lines.shift();
         }
-        lines.push(text);
+        let timeout;
+        if (rawTimeout) {
+          timeout = new Date(rawTimeout);
+        }
+        lines.push({
+          text,
+          timeout,
+        });
         this.setState({
           lines,
         });
@@ -64,12 +101,17 @@ export default class Read extends React.Component {
   }
   render(): ReactElement {
     const style = Read.style;
-    const { lines } = this.state;
+    const { lines, nextTalk } = this.state;
     return (
-      <div>
-        <div style={style.wrapper}>
-          <ReadLines fontSize="5em" alwaysUpdate lines={lines}/>
-        </div>
+      <div style={[lines.length <= 0 && style.outer]}>
+        {
+          lines.length > 0 && (<div style={style.wrapper}>
+            <ReadLines fontSize="5em" alwaysUpdate lines={lines.map(l => l.text)}/>
+          </div>
+        )}
+        {lines.length <= 0 && (
+          <NextTalk talk={nextTalk}/>
+        )}
       </div>
     );
   }
