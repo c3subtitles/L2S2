@@ -20,7 +20,6 @@ export default class Read extends React.Component {
       marginRight: 50,
       overflow: 'hidden',
       position: 'relative',
-      textAlign: 'center',
       WebkitAlignItems: 'center',
       WebkitFlex: '1 1 0',
       WebkitFlexDirection: 'column',
@@ -30,12 +29,13 @@ export default class Read extends React.Component {
       alignItems: 'center',
       display: 'flex',
       flex: '1 1 0',
+      flexDirection: 'column',
       justifyContent: 'center',
+      textAlign: 'center',
       WebkitAlignItems: 'center',
       WebkitFlex: '1 1 0',
-      WebkitJustifyContent: 'center',
-      flexDirection: 'column',
       WebkitFlexDirection: 'colun',
+      WebkitJustifyContent: 'center',
     },
   };
   setState(state, cb) {
