@@ -114,7 +114,7 @@ export function addLine(text, roomId: number, userId, color: string) {
   if (room) {
     room.lines = room.lines || List();
     const timeout = new Date();
-    timeout.setMinutes(timeout.getMinutes() + 5);
+    timeout.setMinutes(timeout.getMinutes() + 1);
     room.lines = room.lines.push({
       color,
       timeout,

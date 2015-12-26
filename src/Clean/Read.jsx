@@ -34,7 +34,7 @@ export default class Read extends React.Component {
       textAlign: 'center',
       WebkitAlignItems: 'center',
       WebkitFlex: '1 1 0',
-      WebkitFlexDirection: 'colun',
+      WebkitFlexDirection: 'column',
       WebkitJustifyContent: 'center',
     },
   };
@@ -52,7 +52,7 @@ export default class Read extends React.Component {
     setInterval(() => {
       let { lines } = this.state;
       const refDate = new Date();
-      lines = lines.filter(l => !l.timeut || l.timeout > refDate);
+      lines = lines.filter(l => !l.timeout || l.timeout < refDate);
       this.setState({
         lines,
       });
