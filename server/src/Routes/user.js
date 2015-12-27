@@ -104,3 +104,13 @@ global.router.post('/api/users/resetPassword', async function(ctx) {
   }
   resetPassword(user);
 });
+
+
+global.router.get('/api/stats', async function(ctx) {
+  const ownUser = await getCurrentUserFromSession(ctx);
+  if (ownUser.role.id !== 1) {
+    throw { message: 'insufficent permissions' };
+  }
+  ctx.body = `${Object.keys(global.primus.connections).length} Clients`;
+  ctx.status = 200;
+});

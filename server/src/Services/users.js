@@ -92,7 +92,7 @@ export function getClientUserRepresentation(user: Object): ClientUser {
   });
 }
 
-export async function getCurrentUserFromSession(ctx): ClientUser {
+export async function getCurrentUserFromSession(ctx): Promise<ClientUser> {
   const user = await getUserForSessionId(ctx.request.headers.sessionid);
   if (!user) {
     throw { message: 'Expired Session' };
@@ -100,7 +100,7 @@ export async function getCurrentUserFromSession(ctx): ClientUser {
   return user;
 }
 
-export async function getUserForSessionId(sessionId: ?string): ?ClientUser {
+export async function getUserForSessionId(sessionId: ?string): Promise<?ClientUser> {
   if (sessionId) {
     return await getUserForSessionFromRedis(sessionId);
   }
@@ -138,7 +138,7 @@ export function logout(sessionId: string) {
   deleteSession(sessionId);
 }
 
-export async function getUsers(): Array<ClientUser> {
+export async function getUsers(): Promise<Array<ClientUser>> {
   const users: Array<ClientUser> = await User.find().populate('role');
   return users.map(user => user.client());
 }
