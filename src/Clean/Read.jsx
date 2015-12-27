@@ -49,14 +49,14 @@ export default class Read extends React.Component {
     super.setState(state, cb);
   }
   componentWillMount() {
-    setInterval(() => {
-      let { lines } = this.state;
-      const refDate = new Date();
-      lines = lines.filter(l => !l.timeout || l.timeout < refDate);
-      this.setState({
-        lines,
-      });
-    }, 45000);
+    // setInterval(() => {
+    //   let { lines } = this.state;
+    //   const refDate = new Date();
+    //   lines = lines.filter(l => !l.timeout || l.timeout < refDate);
+    //   this.setState({
+    //     lines,
+    //   });
+    // }, 45000);
     const rawRoomId = location.search
     .substr(1, location.search.length)
     .split('=')[1];
