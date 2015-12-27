@@ -4,3 +4,4 @@ tests.webpack.js
 interfaces/**/*
 src/primusClient.js
 primusClient.js
+babelHelper.js
