@@ -20,6 +20,7 @@ export default class Read extends React.Component {
       marginRight: 50,
       overflow: 'hidden',
       position: 'relative',
+      textAlign: 'center',
       WebkitAlignItems: 'center',
       WebkitFlex: '1 1 0',
       WebkitFlexDirection: 'column',
