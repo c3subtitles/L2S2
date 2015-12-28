@@ -1,7 +1,7 @@
 /* @flow */
 import { login, getClientUserRepresentation, logout, checkPassword, register, getUsers, getCurrentUserFromSession, resetPassword } from '../Services/users';
 import { User, Onetimetoken } from '../models';
-import { createSession } from '../Services/redis';
+import { createSession, deleteSessionForUser } from '../Services/redis';
 
 
 global.router.post('/api/login', async function(ctx) {
@@ -80,6 +80,9 @@ global.router.put('/api/users/:id', async function(ctx) {
     throw { message: 'insufficent permissions' };
   }
   await User.update({ id: ctx.params.id }, user);
+  if (!user.active) {
+    deleteSessionForUser(user);
+  }
   ctx.body = await User.findOne({ id: ctx.params.id }).populate('role');
   ctx.status = 200;
 });

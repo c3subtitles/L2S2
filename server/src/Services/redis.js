@@ -39,6 +39,13 @@ export async function getUserForSessionFromRedis(token: string): Promise<?Client
   }
 }
 
+export async function deleteSessionForUser(user: ClientUser): Promise {
+  await rs.killsoidAsync({
+    app,
+    id: user.id,
+  });
+}
+
 export async function deleteSession(token: string): Promise<void> {
   await rs.killAsync({
     app,
