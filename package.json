@@ -75,7 +75,7 @@
     "primus": "^4.0.1",
     "primus-emit": "^1.0.0",
     "primus-rooms": "^3.3.0",
-    "radium": "^0.15.3",
+    "radium": "^0.16.1",
     "react": "^0.14.1",
     "react-addons-css-transition-group": "^0.14.3",
     "react-dock": "^0.2.3",
