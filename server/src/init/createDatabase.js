@@ -1,5 +1,9 @@
+import '../../../babelHelper';
+import 'babel-regenerator-runtime';
 import bcrypt from 'bcryptjs';
-import '../models';
+import '../models/modelsInit';
+
+
 global.encrypt = function(value) {
   return new Promise(resolve => {
     bcrypt.genSalt(10, (err, salt) => {
@@ -57,4 +61,7 @@ global.initPromise.then(() => {
   createRoles().then(createAdmin).then(() => {
     process.exit(0);
   });
+})
+.catch(e => {
+  console.error(e.stack);
 });
