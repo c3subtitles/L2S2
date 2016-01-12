@@ -18,7 +18,7 @@ export default class UserManagement extends React.Component {
   static propTypes = {
     user: React.PropTypes.object,
     users: React.PropTypes.instanceOf(Map),
-  }
+  };
   static style = {
     wrapper: {
       display: 'flex',
