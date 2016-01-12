@@ -57,7 +57,7 @@
     "bluebird": "^3.0.5",
     "classnames": "^2.2.1",
     "color-js": "^1.0.3",
-    "engine.io": "^1.5.4",
+    "engine.io": "^1.6.7",
     "eventemitter3": "^1.1.1",
     "history": "1.17.0",
     "immutable": "^3.7.5",
