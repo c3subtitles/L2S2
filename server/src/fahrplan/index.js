@@ -24,6 +24,7 @@ function convertTalkList(talkList: Array<RawTalk>): Array<Talk> {
   return talkList.map(t => convertTalk(t));
 }
 
+
 let room1: List<Talk> = List();
 let room2: List<Talk> = List();
 
@@ -34,6 +35,7 @@ export async function parseFahrplan(): Promise {
     throw 'Same Fahrplan Version';
   }
   fahrplan.conference.days.forEach(day => {
+
     _.each(day.rooms, (talks, room) => {
       if (room === 'Hall 1') {
         talks.forEach(talk => {
@@ -87,7 +89,6 @@ export async function currentTalk(roomId: number|string): Promise<?Talk> {
 }
 
 export async function nextTalk(roomId: number): Promise {
-  const currentDate = new Date();
   let talks = roomId == 1 ? room1 : room2;
   if (talks.size <= 0) {
     await getFahrplan();

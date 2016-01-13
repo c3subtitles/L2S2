@@ -2,8 +2,10 @@
 .*node_modules/.*/node_modules.*
 .*node_modules/react/.*
 .*node_modules/radium/.*
+.*node_modules/lodash.*
 .*node_modules/babel.*
 .*server/dist/.*
+.*interfaces/public/\.git.*
 
 [include]
 src/
@@ -11,8 +13,11 @@ server/src
 
 [libs]
 interfaces/
+interfaces/public/
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
 suppress_comment=\\(.\\|\n\\)*\\$FixMe
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable

@@ -1,0 +1,3 @@
+[submodule "interfaces/public"]
+	path = interfaces/public
+	url = https://github.com/marudor/flowInterfaces.git

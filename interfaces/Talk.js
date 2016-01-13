@@ -16,8 +16,8 @@ declare class BaseTalk {
 }
 
 declare class RawTalk extends BaseTalk {
-  date: string;
-  duration: string;
+  date: string,
+  duration: string,
 }
 
 declare class Talk extends BaseTalk {
