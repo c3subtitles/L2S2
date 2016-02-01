@@ -82,7 +82,7 @@
     "react-dom": "^0.14.1",
     "react-loader": "^2.0.0",
     "react-notification-system": "^0.2.5",
-    "react-redux": "^4.0.0",
+    "react-redux": "^4.2.0",
     "react-router": "1.0.3",
     "react-sidebar": "^2.0.0",
     "react-tap-event-plugin": "^0.2.1",
