@@ -35,7 +35,7 @@
     "foreman": "^1.4.1",
     "html-webpack-plugin": "^1.6.2",
     "imports-loader": "^0.6.5",
-    "inline-css-loader": "^0.7.0",
+    "inline-css-loader": "^0.7.5",
     "json-loader": "^0.5.3",
     "nodemon": "^1.8.1",
     "pretty-error": "^2.0.0",
