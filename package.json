@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "axios": "^0.8.1",
-    "babel-polyfill": "^6.3.14",
+    "babel-polyfill": "^6.6.1",
     "babel-regenerator-runtime": "^6.3.13",
     "babel-runtime": "^5.8.34",
     "bcryptjs": "^2.3.0",
