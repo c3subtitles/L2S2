@@ -52,7 +52,7 @@
     "axios": "^0.8.1",
     "babel-polyfill": "^6.3.14",
     "babel-regenerator-runtime": "^6.3.13",
-    "babel-runtime": "^5.8.34",
+    "babel-runtime": "^6.6.1",
     "bcryptjs": "^2.3.0",
     "bluebird": "^3.0.5",
     "classnames": "^2.2.1",
