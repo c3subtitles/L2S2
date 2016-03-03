@@ -67,7 +67,7 @@
     "lodash": "^4.0.0",
     "material-ui": "0.14.2",
     "moment": "^2.10.6",
-    "nodemailer": "^2.0.0",
+    "nodemailer": "^2.3.0",
     "nodemailer-sparkpost-transport": "^0.1.0",
     "normalize.css": "^3.0.3",
     "pg": "^4.4.3",
