@@ -72,7 +72,7 @@
     "normalize.css": "^3.0.3",
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
-    "primus": "^4.0.1",
+    "primus": "^5.0.0",
     "primus-emit": "^1.0.0",
     "primus-rooms": "^3.3.0",
     "radium": "^0.16.1",
