@@ -65,7 +65,7 @@
     "koa-66": "^0.8.0",
     "koa-json-body": "^5.0.0-alpha.1",
     "lodash": "^4.0.0",
-    "material-ui": "0.14.2",
+    "material-ui": "0.14.3",
     "moment": "^2.10.6",
     "nodemailer": "^2.0.0",
     "nodemailer-sparkpost-transport": "^0.1.0",
