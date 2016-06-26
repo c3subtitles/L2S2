@@ -33,7 +33,7 @@
     "eslint-plugin-react": "^3.8.0",
     "file-loader": "^0.8.4",
     "foreman": "^1.4.1",
-    "html-webpack-plugin": "^1.6.2",
+    "html-webpack-plugin": "^2.8.1",
     "imports-loader": "^0.6.5",
     "inline-css-loader": "^1.0.0",
     "json-loader": "^0.5.3",
