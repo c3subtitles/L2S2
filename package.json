@@ -54,7 +54,7 @@
     "babel-regenerator-runtime": "^6.3.13",
     "babel-runtime": "^5.8.34",
     "bcryptjs": "^2.3.0",
-    "bluebird": "^3.0.5",
+    "bluebird": "^3.1.1",
     "classnames": "^2.2.1",
     "color-js": "^1.0.3",
     "engine.io": "^1.5.4",
