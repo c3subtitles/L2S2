@@ -412,149 +412,6 @@ if ('undefined' !== typeof module) {
 },{}],4:[function(_dereq_,module,exports){
 'use strict';
 
-var regex = new RegExp('^((?:\\d+)?\\.?\\d+) *('+ [
-  'milliseconds?',
-  'msecs?',
-  'ms',
-  'seconds?',
-  'secs?',
-  's',
-  'minutes?',
-  'mins?',
-  'm',
-  'hours?',
-  'hrs?',
-  'h',
-  'days?',
-  'd',
-  'weeks?',
-  'wks?',
-  'w',
-  'years?',
-  'yrs?',
-  'y'
-].join('|') +')?$', 'i');
-
-var second = 1000
-  , minute = second * 60
-  , hour = minute * 60
-  , day = hour * 24
-  , week = day * 7
-  , year = day * 365;
-
-/**
- * Parse a time string and return the number value of it.
- *
- * @param {String} ms Time string.
- * @returns {Number}
- * @api private
- */
-module.exports = function millisecond(ms) {
-  var type = typeof ms
-    , amount
-    , match;
-
-  if ('number' === type) return ms;
-  else if ('string' !== type || '0' === ms || !ms) return 0;
-  else if (+ms) return +ms;
-
-  //
-  // We are vulnerable to the regular expression denial of service (ReDoS).
-  // In order to mitigate this we don't parse the input string if it is too long.
-  // See https://nodesecurity.io/advisories/46.
-  //
-  if (ms.length > 10000 || !(match = regex.exec(ms))) return 0;
-
-  amount = parseFloat(match[1]);
-
-  switch (match[2].toLowerCase()) {
-    case 'years':
-    case 'year':
-    case 'yrs':
-    case 'yr':
-    case 'y':
-      return amount * year;
-
-    case 'weeks':
-    case 'week':
-    case 'wks':
-    case 'wk':
-    case 'w':
-      return amount * week;
-
-    case 'days':
-    case 'day':
-    case 'd':
-      return amount * day;
-
-    case 'hours':
-    case 'hour':
-    case 'hrs':
-    case 'hr':
-    case 'h':
-      return amount * hour;
-
-    case 'minutes':
-    case 'minute':
-    case 'mins':
-    case 'min':
-    case 'm':
-      return amount * minute;
-
-    case 'seconds':
-    case 'second':
-    case 'secs':
-    case 'sec':
-    case 's':
-      return amount * second;
-
-    default:
-      return amount;
-  }
-};
-
-},{}],5:[function(_dereq_,module,exports){
-'use strict';
-
-/**
- * Wrap callbacks to prevent double execution.
- *
- * @param {Function} fn Function that should only be called once.
- * @returns {Function} A wrapped callback which prevents execution.
- * @api public
- */
-module.exports = function one(fn) {
-  var called = 0
-    , value;
-
-  /**
-   * The function that prevents double execution.
-   *
-   * @api private
-   */
-  function onetime() {
-    if (called) return value;
-
-    called = 1;
-    value = fn.apply(this, arguments);
-    fn = null;
-
-    return value;
-  }
-
-  //
-  // To make debugging more easy we want to use the name of the supplied
-  // function. So when you look at the functions that are assigned to event
-  // listeners you don't see a load of `onetime` functions but actually the
-  // names of the functions that this module will call.
-  //
-  onetime.displayName = fn.displayName || fn.name || onetime.displayName || onetime.name;
-  return onetime;
-};
-
-},{}],6:[function(_dereq_,module,exports){
-'use strict';
-
 var has = Object.prototype.hasOwnProperty;
 
 /**
@@ -615,7 +472,7 @@ function querystringify(obj, prefix) {
 exports.stringify = querystringify;
 exports.parse = querystring;
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 'use strict';
 
 var EventEmitter = _dereq_('eventemitter3')
@@ -837,47 +694,142 @@ Recovery.prototype.destroy = destroy('timers attempt _fn');
 //
 module.exports = Recovery;
 
-},{"demolish":1,"eventemitter3":3,"millisecond":4,"one-time":5,"tick-tock":9}],8:[function(_dereq_,module,exports){
+},{"demolish":1,"eventemitter3":3,"millisecond":6,"one-time":7,"tick-tock":8}],6:[function(_dereq_,module,exports){
+'use strict';
+
+var regex = new RegExp('^((?:\\d+)?\\.?\\d+) *('+ [
+  'milliseconds?',
+  'msecs?',
+  'ms',
+  'seconds?',
+  'secs?',
+  's',
+  'minutes?',
+  'mins?',
+  'm',
+  'hours?',
+  'hrs?',
+  'h',
+  'days?',
+  'd',
+  'weeks?',
+  'wks?',
+  'w',
+  'years?',
+  'yrs?',
+  'y'
+].join('|') +')?$', 'i');
+
+var second = 1000
+  , minute = second * 60
+  , hour = minute * 60
+  , day = hour * 24
+  , week = day * 7
+  , year = day * 365;
+
+/**
+ * Parse a time string and return the number value of it.
+ *
+ * @param {String} ms Time string.
+ * @returns {Number}
+ * @api private
+ */
+module.exports = function millisecond(ms) {
+  if ('string' !== typeof ms || '0' === ms || +ms) return +ms;
+
+  var match = regex.exec(ms)
+    , amount;
+
+  if (!match) return 0;
+
+  amount = parseFloat(match[1]);
+
+  switch (match[2].toLowerCase()) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return amount * year;
+
+    case 'weeks':
+    case 'week':
+    case 'wks':
+    case 'wk':
+    case 'w':
+      return amount * week;
+
+    case 'days':
+    case 'day':
+    case 'd':
+      return amount * day;
+
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return amount * hour;
+
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return amount * minute;
+
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return amount * second;
+
+    default:
+      return amount;
+  }
+};
+
+},{}],7:[function(_dereq_,module,exports){
 'use strict';
 
 /**
- * Check if we're required to add a port number.
+ * Wrap callbacks to prevent double execution.
  *
- * @see https://url.spec.whatwg.org/#default-port
- * @param {Number|String} port Port number we need to check
- * @param {String} protocol Protocol we need to check against.
- * @returns {Boolean} Is it a default port for the given protocol
- * @api private
+ * @param {Function} fn Function that should only be called once.
+ * @returns {Function} A wrapped callback which prevents execution.
+ * @api public
  */
-module.exports = function required(port, protocol) {
-  protocol = protocol.split(':')[0];
-  port = +port;
+module.exports = function one(fn) {
+  var called = 0
+    , value;
 
-  if (!port) return false;
+  /**
+   * The function that prevents double execution.
+   *
+   * @api private
+   */
+  function onetime() {
+    if (called) return value;
 
-  switch (protocol) {
-    case 'http':
-    case 'ws':
-    return port !== 80;
+    called = 1;
+    value = fn.apply(this, arguments);
+    fn = null;
 
-    case 'https':
-    case 'wss':
-    return port !== 443;
-
-    case 'ftp':
-    return port !== 21;
-
-    case 'gopher':
-    return port !== 70;
-
-    case 'file':
-    return false;
+    return value;
   }
 
-  return port !== 0;
+  //
+  // To make debugging more easy we want to use the name of the supplied
+  // function. So when you look at the functions that are assigned to event
+  // listeners you don't see a load of `onetime` functions but actually the
+  // names of the functions that this module will call.
+  //
+  onetime.displayName = fn.displayName || fn.name || onetime.displayName || onetime.name;
+  return onetime;
 };
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],8:[function(_dereq_,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -1154,7 +1106,9 @@ Tick.prototype.end = Tick.prototype.destroy = function end() {
 Tick.Timer = Timer;
 module.exports = Tick;
 
-},{"millisecond":4}],10:[function(_dereq_,module,exports){
+},{"millisecond":9}],9:[function(_dereq_,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],10:[function(_dereq_,module,exports){
 'use strict';
 
 var required = _dereq_('requires-port')
@@ -1384,7 +1338,7 @@ URL.qs = qs;
 URL.location = lolcation;
 module.exports = URL;
 
-},{"./lolcation":11,"querystringify":6,"requires-port":8}],11:[function(_dereq_,module,exports){
+},{"./lolcation":11,"querystringify":4,"requires-port":12}],11:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -1434,6 +1388,46 @@ module.exports = function lolcation(loc) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./":10}],12:[function(_dereq_,module,exports){
+'use strict';
+
+/**
+ * Check if we're required to add a port number.
+ *
+ * @see https://url.spec.whatwg.org/#default-port
+ * @param {Number|String} port Port number we need to check
+ * @param {String} protocol Protocol we need to check against.
+ * @returns {Boolean} Is it a default port for the given protocol
+ * @api private
+ */
+module.exports = function required(port, protocol) {
+  protocol = protocol.split(':')[0];
+  port = +port;
+
+  if (!port) return false;
+
+  switch (protocol) {
+    case 'http':
+    case 'ws':
+    return port !== 80;
+
+    case 'https':
+    case 'wss':
+    return port !== 443;
+
+    case 'ftp':
+    return port !== 22;
+
+    case 'gopher':
+    return port !== 70;
+
+    case 'file':
+    return false;
+  }
+
+  return port !== 0;
+};
+
+},{}],13:[function(_dereq_,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -1503,7 +1497,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],14:[function(_dereq_,module,exports){
 /*globals require, define */
 'use strict';
 
@@ -2843,7 +2837,7 @@ Primus.prototype.decoder = function decoder(data, fn) {
 
   fn(err, data);
 };
-Primus.prototype.version = "4.0.4";
+Primus.prototype.version = "4.0.5";
 
 if (
      'undefined' !== typeof document
@@ -2892,7 +2886,7 @@ if (
 //
 module.exports = Primus;
 
-},{"demolish":1,"emits":2,"eventemitter3":3,"querystringify":6,"recovery":7,"tick-tock":9,"url-parse":10,"yeast":12}]},{},[13])(13);
+},{"demolish":1,"emits":2,"eventemitter3":3,"querystringify":4,"recovery":5,"tick-tock":8,"url-parse":10,"yeast":13}]},{},[14])(14);
 Primus.prototype.ark["emit"] = function client(primus) {
   var toString = Object.prototype.toString
     , emit = primus.emit;
@@ -4027,7 +4021,12 @@ JSONPPolling.prototype.doPoll = function () {
   };
 
   var insertAt = document.getElementsByTagName('script')[0];
-  insertAt.parentNode.insertBefore(script, insertAt);
+  if (insertAt) {
+    insertAt.parentNode.insertBefore(script, insertAt);
+  }
+  else {
+    (document.head || document.body).appendChild(script);
+  }
   this.script = script;
 
   var isUAgecko = 'undefined' != typeof navigator && /gecko/i.test(navigator.userAgent);
@@ -4793,7 +4792,7 @@ Polling.prototype.uri = function(){
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":3,"component-inherit":11,"debug":12,"engine.io-parser":15,"parseqs":27,"xmlhttprequest-ssl":9,"yeast":30}],8:[function(_dereq_,module,exports){
+},{"../transport":3,"component-inherit":11,"debug":12,"engine.io-parser":15,"parseqs":27,"xmlhttprequest-ssl":9,"yeast":29}],8:[function(_dereq_,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -4805,14 +4804,15 @@ var parseqs = _dereq_('parseqs');
 var inherit = _dereq_('component-inherit');
 var yeast = _dereq_('yeast');
 var debug = _dereq_('debug')('engine.io-client:websocket');
+var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 
 /**
- * `ws` exposes a WebSocket-compatible interface in
- * Node, or the `WebSocket` or `MozWebSocket` globals
- * in the browser.
+ * Get either the `WebSocket` or `MozWebSocket` globals
+ * in the browser or the WebSocket-compatible interface
+ * exposed by `ws` for Node environment.
  */
 
-var WebSocket = _dereq_('ws');
+var WebSocket = BrowserWebSocket || (typeof window !== 'undefined' ? null : _dereq_('ws'));
 
 /**
  * Module exports.
@@ -4888,7 +4888,7 @@ WS.prototype.doOpen = function(){
     opts.headers = this.extraHeaders;
   }
 
-  this.ws = new WebSocket(uri, protocols, opts);
+  this.ws = BrowserWebSocket ? new WebSocket(uri) : new WebSocket(uri, protocols, opts);
 
   if (this.ws.binaryType === undefined) {
     this.supportsBinary = false;
@@ -4955,15 +4955,13 @@ WS.prototype.write = function(packets){
   var self = this;
   this.writable = false;
 
-  var isBrowserWebSocket = global.WebSocket && this.ws instanceof global.WebSocket;
-
   // encodePacket efficient as it uses WS framing
   // no need for encodePayload
   var total = packets.length;
   for (var i = 0, l = total; i < l; i++) {
     (function(packet) {
       parser.encodePacket(packet, self.supportsBinary, function(data) {
-        if (!isBrowserWebSocket) {
+        if (!BrowserWebSocket) {
           // always create a new object (GH-437)
           var opts = {};
           if (packet.options) {
@@ -4982,7 +4980,7 @@ WS.prototype.write = function(packets){
         //have a chance of informing us about it yet, in that case send will
         //throw an error
         try {
-          if (isBrowserWebSocket) {
+          if (BrowserWebSocket) {
             // TypeError is thrown when passing the second argument on Safari
             self.ws.send(data);
           } else {
@@ -5081,7 +5079,7 @@ WS.prototype.check = function(){
 };
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../transport":3,"component-inherit":11,"debug":12,"engine.io-parser":15,"parseqs":27,"ws":29,"yeast":30}],9:[function(_dereq_,module,exports){
+},{"../transport":3,"component-inherit":11,"debug":12,"engine.io-parser":15,"parseqs":27,"ws":undefined,"yeast":29}],9:[function(_dereq_,module,exports){
 // browser shim for xmlhttprequest module
 var hasCORS = _dereq_('has-cors');
 
@@ -7081,51 +7079,6 @@ module.exports = function parseuri(str) {
 };
 
 },{}],29:[function(_dereq_,module,exports){
-
-/**
- * Module dependencies.
- */
-
-var global = (function() { return this; })();
-
-/**
- * WebSocket constructor.
- */
-
-var WebSocket = global.WebSocket || global.MozWebSocket;
-
-/**
- * Module exports.
- */
-
-module.exports = WebSocket ? ws : null;
-
-/**
- * WebSocket constructor.
- *
- * The third `opts` options object gets ignored in web browsers, since it's
- * non-standard, and throws a TypeError if passed to the constructor.
- * See: https://github.com/einaros/ws/issues/227
- *
- * @param {String} uri
- * @param {Array} protocols (optional)
- * @param {Object) opts (optional)
- * @api public
- */
-
-function ws(uri, protocols, opts) {
-  var instance;
-  if (protocols) {
-    instance = new WebSocket(uri, protocols);
-  } else {
-    instance = new WebSocket(uri);
-  }
-  return instance;
-}
-
-if (WebSocket) ws.prototype = WebSocket.prototype;
-
-},{}],30:[function(_dereq_,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -7195,10 +7148,10 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],31:[function(_dereq_,module,exports){
+},{}],30:[function(_dereq_,module,exports){
 
 module.exports =  _dereq_('./lib/');
 
-},{"./lib/":1}]},{},[31])(31)
+},{"./lib/":1}]},{},[30])(30)
 });
 })(this["Primus"]);
