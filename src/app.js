@@ -1,18 +1,12 @@
+// @flow
+
 require('./vendor');
-require('../server/src/flowWorkarounds');
-require('./flowWorkarounds');
 
 
 const render = require('react-dom').render;
 const React = require('react');
-const routes = require('./routes').default;
-
-global.isDev = process.env.NODE_ENV !== 'production';
-
-if (global.isDev) {
-  window.React = React;
-}
+const L2S2 = require('./Components/L2S2').default;
 
 setTimeout(() => {
-  render(routes, document.querySelector('#l2s2'));
+  render(<L2S2/>, document.querySelector('#l2s2'));
 }, 500);

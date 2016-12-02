@@ -5,3 +5,5 @@ interfaces/**/*
 src/primusClient.js
 primusClient.js
 babelHelper.js
+flow-typed/**
+oldsrc/**

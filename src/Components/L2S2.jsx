@@ -1,71 +1,29 @@
-/* @flow */
-import { CSS, Connect } from '../Helper';
-import { fetchUser } from '../Actions/user';
-import { setSystem } from '../Services/notifications';
-import GlobalCSS from './Global.CSS';
-import Navbar from './Navbar';
-import NotificationSystem from 'react-notification-system';
-import Radium from 'radium';
+// @flow
 import React from 'react';
+import { BrowserRouter, Match, Miss } from 'react-router';
+import Home from './Home';
+import NavBar from './NavBar';
+import Login from './Login';
+import { Panel, Layout } from 'react-toolbox';
+import { style } from 'glamor';
 
-type Props = {
-  children?: any,
-  dispatch?: Function,
-  loggedIn?: bool,
-  ready?: bool,
-  user?: ClientUser,
-}
+const mainLayout = style({
+  marginTop: 15,
+  marginLeft: 15,
+  marginRight: 15,
+});
 
-/*::`*/
-@CSS(GlobalCSS)
-@Connect(state => ({ ready: state.initialized }))
-@Radium
-/*::`*/
-export default class L2S2 extends React.Component<void, Props, void> {
-  static _globalCSS = true;
-  static contextTypes = {
-    history: React.PropTypes.any,
-    location: React.PropTypes.any,
-  };
-  static childContextTypes = {
-    transitionTo: React.PropTypes.func,
-  };
-  static style = {
-    childWrap: {
-      display: 'flex',
-      flex: '1 1 0',
-      WebkitFlex: '1 1 0',
-      WebkitFlexDirection: 'column',
-    },
-  };
-  getChildContext(): Object {
-    return {
-      transitionTo: url => {
-        this.context.history.push({ pathname: url });
-      },
-    };
-  }
-  componentWillMount() {
-    fetchUser(this.context.location.query.token);
-  }
-  componentDidMount() {
-    setSystem(this.refs.notification);
-  }
-  render(): ReactElement {
-    const { children, ready } = this.props;
-    const { location } = this.context;
-    const clean = location.query.clean != null;
-    const style = L2S2.style;
-    return (
-      <div>
-        <NotificationSystem ref="notification"/>
-        {ready && [
-          clean ? null : (<Navbar key="nav"/>),
-          <div key="wrap" style={style.childWrap}>
-            {children}
-          </div>,
-        ]}
-      </div>
-    );
-  }
-}
+export default () => (
+  <BrowserRouter>
+    <Layout>
+      <Panel>
+        <NavBar/>
+        <Panel className={`${mainLayout}`}>
+          <Match exactly pattern="/" component={Home}/>
+          <Match pattern="/Login" component={Login}/>
+          <Miss component={Home} />
+        </Panel>
+      </Panel>
+    </Layout>
+  </BrowserRouter>
+);

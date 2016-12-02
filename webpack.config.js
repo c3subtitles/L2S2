@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const node_env = (process.env.NODE_ENV || 'development').trim();
 const configPath = `configuration.${node_env}.js`;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 let plugins = [
   new webpack.NoErrorsPlugin(),
@@ -19,23 +20,23 @@ let plugins = [
   }),
   new HtmlWebpackPlugin({
     filename: 'index.html',
-    template: 'src/index.html',
+    template: 'html-loader!src/index.html',
     minify: {},
   }),
-  new HtmlWebpackPlugin({
-    filename: 'clean/index.html',
-    template: 'src/Clean/index.html',
-    minify: {},
-  }),
+  // new HtmlWebpackPlugin({
+  //   filename: 'clean/index.html',
+  //   template: 'html-loader!src/Clean/index.html',
+  //   minify: {},
+  // }),
 ];
 
-let jsLoader = 'babel!eslint';
+let jsLoader = 'babel-loader!eslint-loader';
 if (node_env === 'production') {
   plugins = plugins.concat([
     new webpack.optimize.OccurenceOrderPlugin(true),
     new webpack.optimize.UglifyJsPlugin(),
   ]);
-  jsLoader = 'babel';
+  jsLoader = 'babel-loader';
 }
 
 const webpackConfig = {
@@ -54,8 +55,8 @@ const webpackConfig = {
     },
   },
   entry: {
-    'Common': path.resolve('src/entry.js'),
-    'Clean': path.resolve('src/Clean/entry.js'),
+    Common: path.resolve('src/index.js'),
+    // Clean: path.resolve('src/Clean/index.js'),
   },
   output: {
     path: path.resolve('www'),
@@ -66,20 +67,25 @@ const webpackConfig = {
   module: {
     loaders: [
       { test: /^((?!CSS\.js$).)*(\.jsx?)$/,
-        exclude: /(node_modules)/,
+        exclude: /(node_modules|primusClient)/,
         include: /src/,
         loader: jsLoader,
       },
-      { test: /\.css$/, loader: 'style!css' },
-      { test: /\.CSS.js$/, exclude: /(node_modules)/, loader: 'inline-css!babel' },
-      { test: /\.(jpg|png|gif|jpeg|ico)$/, loader: 'url?limit=10000' },
-      { test: /\.woff2?(\?.*)?$/, loader: 'file' },
-      { test: /\.(eot|ttf|otf|svg)(\?.*)?$/, loader: 'file' },
-      { test: /\.json$/, loader: 'json' },
+      { test: /(\.scss|\.css)$/, loader: 'style!css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass' },
+      { test: /\.(jpg|png|gif|jpeg|ico)$/, loader: 'url-loader?limit=10000' },
+      { test: /\.woff2?(\?.*)?$/, loader: 'file-loader' },
+      { test: /\.(eot|ttf|otf|svg)(\?.*)?$/, loader: 'file-loader' },
+      { test: /\.json$/, loader: 'json-loader' },
     ],
     noParse: [
       /primusClient\.js/,
+      /.*primusClient.*/,
     ],
+  },
+  postcss: [autoprefixer],
+  sassLoader: {
+    data: '@import "Theme/_config.scss";',
+    includePaths: [path.resolve(__dirname, './src')],
   },
   plugins,
   devServer: {
@@ -102,8 +108,14 @@ const webpackConfig = {
   },
 };
 
+if (process.env.DASHBOARD) {
+  const DashboardPlugin = require('webpack-dashboard/plugin');
+
+  webpackConfig.plugins.push(new DashboardPlugin());
+}
+
 if (node_env !== 'production') {
-  webpackConfig.devtool = 'cheap-module-source-map';
+  webpackConfig.devtool = '#source-map';
 }
 
 module.exports = webpackConfig;

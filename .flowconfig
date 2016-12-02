@@ -3,21 +3,32 @@
 .*node_modules/react/.*
 .*node_modules/radium/.*
 .*node_modules/lodash.*
+.*node_modules/bcryptjs.*
+.*node_modules/fbjs.*
+.*node_modules/jsonlint-lines.*
 .*node_modules/babel.*
-.*server/dist/.*
-.*interfaces/public/\.git.*
+.*oldSrc/.*
 
 [include]
 src/
-server/src
 
 [libs]
 interfaces/
-interfaces/public/
+interfaces/database
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
 suppress_comment=\\(.\\|\n\\)*\\$FixMe
+esproposal.decorators=ignore
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
+unsafe.enable_getters_and_setters=true
+experimental.const_params=true
+munge_underscores=true
+module.ignore_non_literal_requires=true
+module.system.node.resolve_dirname=./src
+module.system=haste
+module.name_mapper='babel-polyfill' -> 'Stub'
+module.name_mapper='.*\.css$' -> 'Stub'
+module.name_mapper='.*\.scss$' -> 'Stub'

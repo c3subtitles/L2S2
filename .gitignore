@@ -1,6 +1,7 @@
 .idea/
 node_modules/
 dist/
+server/lib/
 *.iml
 webpack-stats.json
 npm-debug.log

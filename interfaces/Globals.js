@@ -1,2 +1,5 @@
-declare var store: Object;
-declare var IS_PRODUCTION: bool;
+declare module 'Stub' {
+  declare module.exports: any;
+}
+
+declare var __DEV__: bool;
