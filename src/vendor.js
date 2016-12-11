@@ -2,6 +2,7 @@
 
 import 'react-toolbox/lib/commons.scss';
 import './fonts.css';
+import './axiosConfiguration';
 
 global.__DEV__ = process.env.NODE_ENV !== 'production';
 

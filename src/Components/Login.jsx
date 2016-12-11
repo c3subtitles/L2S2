@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { Panel, Input, Button } from 'react-toolbox';
-import { login } from 'Service/loginService';
+import LoginService from 'Service/LoginService';
 
 type State = {
   username: string,
@@ -23,7 +23,7 @@ export default class Login extends React.PureComponent {
     e.preventDefault();
     e.stopPropagation();
     const { username, password } = this.state;
-    login(username, password);
+    LoginService.login(username, password);
   };
   render() {
     const { username, password } = this.state;

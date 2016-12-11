@@ -55,7 +55,10 @@ const webpackConfig = {
     },
   },
   entry: {
-    Common: path.resolve('src/index.js'),
+    Common: [
+      'react-hot-loader/patch',
+      path.resolve('src/index.js'),
+    ],
     // Clean: path.resolve('src/Clean/index.js'),
   },
   output: {
