@@ -52,6 +52,8 @@ const webpackConfig = {
     alias: {
       bluebird: 'bluebird/js/release/bluebird.js',
       eventemitter: 'eventemitter3',
+      // react: 'inferno-compat',
+      // 'react-dom': 'inferno-compat',
     },
   },
   entry: {

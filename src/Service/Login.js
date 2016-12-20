@@ -11,14 +11,17 @@ class LoginService {
     if (value) {
       localStorage.setItem('sessionId', value);
     } else {
+      // $FlowFixMe
+      this.user = null;
       localStorage.removeItem('sessionId');
     }
     this._sessionId = value;
   }
   @observable user: User;
+  initPromise = Promise.resolve();
   constructor() {
     if (this.sessionId) {
-      this.getUser();
+      this.initPromise = this.getUser().catch(() => {});
     }
   }
   @computed
@@ -36,6 +39,34 @@ class LoginService {
   async getUser() {
     const user = (await axios.post('/api/userForSessionId')).data;
     this.user = user;
+  }
+  async register(username: string, password: string, email: string) {
+    await axios.post('/api/register', {
+      username,
+      password,
+      email,
+    });
+  }
+  async resetPassword(email: string) {
+    await axios.post('/api/users/resetPassword', {
+      email,
+    });
+  }
+  hasPermission(permission: string|string[]) {
+    if (!this.loggedIn) {
+      return false;
+    }
+    if (!permission.length) {
+      return true;
+    }
+    const permissions = Array.isArray(permission) ? permission : [permission];
+    return permissions.some(p => this.user.role[p]);
+  }
+  logout() {
+    axios.post('/api/logout');
+    this.sessionId = null;
+    // $FlowFixMe
+    this.user = null;
   }
 }
 
