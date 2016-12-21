@@ -107,7 +107,7 @@ declare module 'axios' {
 
   declare type $AxiosError<T> = AxiosError<T>;
 
-  declare interface AxiosExport extends Axios {
+  declare class AxiosExport mixins Axios {
     Axios: typeof Axios;
     Cancel: Class<Cancel>;
     CancelToken: Class<CancelToken>;

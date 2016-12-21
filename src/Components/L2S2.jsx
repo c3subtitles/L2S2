@@ -12,14 +12,15 @@ import React from 'react';
 import Register from './Register';
 import RoomAdmin from './RoomAdmin';
 import Read from './Read';
+import Write from './Write';
 import LoginService from 'Service/Login';
 
 
 const style = StyleSheet.create({
   main: {
-    marginTop: 15,
-    marginLeft: 15,
-    marginRight: 15,
+    // marginTop: 15,
+    // marginLeft: 15,
+    // marginRight: 15,
     overflow: 'auto',
     flex: 1,
   },
@@ -67,6 +68,7 @@ export default class L2S2 extends React.PureComponent {
                 <Match pattern="/Register" component={Register}/>
                 <Match pattern="/RoomAdmin" component={RoomAdmin}/>
                 <Match pattern="/:id" component={Read}/>
+                <Match pattern="/Write/:id" component={Write}/>
                 <Miss component={Home} />
               </div>
             )}

@@ -8,7 +8,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 function convertTalk(talk: RawTalk): Talk {
-  // $FlowFixMe
+  // $Flow// @fFixMe
   return {
     ...talk,
     date: moment(talk.date),
