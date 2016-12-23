@@ -6,3 +6,7 @@ export type User = {
   role: Role,
   username: string,
 }
+
+export type ClientUser = User & {
+  current: string,
+}

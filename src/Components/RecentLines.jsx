@@ -1,10 +1,13 @@
 // @flow
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import RoomService from 'Service/Room';
+import { observer } from 'mobx-react';
 
+@observer
 export default class RecentLines extends React.PureComponent {
   render() {
-    // const { lines } = this.props;
+    const lines = RoomService.lines;
     return (
       <div className={css(style.wrapper)}>
         {/* {

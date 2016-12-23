@@ -3,12 +3,14 @@ import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { lineStart, line } from 'Service/Socket';
 import RoomService from 'Service/Room';
+import { observer } from 'mobx-react';
 import LoginService from 'Service/Login';
 
 type State = {
   line: string,
 }
 
+@observer
 export default class WriterInput extends React.PureComponent {
   state: State = {
     line: '',
@@ -22,19 +24,19 @@ export default class WriterInput extends React.PureComponent {
     this.setState({
       line,
     });
-    lineStart(RoomService.room.id, line, LoginService.user.id);
+    lineStart(RoomService.roomId, line, LoginService.user.id);
   };
   handleKeyDown = (e: KeyboardEvent) => {
     // $FlowFixMe
     if (e.key === 'Enter' && e.target.value.trim().length > 0) {
       // $FlowFixMe
-      line(RoomService.room.id, e.target.value, 'fo');
+      line(RoomService.roomId, e.target.value, LoginService.user);
       // $FlowFixMe
       e.target.value = '';
     } else if ((e.metaKey || e.ctrlKey) && e.key === 'Backspace') {
       // $FlowFixMe
       e.target.value = '';
-      lineStart(RoomService.room.id, e.target.value, LoginService.user.id);
+      lineStart(RoomService.roomId, e.target.value, LoginService.user.id);
     }
   };
   render() {
