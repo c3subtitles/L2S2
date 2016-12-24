@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { Map } from 'immutable';
 import { Connect } from '../Helper';
 import { Paper } from 'material-ui';
@@ -11,15 +11,14 @@ const props = state => ({
 });
 
 type Props = {
-  userInRoom: Map,
-  canBan: bool,
+  userInRoom?: Map,
+  canBan?: bool,
 };
 
-/*::`*/
 @Connect(props)
 @Radium
-/*::`*/
-export default class UserList extends React.Component<void, Props, void> {
+export default class UserList extends React.Component {
+  props: Props;
   static style = {
     wrapper: {
       display: 'flex',

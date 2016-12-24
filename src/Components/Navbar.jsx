@@ -1,5 +1,5 @@
-/* @flow */
-import { Divider, MenuItem, AppBar, IconMenu, RaisedButton, FlatButton } from 'material-ui';
+// @flow
+import { Divider, MenuItem, AppBar, IconMenu, FlatButton } from 'material-ui';
 import { Connect } from '../Helper';
 import { hasPermission } from '../Services/user';
 import { lockRoom, speechLockRoom } from '../Actions/rooms';
@@ -7,14 +7,13 @@ import Radium from 'radium';
 import React from 'react';
 
 type Props = {
-  currentRoom: Object,
-  loggedIn: bool,
-  readMode: bool,
-  user: ClientUser,
-  writeMode: bool,
+  currentRoom?: Object,
+  loggedIn?: bool,
+  readMode?: bool,
+  user?: ClientUser,
+  writeMode?: bool,
 };
 
-/*::`*/
 @Radium
 @Connect(state => ({
   currentRoom: state.currentRoom,
@@ -22,10 +21,10 @@ type Props = {
   user: state.user,
   writeMode: state.write,
 }))
-/*::`*/
-export default class Navbar extends React.Component<void, Props, void> {
+export default class Navbar extends React.Component {
+  props: Props;
   static contextTypes = {
-    transitionTo: React.PropTypes.func.isRequired,
+    router: React.PropTypes.object.isRequired,
   };
   static style = {
     bar: {
@@ -33,12 +32,14 @@ export default class Navbar extends React.Component<void, Props, void> {
       minHeight: 48,
     },
     title: {
+      alignItems: 'center',
       color: '#fff',
       cursor: 'pointer',
       display: 'flex',
       flex: '1 1 0',
       fontSize: 24,
       fontWeight: 400,
+      justifyContent: 'flex-end',
       letterSpacing: 0,
       margin: 0,
       overflow: 'hidden',
@@ -46,8 +47,6 @@ export default class Navbar extends React.Component<void, Props, void> {
       position: 'relative',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
     },
     innerTitle: {
       flex: '1 1 0',
@@ -73,61 +72,61 @@ export default class Navbar extends React.Component<void, Props, void> {
       color: '#fff',
     },
   };
-  home: () => void = () => {
-    this.context.transitionTo('/');
+  home = () => {
+    this.context.router.transitionTo('/');
   };
-  write: () => void = () => {
-    this.context.transitionTo('/write');
+  write = () => {
+    this.context.router.transitionTo('/write');
   };
-  writeRoom = (e) => {
+  writeRoom = (e: Event) => {
     e.stopPropagation();
     const { currentRoom } = this.props;
     if (currentRoom) {
-      this.context.transitionTo(`/write/${currentRoom.id}`);
+      this.context.router.transitionTo(`/write/${currentRoom.id}`);
     } else {
       this.write();
     }
   };
-  lockRoom = e => {
+  lockRoom = (e: Event) => {
     e.stopPropagation();
     const { currentRoom } = this.props;
     lockRoom(currentRoom.id, !currentRoom.locked);
   };
-  speechLockRoom = e => {
+  speechLockRoom = (e: Event) => {
     e.stopPropagation();
     const { currentRoom } = this.props;
     speechLockRoom(currentRoom.id, !currentRoom.speechLocked);
   };
-  profile: () => void = () => {
-    this.context.transitionTo('/profile');
+  profile = () => {
+    this.context.router.transitionTo('/profile');
   };
-  logout: () => void = () => {
-    this.context.transitionTo('/logout');
+  logout = () => {
+    this.context.router.transitionTo('/logout');
   };
-  rooms: () => void = () => {
-    this.context.transitionTo('/roomManagement');
+  rooms = () => {
+    this.context.router.transitionTo('/roomManagement');
   };
-  users: () => void = () => {
-    this.context.transitionTo('/userManagement');
+  users = () => {
+    this.context.router.transitionTo('/userManagement');
   };
-  login: () => void = () => {
-    this.context.transitionTo('/login');
+  login = () => {
+    this.context.router.transitionTo('/login');
   };
   register = () => {
-    this.context.transitionTo('/register');
+    this.context.router.transitionTo('/register');
   };
   getGuestMenu() {
     const style = Navbar.style;
     return (
       <IconMenu desktop iconButtonElement={
-          <RaisedButton style={style.menuButton} secondary label="Menu"/>
+          <FlatButton style={style.menuButton} label="Menu"/>
         }>
         <MenuItem onClick={this.login} primaryText="Login"/>
         <MenuItem onClick={this.register} primaryText="Register"/>
       </IconMenu>
     );
   }
-  getTitle(): ReactElement {
+  getTitle() {
     const style = Navbar.style;
     const { currentRoom, loggedIn, readMode, writeMode, user } = this.props;
     let conditionalButton;
@@ -168,7 +167,7 @@ export default class Navbar extends React.Component<void, Props, void> {
       }
       iconElementRight = (
         <IconMenu desktop iconButtonElement={
-            <RaisedButton style={style.menuButton} secondary label={user.username}/>
+            <FlatButton style={style.menuButton} label={user.username}/>
           }>
           <MenuItem onClick={this.profile} primaryText="Profile"/>
           <MenuItem onClick={this.write} primaryText="Write"/>

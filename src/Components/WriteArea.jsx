@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { Paper } from 'material-ui';
 import RecentLines from './RecentLines';
 import LinesInProgress from './LinesInProgress';

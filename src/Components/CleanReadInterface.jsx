@@ -1,3 +1,4 @@
+// @flow
 import { Connect } from '../Helper';
 import { joinReadRoom, leaveReadRoom } from '../Actions/rooms';
 import Radium from 'radium';
@@ -27,7 +28,7 @@ export default class CleanReadInterface extends React.Component {
   };
   componentWillMount() {
     const { roomId } = this.props.params;
-    joinReadRoom(Number.parseInt(roomId));
+    joinReadRoom(Number.parseInt(roomId, 10));
   }
   componentWillUnmount() {
     leaveReadRoom();

@@ -1,3 +1,6 @@
+// @flow
+/* eslint prefer-rest-params: 0 */
+
 export function ObserveMount(component) {
   return class ObserveMount extends component {
     _mounted = false;

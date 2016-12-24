@@ -1,12 +1,14 @@
+// @flow
 import React from 'react';
 import Radium from 'radium';
 
 type Props = {
-  talk: Talk,
+  talk?: Talk,
 };
 
 @Radium
-export default class NextTalk extends React.Component<void, Props, void> {
+export default class NextTalk extends React.Component {
+  props: Props;
   static style = {
     wrapper: {
       alignItems: 'center',
@@ -21,7 +23,7 @@ export default class NextTalk extends React.Component<void, Props, void> {
       WebkitJustifyContent: 'space-around',
     },
   };
-  render(): ?ReactElement {
+  render() {
     const style = NextTalk.style;
     const { talk } = this.props;
     if (!talk) {

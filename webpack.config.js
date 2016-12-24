@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const node_env = (process.env.NODE_ENV || 'development').trim();
 const configPath = `configuration.${node_env}.js`;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const DashboardPlugin = require('webpack-dashboard/plugin');
 
 let plugins = [
   new webpack.NoErrorsPlugin(),
@@ -21,12 +22,15 @@ let plugins = [
     filename: 'index.html',
     template: 'src/index.html',
     minify: {},
+    chunks: ['Common'],
   }),
   new HtmlWebpackPlugin({
     filename: 'clean/index.html',
     template: 'src/Clean/index.html',
     minify: {},
+    chunks: ['Clean'],
   }),
+  new DashboardPlugin(),
 ];
 
 let jsLoader = 'babel!eslint';
@@ -54,8 +58,8 @@ const webpackConfig = {
     },
   },
   entry: {
-    'Common': path.resolve('src/entry.js'),
-    'Clean': path.resolve('src/Clean/entry.js'),
+    Common: path.resolve('src/entry.js'),
+    Clean: path.resolve('src/Clean/entry.js'),
   },
   output: {
     path: path.resolve('www'),

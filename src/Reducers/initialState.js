@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { List, Map } from 'immutable';
 
 const shortcuts = Map({
@@ -12,12 +12,12 @@ const shortcuts = Map({
   '#a': localStorage['sc#a'] || '*applaus*',
 });
 
-const rawReadGradient = localStorage['readGradient'];
+const rawReadGradient = localStorage.readGradient;
 const readGradient = rawReadGradient ? JSON.parse(rawReadGradient) : false;
 const initialState: ReduxState = {
   currentRoom: null,
-  readBackgroundColor: localStorage['readbgColor'] || '255,255,255',
-  readColor: localStorage['readColor'] || '0,0,0',
+  readBackgroundColor: localStorage.readbgColor || '#ffffff',
+  readColor: localStorage.readColor || '#000000',
   readGradient,
   readLines: List(),
   ready: false,

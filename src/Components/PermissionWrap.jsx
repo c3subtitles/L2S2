@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import React from 'react';
 import { hasPermission } from '../Services/user';
 
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default class PermissionWrap extends React.Component<void, Props, void> {
-  render(): ?ReactElement {
+  render() {
     const { permission, children } = this.props;
     if (hasPermission(permission)) {
       if (React.Children.count(children) > 1) {

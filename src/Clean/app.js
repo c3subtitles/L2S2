@@ -1,5 +1,4 @@
-require('../../server/src/flowWorkarounds');
-require('../flowWorkarounds');
+// @flow
 require('../fonts.css');
 
 

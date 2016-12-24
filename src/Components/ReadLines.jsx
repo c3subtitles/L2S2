@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { List } from 'immutable';
 import Radium from 'radium';
 import React from 'react';
@@ -36,7 +36,7 @@ export default class ReadLines extends React.Component<DefaultProps, Props, void
   shouldComponentUpdate(nextProps: Props): bool {
     return nextProps.alwaysUpdate || this.props.lines !== nextProps.lines;
   }
-  render(): ReactElement {
+  render() {
     const style = ReadLines.style;
     const { lines, fontSize } = this.props;
     const lineStyle = {

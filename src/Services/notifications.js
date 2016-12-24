@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 let notificationSystem;
 
 export function setSystem(system: Object) {

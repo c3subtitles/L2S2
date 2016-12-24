@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { addError } from '../Services/notifications';
 import { Connect, Permission } from '../Helper';
 import { joinRoom, leaveRoom } from '../Actions/rooms';
@@ -18,26 +18,18 @@ type Props = {
   params: {
     roomId: string,
   },
-  room: RoomType,
-  user: ClientUser,
+  room?: RoomType,
+  user?: ClientUser,
 };
 
-/*::`*/
 @Permission()
 @Connect(props)
 @Radium
-/*::`*/
-export default class WriteInterface extends React.Component<void, Props, void> {
+export default class WriteInterface extends React.Component {
   static contextTypes = {
-    transitionTo: React.PropTypes.func,
+    router: React.PropTypes.object.isRequired,
   };
-  static propTypes = {
-    params: React.PropTypes.shape({
-      roomId: React.PropTypes.string,
-    }),
-    room: React.PropTypes.object,
-    user: React.PropTypes.object,
-  };
+  props: Props;
   static style = {
     wrapper: {
       display: 'flex',
@@ -52,17 +44,17 @@ export default class WriteInterface extends React.Component<void, Props, void> {
   };
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.room.locked && !nextProps.user.role.canJoinLocked) {
-      this.context.transitionTo('/write');
+      this.context.router.transitionTo('/write');
       addError({ title: 'Room locked', message: 'The room got locked. You do not have the permission to be in locked Rooms' });
     }
   }
   componentWillMount() {
     const { roomId } = this.props.params;
-    joinRoom(Number.parseInt(roomId));
+    joinRoom(Number.parseInt(roomId, 10));
   }
   componentWillUnmount() {
     const { roomId } = this.props.params;
-    leaveRoom(Number.parseInt(roomId));
+    leaveRoom(Number.parseInt(roomId, 10));
   }
   render() {
     const style = WriteInterface.style;

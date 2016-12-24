@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import _ from 'lodash';
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
@@ -27,30 +27,29 @@ export const fetchRooms = createAction('FETCH_ROOMS', async () => {
   return roomMap;
 });
 
-export const saveRoom = createAction('SAVE_ROOM', async (room) => {
-  if (room.id) {
-    room = await axios.put(`/rooms/${room.id}`, {
-      name: room.name,
+export const saveRoom = createAction('SAVE_ROOM', async (rawRoom) => {
+  let room;
+  if (rawRoom.id) {
+    room = await axios.put(`/rooms/${rawRoom.id}`, {
+      name: rawRoom.name,
     });
   } else {
-    room = await axios.post('/rooms', { room });
+    room = await axios.post('/rooms', { rawRoom });
   }
   addSuccess({ message: 'Successfully saved' });
   return room;
 });
 
-export const createRoom = createAction('CREATE_ROOM', async () => {
-  return {
+export const createRoom = createAction('CREATE_ROOM', async () => ({
     name: '',
     isNew: true,
-  };
-});
+  }));
 
 export const deleteRoom = createAction('DELETE_ROOM', async (room) => {
   if (!room.isNew) {
     await axios.delete(`/rooms/${room.id}`);
   }
-  addSuccess({ message: `Successfully deleted` });
+  addSuccess({ message: 'Successfully deleted' });
   return room;
 });
 
@@ -60,6 +59,9 @@ function joinRoomCheck(roomId) {
 
 let joinRoomTimeout;
 export const joinRoom = createAction('JOIN_ROOM', async (roomId: number) => {
+  if (!Number.isInteger(roomId)) {
+    return {};
+  }
   joinRoomSocket(roomId);
   if (joinRoomTimeout) {
     clearTimeout(joinRoomTimeout);
@@ -76,6 +78,9 @@ export const joinRoom = createAction('JOIN_ROOM', async (roomId: number) => {
 });
 
 export const leaveRoom = createAction('LEAVE_ROOM', roomId => {
+  if (!Number.isInteger(roomId)) {
+    return {};
+  }
   leaveRoomSocket(roomId);
   if (joinRoomTimeout) {
     clearTimeout(joinRoomTimeout);
@@ -108,6 +113,9 @@ export const userLeft = createAction('USER_LEFT', (roomId, user) => ({
 }));
 
 export const joinReadRoom = createAction('JOIN_READ_ROOM', async (roomId: number) => {
+  if (!Number.isInteger(roomId)) {
+    return {};
+  }
   joinRoomSocket(roomId);
   const joinInformation = await axios.get(`/rooms/${roomId}/joinRead`);
   joinInformation.lines = List(joinInformation.lines);
@@ -119,17 +127,13 @@ export const joinReadRoom = createAction('JOIN_READ_ROOM', async (roomId: number
 
 export const leaveReadRoom = createAction('LEAVE_READ_ROOM', () => {});
 
-export const lockRoom = createAction('LOCK_ROOM', async (roomId, locked) => {
-  return await axios.put(`/rooms/${roomId}`, {
+export const lockRoom = createAction('LOCK_ROOM', (roomId, locked) => axios.put(`/rooms/${roomId}`, {
     locked,
-  });
-});
+  }));
 
-export const speechLockRoom = createAction('SPEECH_LOCK_ROOM', async (roomId, speechLocked) => {
-  return await axios.put(`/rooms/${roomId}`, {
+export const speechLockRoom = createAction('SPEECH_LOCK_ROOM', (roomId, speechLocked) => axios.put(`/rooms/${roomId}`, {
     speechLocked,
-  });
-});
+  }));
 
 export const updateRoom = createAction('UPDATE_ROOM', async room => room);
 

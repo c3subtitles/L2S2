@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import React from 'react';
 import { Connect } from '../Helper';
 import Radium from 'radium';
@@ -15,11 +15,10 @@ type Props = {
   enableGradient?: bool,
 };
 
-/*::`*/
 @Connect(props)
 @Radium
-/*::`*/
-export default class ReadSettings extends React.Component<void, Props, void> {
+export default class ReadSettings extends React.Component {
+  props: Props;
   static style = {
     wrapper: {
       display: 'flex',
@@ -59,7 +58,7 @@ export default class ReadSettings extends React.Component<void, Props, void> {
       enableGradient: toggled,
     });
   };
-  render(): ReactElement {
+  render() {
     const { backgroundColor, color, enableGradient } = this.props;
     const style = ReadSettings.style;
     const wrapperStyle = {

@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { List } from 'immutable';
 import { Connect } from '../Helper';
 import React from 'react';
@@ -17,11 +17,8 @@ type Props = {
 @Connect(props)
 @Radium
 /*::`*/
-export default class OldLines extends React.Component<void, Props, {}> {
-  static propTypes = {
-    lines: React.PropTypes.instanceOf(List),
-    style: React.PropTypes.object,
-  };
+export default class OldLines extends React.Component {
+  props: Props;
   static style = {
     background: 'linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0.7), transparent)',
     bottom: 0,
@@ -30,7 +27,7 @@ export default class OldLines extends React.Component<void, Props, {}> {
     right: '3px',
     top: 0,
   };
-  render(): ReactElement {
+  render() {
     const { lines, style } = this.props;
     return (
       <div style={[style, { position: 'relative', flex: '1 1 0' }]}>

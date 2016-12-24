@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { addError } from 'Services/notifications';
 import { PureRender } from 'Helper';
 import { register } from 'Services/user';
@@ -16,7 +16,7 @@ type Props = {
 /*::`*/
 export default class Register extends React.Component<void, Props, void> {
   static contextTypes = {
-    transitionTo: React.PropTypes.func,
+    transitionTo: React.PropTypes.object.isRequired,
   };
   static style = {
     wrapper: {
@@ -32,11 +32,11 @@ export default class Register extends React.Component<void, Props, void> {
   componentWillMount() {
     const { loggedIn } = this.props;
     if (loggedIn) {
-      this.context.transitionTo('/');
+      this.context.router.transitionTo('/');
     }
   }
   loggingIn: bool = false;
-  register = async (e) => {
+  register = async (e: Event) => {
     e.preventDefault();
     if (this.loggingIn) {
       return;
@@ -52,13 +52,13 @@ export default class Register extends React.Component<void, Props, void> {
     }
     try {
       await register(username, email, password1);
-      this.context.transitionTo('/');
+      this.context.router.transitionTo('/');
       this.refs.each(r => r.setValue(''));
     } finally {
       this.loggingIn = false;
     }
   };
-  render(): ReactElement {
+  render() {
     const style = Register.style;
     return (
       <div style={style.wrapper}>

@@ -1,7 +1,9 @@
+// @flow
+/* eslint eqeqeq: 0 */
 import { List, Map } from 'immutable';
 import _ from 'lodash';
 
-const colors: List = List(['#FFC7C7', '#FFF1C7', '#E3FFC7', '#C7FFD5', '#C7FFFF', '#C7D5FF', '#E3C7FF', '#FFC7F1']);
+const colors: List<string> = List(['#FFC7C7', '#FFF1C7', '#E3FFC7', '#C7FFD5', '#C7FFFF', '#C7D5FF', '#E3C7FF', '#FFC7F1']);
 
 function setColors(userInRoom: Map, user: ?ClientUser) {
   const usedColors: List = userInRoom.map(u => u.color).toList();
@@ -51,11 +53,9 @@ export default {
   FETCH_ROOMS: (state: ReduxState, action) => ({
     rooms: action.payload.sortBy(r => r.id),
   }),
-  CREATE_ROOM: (state: ReduxState, action) => {
-    return {
+  CREATE_ROOM: (state: ReduxState, action) => ({
       rooms: state.rooms.set(action.payload.id, action.payload).sortBy(r => r.id),
-    };
-  },
+    }),
   DELETE_ROOM: (state: ReduxState, action) => ({
     rooms: state.rooms.filter(r => r.id !== action.payload && r !== action.payload),
   }),
@@ -70,12 +70,12 @@ export default {
     nextTalk,
   }),
   JOIN_ROOM: (state: ReduxState, { payload: { room, userInRoom, lines } }) => {
-    userInRoom = setColors(userInRoom, state.user);
+    const newUserInRoom = setColors(userInRoom, state.user);
     return {
       currentRoom: room,
-      lines: processLines(lines, userInRoom),
+      lines: processLines(lines, newUserInRoom),
       user: _.clone(state.user),
-      userInRoom,
+      userInRoom: newUserInRoom,
       write: true,
     };
   },
@@ -166,10 +166,8 @@ export default {
   LOCK_ROOM: updateRoom,
   SPEECH_LOCK_ROOM: updateRoom,
   UPDATE_ROOM: updateRoom,
-  SET_SHORTCUT: (state: ReduxState, { payload: { key, shortcut } }) => {
-    return {
+  SET_SHORTCUT: (state: ReduxState, { payload: { key, shortcut } }) => ({
       shortcuts: state.shortcuts.set(key, shortcut),
-    };
-  },
+    }),
   CHANGE_READ_COLOR: (state: ReduxState, { payload }) => payload,
 };

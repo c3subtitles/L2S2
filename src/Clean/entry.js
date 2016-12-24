@@ -1,5 +1,4 @@
-import 'babel-regenerator-runtime';
+// @flow
 global.Promise = require('bluebird');
-require('../../babelHelper');
 require('babel-polyfill');
 require('./app');

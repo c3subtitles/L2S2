@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { addSuccess } from '../Services/notifications';
 import { createAction } from 'redux-actions';
 import { Map, List } from 'immutable';
@@ -31,7 +31,7 @@ export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
   if (localStorage.sessionId) {
     try {
       const userFromServer = await axios.post('/userForSessionId', {
-        sessionId: localStorage['sessionId'],
+        sessionId: localStorage.sessionId,
       });
       if (userFromServer) {
         return {
@@ -73,22 +73,20 @@ export const fetchUsers = createAction('FETCH_USERS', async () => {
   });
   return userMap;
 });
-export const fetchRoles = createAction('FETCH_ROLES', async () => {
-  return List(await axios.get('/roles'));
-});
+export const fetchRoles = createAction('FETCH_ROLES', async () => List(await axios.get('/roles')));
 export const saveRole = createAction('SAVE_ROLE', async (user: ClientUser, role: RoleType) => {
-  user = await axios.put(`/users/${user.id}`, {
+  const newUser = await axios.put(`/users/${user.id}`, {
     role: role.id,
   });
   addSuccess({ message: 'Change Saved' });
-  return user;
+  return newUser;
 });
 export const saveActive = createAction('SAVE_ACTIVE', async (user: ClientUser, active: bool) => {
-  user = await axios.put(`/users/${user.id}`, {
+  const newUser = await axios.put(`/users/${user.id}`, {
     active,
   });
   addSuccess({ message: 'Change Saved' });
-  return user;
+  return newUser;
 });
 export const deleteUser = createAction('DELETE_USER', async (user: ClientUser) => {
   await axios.delete(`/users/${user.id}`);
@@ -97,7 +95,7 @@ export const deleteUser = createAction('DELETE_USER', async (user: ClientUser) =
 });
 
 export const resetPassword = createAction('RESET_PW', async (email: string) => {
-  await axios.post(`/users/resetPassword`, {
+  await axios.post('/users/resetPassword', {
     email,
   });
 });

@@ -1,3 +1,4 @@
+// @flow
 import initialState from './initialState';
 
 function updateUsers(state, user) {

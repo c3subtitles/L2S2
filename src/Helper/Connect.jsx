@@ -1,16 +1,17 @@
+// @flow
 import { connect } from 'react-redux';
 
 export function Connect(reducer) {
-  reducer = function(old = () => null) {
+  const newReducer = (function(old = () => null) {
     return function(state) {
       return {
         ...old(state),
         loggedIn: Boolean(state.user),
       };
     };
-  }(reducer);
+  }(reducer));
 
   return function(component) {
-    return connect(reducer)(component);
+    return connect(newReducer)(component);
   };
 }

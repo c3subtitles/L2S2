@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import React from 'react';
 import { FlatButton } from 'material-ui';
 
@@ -8,12 +8,8 @@ type Props = {
   style?: Object,
 }
 
-export default class DeleteButton extends React.Component<void, Props, void> {
-  static propTypes = {
-    label: React.PropTypes.string,
-    onClick: React.PropTypes.func,
-    style: React.PropTypes.object,
-  };
+export default class DeleteButton extends React.Component {
+  props: Props;
   static style = {
     color: '#ff0000',
   };

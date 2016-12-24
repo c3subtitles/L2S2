@@ -1,3 +1,4 @@
+// @flow
 import { joinReadRoom, nextTalk, leaveReadRoom, primus } from './Service';
 import NextTalk from '../Components/NextTalk';
 import Radium from 'radium';
@@ -61,7 +62,7 @@ export default class Read extends React.Component {
     const rawRoomId = location.search
     .substr(1, location.search.length)
     .split('=')[1];
-    this.roomId = Number.parseInt(rawRoomId);
+    this.roomId = Number.parseInt(rawRoomId, 10);
     joinReadRoom(this.roomId).then(lines => {
       while (lines.length > 3) {
         lines.shift();
@@ -71,7 +72,9 @@ export default class Read extends React.Component {
       });
     });
     primus.on('line', (roomId, text, userId, color, rawTimeout) => {
+      /* eslint-disable */
       if (roomId == this.roomId && text && text.trim().length > 0) {
+        /* eslint-enable */
         const { lines } = this.state;
         if (lines.length >= 3) {
           lines.shift();
@@ -91,9 +94,8 @@ export default class Read extends React.Component {
     });
     primus.on('reconnect', () => {
       joinReadRoom(this.roomId).then(lines => {
-        lines = this.state.lines.concat(lines);
         this.setState({
-          lines,
+          lines: this.state.lines.concat(lines),
         });
       });
     });
@@ -101,7 +103,7 @@ export default class Read extends React.Component {
   componentWillUnmount() {
     leaveReadRoom();
   }
-  render(): ReactElement {
+  render() {
     const style = Read.style;
     const { lines, nextTalk } = this.state;
     return (

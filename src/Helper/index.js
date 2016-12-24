@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 export { CSS } from './CSS';
 export { globalEventEmitter } from './globalEventEmitter';
 export { ObserveMount } from './ObserveMount';

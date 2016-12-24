@@ -1,9 +1,8 @@
-/* @flow */
+// @flow
 /* $FlowFixMe */
 import 'imports?this=>window&define=>false!../../primusClient';
 import { reconnected, lineUpdate, newLine, userJoined, userLeft, updateRoom } from '../Actions/rooms';
 
-/* $FlowFixMe */
 const config = require(CONFIGPATH).default;
 const primus = global.Primus.connect(config.primusLocation);
 

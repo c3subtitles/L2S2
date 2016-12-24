@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { Connect } from '../Helper';
 import { deleteUser, saveRole, saveActive } from '../Actions/user';
 import { Dialog, Paper, DropDownMenu } from 'material-ui';
@@ -26,12 +26,8 @@ type Props = {
 @Connect(props)
 @Radium
 /*::`*/
-export default class UserLine extends React.Component<void, Props, State> {
-  static propTypes = {
-    availableRoles: React.PropTypes.instanceOf(List),
-    ownUser: React.PropTypes.instanceOf(ClientUser),
-    user: React.PropTypes.instanceOf(ClientUser),
-  };
+export default class UserLine extends React.Component {
+  props: Props;
   static style = {
     wrapper: {
       display: 'flex',

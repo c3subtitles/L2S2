@@ -1,5 +1,5 @@
-/* @flow */
-/* $FlowFixMe */
+// @flow
+/* eslint no-useless-escape: 0 */
 import 'sweetalert/dist/sweetalert.css';
 import { Connect } from '../Helper';
 import { login, resetPassword } from '../Actions/user';
@@ -8,13 +8,12 @@ import React from 'react';
 import swal from 'sweetalert';
 
 type Props = {
-  loggedIn: bool,
+  loggedIn?: bool,
 };
 
-/*::`*/
 @Connect()
-/*::`*/
-export default class Login extends React.Component<void, Props, void> {
+export default class Login extends React.Component {
+  props: Props;
   static style = {
     wrapper: {
       display: 'flex',
@@ -31,7 +30,7 @@ export default class Login extends React.Component<void, Props, void> {
     },
   };
   static contextTypes = {
-    history: React.PropTypes.object,
+    router: React.PropTypes.object.isRequired,
   };
   componentWillMount() {
     this.checkStatus();
@@ -41,7 +40,7 @@ export default class Login extends React.Component<void, Props, void> {
   }
   checkStatus = () => {
     if (this.props.loggedIn) {
-      this.context.history.pushState(null, '/write');
+      this.context.router.transitionTo('/write');
     }
   };
   login = async (e: SyntheticEvent) => {
@@ -76,7 +75,7 @@ export default class Login extends React.Component<void, Props, void> {
       }
     });
   };
-  render(): ReactElement {
+  render() {
     const style = Login.style;
     return (
       <div style={style.wrapper}>

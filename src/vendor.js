@@ -1,19 +1,21 @@
+// @flow
+/* eslint prefer-rest-params: 0 */
 import './fonts.css';
 import { addError } from './Services/notifications';
 import axios from 'axios';
-import MaterialUI from 'material-ui';
-import Radium from 'radium';
+// import MaterialUI from 'material-ui';
+// import Radium from 'radium';
 import UUID from 'uuid-js';
 
 
-MaterialUI.Paper = Radium(MaterialUI.Paper);
+// MaterialUI.Paper = Radium(MaterialUI.Paper);
 
-UUID.create = function(old) {
+UUID.create = (function(old) {
   return function() {
     const uuid = old.apply(this, arguments);
     return uuid.hex;
   };
-}(UUID.create);
+}(UUID.create));
 
 axios.interceptors.request.use(requestConfig => {
   requestConfig.url = `/api${requestConfig.url}`;

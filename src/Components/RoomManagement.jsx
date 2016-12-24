@@ -1,4 +1,4 @@
-/*::`*/
+// @flow
 import { createRoom, fetchRooms } from '../Actions/rooms';
 import { Permission, Connect } from '../Helper';
 import { RaisedButton } from 'material-ui';

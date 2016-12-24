@@ -1,3 +1,4 @@
+// @flow
 import Radium from 'radium';
 import React from 'react';
 import RoomSelection from './RoomSelection';
@@ -6,10 +7,10 @@ import RoomSelection from './RoomSelection';
 @Radium
 export default class ReadSelection extends React.Component {
   static contextTypes = {
-    transitionTo: React.PropTypes.func,
+    router: React.PropTypes.object.isRequired,
   };
   handleRoomClick = room => {
-    this.context.transitionTo(`/${room.id}`);
+    this.context.router.transitionTo(`/${room.id}`);
   };
   render() {
     return (

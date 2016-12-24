@@ -1,11 +1,11 @@
-/* @flow */
+// @flow
 import { Connect } from '../Helper';
 import { Map } from 'immutable';
 import Radium from 'radium';
 import React from 'react';
 
 type Props = {
-  filteredUser: Map,
+  filteredUser?: Map,
   spacerStyle: Object,
 };
 
@@ -13,11 +13,10 @@ const props = state => ({
   filteredUser: state.userInRoom.filter(u => u.currentLine).sort(user => user.id !== state.user),
 });
 
-/*::`*/
 @Connect(props)
 @Radium
-/*::`*/
-export default class LinesInProgress extends React.Component<void, Props, void> {
+export default class LinesInProgress extends React.Component {
+  props: Props;
   static style = {
     entry: {
       color: 'black',
@@ -29,7 +28,7 @@ export default class LinesInProgress extends React.Component<void, Props, void> 
       flexDirection: 'column-reverse',
     },
   };
-  render(): ReactElement {
+  render() {
     const style = LinesInProgress.style;
     const { spacerStyle, filteredUser } = this.props;
     return (

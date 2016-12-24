@@ -1,12 +1,11 @@
 sudo: false
 language: node_js
 node_js:
-  - "4"
-  - "5"
+  - "6"
+  - "7"
 script:
   - "npm i"
   - "npm run travis"
-  - "npm run travisServer"
 env:
   - CXX=g++-4.8
 cache: apt

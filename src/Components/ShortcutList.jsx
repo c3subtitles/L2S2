@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { Connect } from '../Helper';
 import { Map } from 'immutable';
 import { Paper, TextField } from 'material-ui';
@@ -11,14 +11,13 @@ const props = state => ({
 });
 
 type Props = {
-  shortcuts: Map,
+  shortcuts?: Map<string, string>,
 };
 
-/*::`*/
 @Connect(props)
 @Radium
-/*::`*/
-export default class ShortcutList extends React.Component<void, Props, void> {
+export default class ShortcutList extends React.Component {
+  props: Props;
   static style = {
     wrapper: {
       width: '15%',
@@ -61,7 +60,7 @@ export default class ShortcutList extends React.Component<void, Props, void> {
     return (
       <Paper style={style.wrapper}>
         <h3 style={style.title}>Shortcuts</h3>
-        {
+        { shortcuts &&
           shortcuts.map((text: string, key: string) => (
             <TextField onChange={this.handleShortcutChange.bind(this, key)} floatingLabelStyle={style.input.label} inputStyle={style.input.input} style={style.input.wrapper} key={key} floatingLabelText={key} value={text}/>
           )).toArray()

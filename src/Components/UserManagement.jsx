@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { fetchUsers, fetchRoles } from '../Actions/user';
 import { Map } from 'immutable';
 import { Permission, Connect } from '../Helper';
@@ -10,15 +10,15 @@ const props = state => ({
   user: state.user,
 });
 
-/*::`*/
+type Props = {
+  user: Object,
+  Users: Map<any, any>,
+}
+
 @Permission('canActivateUser', 'canDeleteUser')
 @Connect(props)
-/*::`*/
 export default class UserManagement extends React.Component {
-  static propTypes = {
-    user: React.PropTypes.object,
-    users: React.PropTypes.instanceOf(Map),
-  };
+  props: Props;
   static style = {
     wrapper: {
       display: 'flex',

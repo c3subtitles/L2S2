@@ -1,4 +1,4 @@
-/* @flow */
+// @flow
 import { addError } from '../Services/notifications';
 import { changePassword } from '../Services/user';
 import { Connect } from '../Helper';
@@ -41,7 +41,7 @@ export default class Profile extends React.Component<void, Props, void> {
       swal('Login Successfull', 'You\'re now logged in. Please change your password', 'success');
     }
   }
-  render(): ReactElement {
+  render() {
     return (
       <div>
         <h2>Change Password</h2>

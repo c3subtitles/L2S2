@@ -1,9 +1,8 @@
-/* @flow */
+// @flow
 import { Connect } from '../Helper';
 import { joinReadRoom, leaveReadRoom, getNextTalk } from '../Actions/rooms';
 import { List } from 'immutable';
 import { Paper, FontIcon, IconButton } from 'material-ui';
-import Color from 'color-js';
 import Dock from 'react-dock';
 import Loading from 'react-loader';
 import Radium from 'radium';
@@ -13,13 +12,11 @@ import ReadSettings from './ReadSettings';
 import NextTalk from './NextTalk';
 
 
-global.Color = Color;
-
 function RGBFromRaw(rawColor: string): string {
-  rawColor = rawColor.substr(1);
-  let r = rawColor.substr(0, 2);
-  let g = rawColor.substr(2, 2);
-  let b = rawColor.substr(4, 2);
+  const color = rawColor.substr(1);
+  let r = color.substr(0, 2);
+  let g = color.substr(2, 2);
+  let b = color.substr(4, 2);
   r = Number.parseInt(r, 16);
   g = Number.parseInt(g, 16);
   b = Number.parseInt(b, 16);
@@ -36,23 +33,26 @@ const props = state => ({
 });
 
 type Props = {
-  backgroundColor: string,
-  color: string,
-  gradient: bool,
-  lines: List,
-  nextTalk: Talk,
+  backgroundColor?: string,
+  color?: string,
+  gradient?: bool,
+  gradientColor?: string,
+  lines?: List,
+  nextTalk?: Talk,
   params: Object,
+  location?: RouterLocation,
+  params?: {
+    roomId: string,
+  }
 };
 
 type State = {
   settingsOpen: bool,
 };
 
-/*::`*/
 @Connect(props)
 @Radium
-/*::`*/
-export default class ReadInterface extends React.Component<void, Props, State> {
+export default class ReadInterface extends React.Component {
   static style = {
     wrapper: {
       alignItems: 'center',
@@ -102,26 +102,19 @@ export default class ReadInterface extends React.Component<void, Props, State> {
       background: 'none',
     },
   };
-  static contextTypes = {
-    location: React.PropTypes.object,
-  };
-  state: {
+  props: Props;
+  state: State = {
     settingsOpen: false,
   };
   componentWillMount() {
     const { roomId } = this.props.params;
-    joinReadRoom(Number.parseInt(roomId));
+    joinReadRoom(Number.parseInt(roomId, 10));
   }
   componentWillUnmount() {
     leaveReadRoom();
   }
   getWrapperStyle(): Object {
-    let { backgroundColor, color } = this.props;
-    const { location } = this.context;
-    if (location.query.clean != null) {
-      backgroundColor = 'black';
-      color = 'white';
-    }
+    const { backgroundColor, color } = this.props;
     return {
       ...ReadInterface.style.wrapper,
       backgroundColor,
@@ -129,13 +122,9 @@ export default class ReadInterface extends React.Component<void, Props, State> {
     };
   }
   getGradientStyle(): Object {
-    const { location } = this.context;
     const { backgroundColor } = this.props;
-    const RGBBackground = RGBFromRaw(backgroundColor);
-    let gradientColor = `rgba(${RGBBackground},1), rgba(${RGBBackground}, 0.5), rgba(${RGBBackground}, 0)`;
-    if (location.query.clean != null) {
-      gradientColor = 'rgba(0,0,0,1),rgba(0,0,0,0.5), rgba(0,0,0,0)';
-    }
+    const RGBBackground = backgroundColor ? RGBFromRaw(backgroundColor) : '';
+    const gradientColor = `rgba(${RGBBackground},1), rgba(${RGBBackground}, 0.5), rgba(${RGBBackground}, 0)`;
     return {
       ...ReadInterface.style.gradient,
       background: `linear-gradient(${gradientColor}, transparent)`,
@@ -152,22 +141,20 @@ export default class ReadInterface extends React.Component<void, Props, State> {
     });
   };
   render() {
-    const { nextTalk, lines, backgroundColor, color, gradientColor, gradient } = this.props;
+    const { nextTalk, lines, backgroundColor, color, gradientColor, gradient, params } = this.props;
     if (!lines) {
       return <Loading/>;
     }
-    if (lines.size <= 0 && !nextTalk) {
-      getNextTalk();
+    if (lines.size <= 0 && !nextTalk && params) {
+      getNextTalk(params.roomId);
     }
-    const { location } = this.context;
     const { settingsOpen } = this.state;
     const style = ReadInterface.style;
     return (
       <Paper style={this.getWrapperStyle()}>
         <div style={style.innerWrapper}>
-          {(gradient || location.query.clean != null) && (<div style={this.getGradientStyle()}/>)}
+          {gradient && (<div style={this.getGradientStyle()}/>)}
           {
-            location.query.clean == null &&
             [
               (
                 <Dock key="Dock" dimStyle={style.dim} onVisibleChange={this.handleVisibleChange} isVisible={settingsOpen} position="right">

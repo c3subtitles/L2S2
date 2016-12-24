@@ -1,3 +1,4 @@
+// @flow
 export default {
   html: {
     height: '100%',

@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" style="height:100%;width:100%;">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="utf-8"/>
-    {% if (o.htmlWebpackPlugin.files.chunks.Common && o.htmlWebpackPlugin.files.chunks.Common.css) { %}
-    <link rel="stylesheet" href="{%=o.htmlWebpackPlugin.files.chunks.Common.css %}" type="text/css">
-    {% } %}
+    <title>L2S2</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+    <meta name="viewport" content="width=device-width, initial-scale=0.6" >
   </head>
-  <body>
-    <div id="l2s2"></div>
-    <script src="{%=o.htmlWebpackPlugin.files.chunks.Common.entry %}"></script>
+  <body style="height:100%;width:100%;margin:0;">
+    <div id="l2s2" style="height:100%;width:100%;display:flex"></div>
   </body>
 </html>
