@@ -18,7 +18,7 @@ export default class Read extends React.Component {
   };
   static style = {
     wrapper: {
-      alignItems: 'center',
+      alignItems: 'flex-start',
       display: 'flex',
       flex: '1 1 0',
       flexDirection: 'column',
@@ -27,7 +27,6 @@ export default class Read extends React.Component {
       marginRight: 50,
       overflow: 'hidden',
       position: 'relative',
-      textAlign: 'center',
     },
     outer: {
       alignItems: 'center',

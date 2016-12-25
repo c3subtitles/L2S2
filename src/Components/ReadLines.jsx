@@ -23,11 +23,11 @@ export default class ReadLines extends React.Component {
   props: Props;
   static style = {
     line: {
-      alignSelf: 'center',
+      // alignSelf: 'center',
       display: 'flex',
       fontWeight: 'bold',
-      marginBottom: '1em',
-      marginTop: '1em',
+      // marginBottom: '0.2em',
+      // marginTop: '0.2em',
       overflow: 'hidden',
     },
     wrapper: {
@@ -42,7 +42,7 @@ export default class ReadLines extends React.Component {
     return nextProps.alwaysUpdate || this.props.lines !== nextProps.lines;
   }
   animate = () => {
-    const newMargin = Math.max(this.state.margin - 10, 0);
+    const newMargin = Math.max(this.state.margin - 6, 0);
     this.setState({
       margin: newMargin,
     });
@@ -52,7 +52,7 @@ export default class ReadLines extends React.Component {
   };
   componentWillReceiveProps(nextProps: Props) {
     const addedLines = nextProps.lines.size - this.props.lines.size;
-    const addedMargin = addedLines * 252;
+    const addedMargin = addedLines * 92;
     clearTimeout(this.timeout);
     this.setState({
       margin: this.state.margin + addedMargin,
