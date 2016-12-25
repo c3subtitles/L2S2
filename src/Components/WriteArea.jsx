@@ -14,22 +14,17 @@ export default class WriteArea extends React.Component {
     wrapper: {
       display: 'flex',
       flex: '1 1 0',
-      WebkitFlex: '1 1 0',
       flexDirection: 'column',
-      WebkitFlexDirection: 'column',
       overflow: 'hidden',
     },
     lineContainer: {
       display: 'flex',
-      WebkitFlexDirection: 'column',
       flexDirection: 'column',
-      WebkitJustifyContent: 'flex-end',
       justifyContent: 'flex-end',
     },
     inner: {
       overflowWrap: 'break-word',
       marginBottom: 5,
-      WebkitFlex: '1 1 0',
       flex: '1 1 0',
       overflow: 'hidden',
     },

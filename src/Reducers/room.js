@@ -127,7 +127,7 @@ export default {
         // $FlowFixMe
         state.userInRoom = state.userInRoom.set(userId, user);
         state.lines = state.lines.push({
-          line: text,
+          text,
           user,
           color,
         });

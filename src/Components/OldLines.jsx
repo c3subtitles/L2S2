@@ -36,7 +36,7 @@ export default class OldLines extends React.Component {
           lines.take(lines.size - 3).map((l, index) => {
             const color = (l.user && l.user.color) || l.color;
             return (
-              <span key={`${index}`} style={{ color }}>{l.line}</span>
+              <span key={`${index}`} style={{ color }}>{l.text}</span>
             );
           })
         }

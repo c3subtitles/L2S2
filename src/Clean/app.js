@@ -1,5 +1,7 @@
 // @flow
 require('../fonts.css');
+require('../animation.css');
+
 
 
 const render = require('react-dom').render;

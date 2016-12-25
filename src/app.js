@@ -1,5 +1,6 @@
 // @flow
 require('./vendor');
+require('./animation.css');
 
 
 const render = require('react-dom').render;

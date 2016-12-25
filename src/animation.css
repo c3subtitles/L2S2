@@ -1,0 +1,26 @@
+.slide-appear {
+  max-height : 0;
+}
+
+.slide-appear.slide-appear-active {
+  max-height : 300px;
+  transition : all 2s ease-in;
+}
+
+.slide-enter {
+  max-height : 0;
+}
+
+.slide-enter.slide-enter-active {
+  max-height : 300px;
+  transition : all 2s ease-in;
+}
+
+.slide-leave {
+  max-height : 300px;
+}
+
+.slide-leave.slide-leave-active {
+  max-height : 0;
+  transition : all 2s ease-out;
+}

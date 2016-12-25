@@ -13,14 +13,10 @@ const props = state => ({
 export default class CleanReadInterface extends React.Component {
   static style = {
     wrapper: {
-      WebkitAlignItems: 'center',
       alignItems: 'center',
       display: 'flex',
-      WebkitFlex: '1 1 0',
       flex: '1 1 0',
-      WebkitFlexDirection: 'column',
       flexDirection: 'column',
-      WebkitJustifyContent: 'flex-end',
       justifyContent: 'flex-end',
       overflow: 'hidden',
       position: 'relative',

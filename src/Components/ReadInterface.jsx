@@ -62,10 +62,6 @@ export default class ReadInterface extends React.Component {
       justifyContent: 'flex-end',
       overflow: 'hidden',
       position: 'relative',
-      WebkitAlignItems: 'center',
-      WebkitFlex: '1 1 0',
-      WebkitFlexDirection: 'column',
-      WebkitJustifyContent: 'flex-end',
     },
     innerWrapper: {
       display: 'flex',
@@ -73,9 +69,6 @@ export default class ReadInterface extends React.Component {
       flexDirection: 'column',
       justifyContent: 'flex-end',
       textAlign: 'center',
-      WebkitFlex: '1 1 0',
-      WebkitFlexDirection: 'column',
-      WebkitJustifyContent: 'flex-end',
     },
     line: {
       alignItems: 'center',
@@ -83,7 +76,6 @@ export default class ReadInterface extends React.Component {
       fontSize: 32,
       fontWeight: 'bold',
       minHeight: '4em',
-      WebkitAlignItems: 'center',
     },
     gradient: {
       bottom: 0,
@@ -177,7 +169,7 @@ export default class ReadInterface extends React.Component {
             <NextTalk talk={nextTalk}/>
           )}
           {lines.size > 0 && (
-            <ReadLines lines={lines.map(l => l.text)}/>
+            <ReadLines lines={lines}/>
           )}
         </div>
       </Paper>

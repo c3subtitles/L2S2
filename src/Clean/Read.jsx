@@ -1,6 +1,5 @@
 // @flow
 import { joinReadRoom, nextTalk, leaveReadRoom, primus } from './Service';
-import NextTalk from '../Components/NextTalk';
 import Radium from 'radium';
 import React from 'react';
 import ReadLines from '../Components/ReadLines';
@@ -63,28 +62,28 @@ export default class Read extends React.Component {
     .split('=')[1];
     this.roomId = Number.parseInt(rawRoomId, 10);
     joinReadRoom(this.roomId).then(lines => {
-      while (lines.length > 3) {
-        lines.shift();
-      }
+      // while (lines.length > 5) {
+      //   lines.shift();
+      // }
       this.setState({
         lines,
       });
     });
-    primus.on('line', (roomId, text, userId, color, rawTimeout) => {
+    primus.on('line', (roomId, text, userId, color, hash, rawTimeout) => {
       /* eslint-disable */
       if (roomId == this.roomId && text && text.trim().length > 0) {
         /* eslint-enable */
         const { lines } = this.state;
-        if (lines.length >= 3) {
-          lines.shift();
-        }
         let timeout;
         if (rawTimeout) {
           timeout = new Date(rawTimeout);
         }
         lines.push({
           text,
+          color,
           timeout,
+          userId,
+          hash,
         });
         this.setState({
           lines,
@@ -104,17 +103,17 @@ export default class Read extends React.Component {
   }
   render() {
     const style = Read.style;
-    const { lines, nextTalk } = this.state;
+    const { lines } = this.state;
     return (
       <div style={[lines.length <= 0 && style.outer]}>
         {
           lines.length > 0 && (<div style={style.wrapper}>
-            <ReadLines fontSize="5em" alwaysUpdate lines={List(lines).map(l => l.text)}/>
+            <ReadLines fontSize="5em" alwaysUpdate lines={List(lines)}/>
           </div>
         )}
-        {lines.length <= 0 && (
+        {/* {lines.length <= 0 && (
           <NextTalk talk={nextTalk}/>
-        )}
+        )} */}
       </div>
     );
   }

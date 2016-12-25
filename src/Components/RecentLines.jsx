@@ -25,7 +25,7 @@ export default class RecentLines extends React.Component {
           lines && lines.map((l, index) => {
             const color = (l.user && l.user.color) || l.color;
             return (
-              <span key={`${index}`} style={{ paddingLeft: 5, color: 'black', backgroundColor: color }}>{l.line}</span>
+              <span key={`${index}`} style={{ paddingLeft: 5, color: 'black', backgroundColor: color }}>{l.text}</span>
             );
           })
         }
