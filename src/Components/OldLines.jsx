@@ -9,7 +9,7 @@ const props = state => ({
 });
 
 type Props = {
-  lines: List,
+  lines: List<Line>,
   style: ?Object,
 };
 

@@ -30,4 +30,6 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-0]\\|1[
 
 module.system.node.resolve_dirname=./src
 module.name_mapper='babel-polyfill' -> 'Stub'
+module.name_mapper='radium' -> 'Stub'
+module.name_mapper='radium\/lib\/append-px-if-needed' -> 'Stub'
 sharedmemory.hash_table_pow=20

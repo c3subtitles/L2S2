@@ -9,7 +9,7 @@ const props = state => ({
 });
 
 type Props = {
-  lines?: List,
+  lines?: List<Line>,
   style: Object,
 };
 
@@ -22,7 +22,7 @@ export default class RecentLines extends React.Component {
     return (
       <div style={style}>
         {
-          lines.map((l, index) => {
+          lines && lines.map((l, index) => {
             const color = (l.user && l.user.color) || l.color;
             return (
               <span key={`${index}`} style={{ paddingLeft: 5, color: 'black', backgroundColor: color }}>{l.line}</span>

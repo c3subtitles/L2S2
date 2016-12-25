@@ -13,7 +13,7 @@ const props = state => ({
 
 type Props = {
   room?: Object,
-  shortcuts?: Map,
+  shortcuts?: Map<string, string>,
   user?: Object,
 };
 
@@ -29,6 +29,9 @@ export default class WriterInput extends React.Component {
   }
   handleChange = (e: Event) => {
     const { room, shortcuts, user } = this.props;
+    if (!room || !shortcuts || !user) {
+      return;
+    }
     // $FlowFixMe
     let line = e.target.value;
     shortcuts.filter(text => text).forEach((text, key) => {
@@ -57,7 +60,7 @@ export default class WriterInput extends React.Component {
   render() {
     const { user } = this.props;
     return (
-      <input defaultValue={user.currentLine} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
+      <input defaultValue={user ? user.currentLine : ''} onKeyDown={this.handleKeyDown} onChange={this.handleChange} ref="input" style={WriterInput.style}/>
     );
   }
 }

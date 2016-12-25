@@ -9,7 +9,7 @@ export default class ReadSelection extends React.Component {
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
   };
-  handleRoomClick = room => {
+  handleRoomClick = (room: Room) => {
     this.context.router.transitionTo(`/${room.id}`);
   };
   render() {

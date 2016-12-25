@@ -11,7 +11,7 @@ const props = state => ({
 });
 
 type Props = {
-  userInRoom?: Map,
+  userInRoom?: Map<number, ClientUser>,
   canBan?: bool,
 };
 
@@ -46,7 +46,7 @@ export default class UserList extends React.Component {
       <Paper style={style.wrapper}>
         <h3 style={style.title}>User</h3>
           {
-            userInRoom.sortBy(u => u.username).map(user => (
+            userInRoom && userInRoom.sortBy(u => u.username).map(user => (
               <div style={[style.user, { backgroundColor: user.color }, canBan && { cursor: 'pointer' }]} key={user.id}>{user.username}</div>
             )).toArray()
           }

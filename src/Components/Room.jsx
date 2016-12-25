@@ -1,6 +1,6 @@
 // @flow
 import { Connect } from '../Helper';
-import { Paper, Dialog, TextField } from 'material-ui';
+import { Paper, Dialog, TextField, FlatButton } from 'material-ui';
 import { deleteRoom, saveRoom } from '../Actions/rooms';
 import DeleteButton from './DeleteButton';
 import React from 'react';
@@ -11,19 +11,17 @@ const props = state => ({
 });
 
 type Props = {
-  room: RoomType,
-  user: Object,
+  room: Room,
+  user?: Object,
 };
 
 type State = {
   showDelete: bool,
-}
+};
 
-/*::`*/
 @Radium
 @Connect(props)
-/*::`*/
-export default class Room extends React.Component {
+export default class RoomComponent extends React.Component {
   props: Props;
   static style = {
     wrapper: {
@@ -72,22 +70,23 @@ export default class Room extends React.Component {
   };
   render() {
     const { user, room } = this.props;
+    if (!user) {
+      return null;
+    }
     const { showDelete } = this.state;
-    const style = Room.style;
-    const dialogOptions = [{
-      text: 'Cancel',
-    }, {
-      text: 'Delete',
-      onClick: this.delete,
-      ref: 'delete',
-    }];
+    const style = RoomComponent.style;
+    const dialogOptions = [(
+      <FlatButton label="Cancel" onClick={this.hideDelete}/>
+    ), (
+      <FlatButton label="Delete" onClick={this.hideDelete}/>
+    )];
     return (
       <Paper zDepth={2} style={style.wrapper}>
         {user.role.canCreateRoom ? (
-          <TextField ref="name" onBlur={this.handleBlur} style={style.col} defaultValue={room.name} placeholder="Name"/>
+          <TextField name="n" ref="name" onBlur={this.handleBlur} style={style.col} defaultValue={room.name} placeholder="Name"/>
         ) : (<div style={style.col}>{room.name}</div>)}
         {user.role.canDeleteRoom && [
-          <DeleteButton style={style.col} key="d" label="Delete" onClick={this.handleDelete}/>,
+          <DeleteButton style={style.col} key="d" label="Delete" onClick={this.delete}/>,
           <Dialog key="dd"
             open={showDelete}
             onRequestClose={this.hideDelete}

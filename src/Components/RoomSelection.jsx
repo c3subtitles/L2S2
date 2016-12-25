@@ -16,7 +16,7 @@ const props = state => ({
 type Props = {
   canJoinLocked?: bool,
   onRoomClick: Function,
-  rooms?: Map,
+  rooms?: Map<number, Room>,
   showLockedState?: bool,
 };
 
@@ -71,7 +71,7 @@ export default class RoomSelection extends React.Component {
     return (
       <div style={style.wrapper}>
         {
-          rooms.map((room: RoomType) => {
+          rooms && rooms.map((room: Room) => {
             let roomClick;
             let lockState;
             let hoverStyle = style.normalHover;

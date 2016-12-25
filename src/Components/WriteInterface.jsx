@@ -18,7 +18,7 @@ type Props = {
   params: {
     roomId: string,
   },
-  room?: RoomType,
+  room?: Room,
   user?: ClientUser,
 };
 
@@ -43,7 +43,8 @@ export default class WriteInterface extends React.Component {
     },
   };
   componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.room.locked && !nextProps.user.role.canJoinLocked) {
+    const { room, user } = nextProps;
+    if (room && room.locked && user && !user.role.canJoinLocked) {
       this.context.router.transitionTo('/write');
       addError({ title: 'Room locked', message: 'The room got locked. You do not have the permission to be in locked Rooms' });
     }

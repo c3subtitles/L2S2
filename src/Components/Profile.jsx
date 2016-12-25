@@ -8,17 +8,14 @@ import React from 'react';
 import swal from 'sweetalert';
 
 type Props = {
-  user: ClientUser,
+  user?: ClientUser,
+  location: ?RouterLocation,
 };
 
-/*::`*/
 @Permission()
 @Connect(state => ({ user: state.user }))
-/*::`*/
-export default class Profile extends React.Component<void, Props, void> {
-  static contextTypes = {
-    location: React.PropTypes.object,
-  };
+export default class Profile extends React.Component {
+  props: Props;
   changePassword = async (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -31,13 +28,13 @@ export default class Profile extends React.Component<void, Props, void> {
     }
     const opw = oldpw.getValue();
     await changePassword(opw, pw1);
-    oldpw.setValue('');
-    newpw1.setValue('');
-    newpw2.setValue('');
+    oldpw.input.value = '';
+    newpw1.input.value = '';
+    newpw2.input.value = '';
   };
   componentWillMount() {
-    const { user } = this.props;
-    if (this.context.location.query.token && user.fromToken) {
+    const { user, location } = this.props;
+    if (location && location.query && location.query.token && user && user.fromToken) {
       swal('Login Successfull', 'You\'re now logged in. Please change your password', 'success');
     }
   }

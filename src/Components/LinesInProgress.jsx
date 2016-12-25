@@ -5,12 +5,12 @@ import Radium from 'radium';
 import React from 'react';
 
 type Props = {
-  filteredUser?: Map,
+  filteredUser?: Map<number, ClientUser>,
   spacerStyle: Object,
 };
 
 const props = state => ({
-  filteredUser: state.userInRoom.filter(u => u.currentLine).sort(user => user.id !== state.user),
+  filteredUser: state.userInRoom ? state.userInRoom.filter(u => u.currentLine).sort(user => user.id !== state.user) : Map(),
 });
 
 @Connect(props)
@@ -31,6 +31,9 @@ export default class LinesInProgress extends React.Component {
   render() {
     const style = LinesInProgress.style;
     const { spacerStyle, filteredUser } = this.props;
+    if (!filteredUser) {
+      return null;
+    }
     return (
       <div style={style.wrapper}>
         {

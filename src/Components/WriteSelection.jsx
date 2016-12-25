@@ -16,9 +16,9 @@ export default class WriteSelection extends React.Component {
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
   };
-  handleRoomClick = room => {
+  handleRoomClick = (room: Room) => {
     const { user } = this.props;
-    if (room.locked && !user.role.canJoinLocked) {
+    if (!user || (room.locked && !user.role.canJoinLocked)) {
       addError({ title: 'insufficent Perissions', message: 'You are not allowed to join locked Rooms' });
       return;
     }

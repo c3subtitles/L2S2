@@ -4,10 +4,17 @@ import NextTalk from '../Components/NextTalk';
 import Radium from 'radium';
 import React from 'react';
 import ReadLines from '../Components/ReadLines';
+import { List } from 'immutable';
+
+type State = {
+  lines: Line[],
+  nextTalk?: Talk,
+};
 
 @Radium
 export default class Read extends React.Component {
-  state = {
+  roomId: number;
+  state: State = {
     lines: [],
   };
   static style = {
@@ -22,10 +29,6 @@ export default class Read extends React.Component {
       overflow: 'hidden',
       position: 'relative',
       textAlign: 'center',
-      WebkitAlignItems: 'center',
-      WebkitFlex: '1 1 0',
-      WebkitFlexDirection: 'column',
-      WebkitJustifyContent: 'flex-end',
     },
     outer: {
       alignItems: 'center',
@@ -34,13 +37,9 @@ export default class Read extends React.Component {
       flexDirection: 'column',
       justifyContent: 'center',
       textAlign: 'center',
-      WebkitAlignItems: 'center',
-      WebkitFlex: '1 1 0',
-      WebkitFlexDirection: 'column',
-      WebkitJustifyContent: 'center',
     },
   };
-  setState(state, cb) {
+  setState(state: Object, cb?: Function) {
     if (state.lines && state.lines.length <= 0) {
       nextTalk(this.roomId).then(talk => {
         this.setState({
@@ -101,7 +100,7 @@ export default class Read extends React.Component {
     });
   }
   componentWillUnmount() {
-    leaveReadRoom();
+    leaveReadRoom(this.roomId);
   }
   render() {
     const style = Read.style;
@@ -110,7 +109,7 @@ export default class Read extends React.Component {
       <div style={[lines.length <= 0 && style.outer]}>
         {
           lines.length > 0 && (<div style={style.wrapper}>
-            <ReadLines fontSize="5em" alwaysUpdate lines={lines.map(l => l.text)}/>
+            <ReadLines fontSize="5em" alwaysUpdate lines={List(lines).map(l => l.text)}/>
           </div>
         )}
         {lines.length <= 0 && (

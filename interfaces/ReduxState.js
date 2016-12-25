@@ -1,13 +1,15 @@
 import { List } from 'immutable';
 
 declare class ReduxState {
-  currentRoom?: RoomType,
+  currentRoom?: Room,
+  lines: List<string>,
   readBackgroundColor: string,
   readColor: string,
   readGradient: bool,
   readLines: List<string>,
-  roles: List<RoleType>,
-  rooms: Map<number|?string, RoomType>,
+  ready: bool,
+  roles: List<Role>,
+  rooms: Map<number, Room>,
   sessionId: ?string,
   shortcuts: Map<string, string>,
   user?: ClientUser,

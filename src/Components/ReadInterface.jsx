@@ -37,7 +37,7 @@ type Props = {
   color?: string,
   gradient?: bool,
   gradientColor?: string,
-  lines?: List,
+  lines?: List<Line>,
   nextTalk?: Talk,
   params: Object,
   location?: RouterLocation,
@@ -107,11 +107,16 @@ export default class ReadInterface extends React.Component {
     settingsOpen: false,
   };
   componentWillMount() {
-    const { roomId } = this.props.params;
-    joinReadRoom(Number.parseInt(roomId, 10));
+    const { params } = this.props;
+    if (params) {
+      joinReadRoom(Number.parseInt(params.roomId, 10));
+    }
   }
   componentWillUnmount() {
-    leaveReadRoom();
+    const { params } = this.props;
+    if (params) {
+      leaveReadRoom(Number.parseInt(params.roomId, 10));
+    }
   }
   getWrapperStyle(): Object {
     const { backgroundColor, color } = this.props;

@@ -14,7 +14,7 @@ export function hasPermission(permission: string|Array<string>): bool {
   return permissions.some(p => user && user.role[p]);
 }
 
-export async function changePassword(oldPassword: string, newPassword: string): Promise {
+export async function changePassword(oldPassword: string, newPassword: string) {
   const { user, sessionId } = store.getState();
   if (user) {
     try {
@@ -30,7 +30,7 @@ export async function changePassword(oldPassword: string, newPassword: string): 
   }
 }
 
-export async function register(username: string, email: string, password: string): Promise {
+export async function register(username: string, email: string, password: string) {
   await axios.post('/register', {
     username,
     email,

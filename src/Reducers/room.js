@@ -5,8 +5,8 @@ import _ from 'lodash';
 
 const colors: List<string> = List(['#FFC7C7', '#FFF1C7', '#E3FFC7', '#C7FFD5', '#C7FFFF', '#C7D5FF', '#E3C7FF', '#FFC7F1']);
 
-function setColors(userInRoom: Map, user: ?ClientUser) {
-  const usedColors: List = userInRoom.map(u => u.color).toList();
+function setColors(userInRoom: Map<number, ClientUser>, user: ?ClientUser) {
+  const usedColors: List<?string> = userInRoom.map(u => u.color).toList();
   let availableColors = colors.filter(c => !usedColors.contains(c));
   return userInRoom.map(u => {
     if (!u.color) {
@@ -23,19 +23,22 @@ function setColors(userInRoom: Map, user: ?ClientUser) {
   });
 }
 
-function processLines(lines: List, userInRoom: Map) {
+function processLines(lines: List<Line>, userInRoom: Map<number, ClientUser>) {
   return lines.map(l => {
     if (l.user) {
       return l;
     }
-    l.user = userInRoom.get(l.userId);
+    if (l.userId) {
+      l.user = userInRoom.get(l.userId);
+    }
     l.color = l.color || '#FFC7C7';
     return l;
   });
 }
 
-function updateRoom(state: ReduxState, { payload }) {
-  const rooms: Map = state.rooms.set(payload.id, payload);
+function updateRoom(state: ReduxState, { payload }: any) {
+  // $FlowFixMe
+  const rooms: Map<number, Room> = state.rooms.set(payload.id, payload);
   return {
     currentRoom: payload,
     rooms: rooms.sortBy(r => r.id),
@@ -50,26 +53,30 @@ export default {
       readLines,
     };
   },
-  FETCH_ROOMS: (state: ReduxState, action) => ({
+  FETCH_ROOMS: (state: ReduxState, action: any) => ({
     rooms: action.payload.sortBy(r => r.id),
   }),
-  CREATE_ROOM: (state: ReduxState, action) => ({
-      rooms: state.rooms.set(action.payload.id, action.payload).sortBy(r => r.id),
-    }),
-  DELETE_ROOM: (state: ReduxState, action) => ({
+  CREATE_ROOM: (state: ReduxState, action: any) => ({
+    // $FlowFixMe
+    rooms: state.rooms.set(action.payload.id, action.payload).sortBy(r => r.id),
+  }),
+  DELETE_ROOM: (state: ReduxState, action: any) => ({
+    // $FlowFixMe
     rooms: state.rooms.filter(r => r.id !== action.payload && r !== action.payload),
   }),
-  SAVE_ROOM: (state: ReduxState, action) => {
+  SAVE_ROOM: (state: ReduxState, action: any) => {
     state.rooms = state.rooms.set(action.payload.id, action.payload);
+    // $FlowFixMe
     state.rooms = state.rooms.delete(undefined);
     return {
+      // $FlowFixMe
       rooms: state.rooms.sortBy(r => r.id),
     };
   },
-  GET_NEXT_TALK: (state: ReduxState, { payload: { nextTalk } }) => ({
+  GET_NEXT_TALK: (state: ReduxState, { payload: { nextTalk } }: any) => ({
     nextTalk,
   }),
-  JOIN_ROOM: (state: ReduxState, { payload: { room, userInRoom, lines } }) => {
+  JOIN_ROOM: (state: ReduxState, { payload: { room, userInRoom, lines } }: any) => {
     const newUserInRoom = setColors(userInRoom, state.user);
     return {
       currentRoom: room,
@@ -85,7 +92,7 @@ export default {
     userInRoom: null,
     lines: null,
   }),
-  LINE_UPDATE: (state: ReduxState, { payload: { roomId, userId, text } }) => {
+  LINE_UPDATE: (state: ReduxState, { payload: { roomId, userId, text } }: any) => {
     if (state.currentRoom && roomId == state.currentRoom.id) {
       let user = state.userInRoom.get(userId);
       if (user) {
@@ -94,13 +101,15 @@ export default {
           currentLine: text,
         };
         return {
+          // $FlowFixMe
           userInRoom: state.userInRoom.set(userId, user),
+          // $FlowFixMe
           user: user.id === state.user.id ? user : state.user,
         };
       }
     }
   },
-  NEW_LINE: (state: ReduxState, { payload: { roomId, userId, text, color, timeout } }) => {
+  NEW_LINE: (state: ReduxState, { payload: { roomId, userId, text, color, timeout } }: any) => {
     state.readLines = state.readLines.push({
       text,
       timeout,
@@ -115,6 +124,7 @@ export default {
           ...user,
           currentLine: '',
         };
+        // $FlowFixMe
         state.userInRoom = state.userInRoom.set(userId, user);
         state.lines = state.lines.push({
           line: text,
@@ -126,6 +136,7 @@ export default {
         lines: state.lines,
         readLines: state.readLines,
         userInRoom: state.userInRoom,
+        // $FlowFixMe
         user: user.id === state.user.id ? user : state.user,
         nextTalk: null,
       };
@@ -135,24 +146,26 @@ export default {
       nextTalk: null,
     };
   },
-  USER_JOINED: (state: ReduxState, { payload: { roomId, user } }) => {
+  USER_JOINED: (state: ReduxState, { payload: { roomId, user } }: any) => {
     if (state.write && state.currentRoom && roomId == state.currentRoom.id) {
       if (!state.userInRoom.has(user.id)) {
         state.userInRoom = state.userInRoom.set(user.id, user);
         return {
+          // $FlowFixMe
           userInRoom: setColors(state.userInRoom),
         };
       }
     }
   },
-  USER_LEFT: (state: ReduxState, { payload: { roomId, user } }) => {
+  USER_LEFT: (state: ReduxState, { payload: { roomId, user } }: any) => {
+    // $FlowFixMe
     if (state.write && state.currentRoom && roomId == state.currentRoom.id && state.user.id !== user.id) {
       return {
         userInRoom: state.userInRoom.delete(user.id),
       };
     }
   },
-  JOIN_READ_ROOM: (state: ReduxState, { payload }) => ({
+  JOIN_READ_ROOM: (state: ReduxState, { payload }: any) => ({
     read: true,
     write: false,
     currentRoom: payload.room,
@@ -166,8 +179,8 @@ export default {
   LOCK_ROOM: updateRoom,
   SPEECH_LOCK_ROOM: updateRoom,
   UPDATE_ROOM: updateRoom,
-  SET_SHORTCUT: (state: ReduxState, { payload: { key, shortcut } }) => ({
-      shortcuts: state.shortcuts.set(key, shortcut),
-    }),
-  CHANGE_READ_COLOR: (state: ReduxState, { payload }) => payload,
+  SET_SHORTCUT: (state: ReduxState, { payload: { key, shortcut } }: any) => ({
+    shortcuts: state.shortcuts.set(key, shortcut),
+  }),
+  CHANGE_READ_COLOR: (state: ReduxState, { payload }: any) => payload,
 };

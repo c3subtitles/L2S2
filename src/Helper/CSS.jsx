@@ -1,8 +1,9 @@
 // @flow
+// $FlowFixMe
 import appendPxIfNeeded from 'radium/lib/append-px-if-needed';
 import { Style } from 'radium';
 import React from 'react';
-import UUID from 'uuid-js';
+import uuid from 'uuid';
 import _ from 'lodash';
 
 function appendUnits(style: Object) {
@@ -27,8 +28,8 @@ export function CSS(...rules: Array<Object>): Function {
           return null;
         }
         const { id, children, ...props } = element.props;
-        const rid = id || `s${UUID.create()}`;
-        const styleId = UUID.create();
+        const rid = id || `s${uuid.v4()}`;
+        const styleId = uuid.v4();
         let styleElement;
         if (component._globalCSS) {
           styleElement = (<Style key={styleId} rules={processedRules}/>);

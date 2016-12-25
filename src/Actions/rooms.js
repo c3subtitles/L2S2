@@ -8,6 +8,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 function convertTalk(talk: RawTalk): Talk {
+  // $FlowFixMe
   return {
     ...talk,
     date: moment(talk.date),
@@ -19,7 +20,7 @@ function convertTalk(talk: RawTalk): Talk {
 export const checkLines = createAction('CHECK_LINES', () => {});
 
 export const fetchRooms = createAction('FETCH_ROOMS', async () => {
-  const rooms = await axios.get('/rooms');
+  const rooms = (await axios.get('/rooms')).data;
   let roomMap = Map();
   _.each(rooms, r => {
     roomMap = roomMap.set(r.id, r);
@@ -30,11 +31,11 @@ export const fetchRooms = createAction('FETCH_ROOMS', async () => {
 export const saveRoom = createAction('SAVE_ROOM', async (rawRoom) => {
   let room;
   if (rawRoom.id) {
-    room = await axios.put(`/rooms/${rawRoom.id}`, {
+    room = (await axios.put(`/rooms/${rawRoom.id}`, {
       name: rawRoom.name,
-    });
+    })).data;
   } else {
-    room = await axios.post('/rooms', { rawRoom });
+    room = (await axios.post('/rooms', { room: rawRoom })).data;
   }
   addSuccess({ message: 'Successfully saved' });
   return room;
@@ -67,7 +68,7 @@ export const joinRoom = createAction('JOIN_ROOM', async (roomId: number) => {
     clearTimeout(joinRoomTimeout);
   }
   joinRoomTimeout = setTimeout(() => joinRoomCheck(roomId), 2500);
-  const joinInformation = await axios.get(`/rooms/${roomId}/join`);
+  const joinInformation = (await axios.get(`/rooms/${roomId}/join`)).data;
   let userInRoom: Map<number, ClientUser> = Map();
   joinInformation.userInRoom.forEach(u => {
     userInRoom = userInRoom.set(u.id, u);
@@ -117,7 +118,7 @@ export const joinReadRoom = createAction('JOIN_READ_ROOM', async (roomId: number
     return {};
   }
   joinRoomSocket(roomId);
-  const joinInformation = await axios.get(`/rooms/${roomId}/joinRead`);
+  const joinInformation = (await axios.get(`/rooms/${roomId}/joinRead`)).data;
   joinInformation.lines = List(joinInformation.lines);
   if (joinInformation.lines.size <= 0) {
     getNextTalk(roomId);
@@ -127,13 +128,13 @@ export const joinReadRoom = createAction('JOIN_READ_ROOM', async (roomId: number
 
 export const leaveReadRoom = createAction('LEAVE_READ_ROOM', () => {});
 
-export const lockRoom = createAction('LOCK_ROOM', (roomId, locked) => axios.put(`/rooms/${roomId}`, {
+export const lockRoom = createAction('LOCK_ROOM', async (roomId, locked) => (await axios.put(`/rooms/${roomId}`, {
     locked,
-  }));
+  })).data);
 
-export const speechLockRoom = createAction('SPEECH_LOCK_ROOM', (roomId, speechLocked) => axios.put(`/rooms/${roomId}`, {
+export const speechLockRoom = createAction('SPEECH_LOCK_ROOM', async (roomId, speechLocked) => (await axios.put(`/rooms/${roomId}`, {
     speechLocked,
-  }));
+  })).data);
 
 export const updateRoom = createAction('UPDATE_ROOM', async room => room);
 
@@ -146,14 +147,14 @@ export const setShortcut = createAction('SET_SHORTCUT', (key, shortcut) => {
 });
 
 export const getNextTalk = createAction('GET_NEXT_TALK', async (roomId: number) => {
-  const nextTalk = await axios.get(`/nextTalk/${roomId}`);
+  const nextTalk = (await axios.get(`/nextTalk/${roomId}`)).data;
   return {
     nextTalk: convertTalk(nextTalk),
   };
 });
 
 export const reconnected = createAction('RECONNECTED', async () => {
-  const room: ?RoomType = global.store.getState().currentRoom;
+  const room: ?Room = global.store.getState().currentRoom;
   const write = global.store.getState().write;
   if (room) {
     if (write) {

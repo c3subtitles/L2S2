@@ -4,7 +4,7 @@ import { Permission, Connect } from '../Helper';
 import { RaisedButton } from 'material-ui';
 import { Map } from 'immutable';
 import React from 'react';
-import Room from './Room';
+import RoomComponent from './Room';
 
 const props = state => ({
   rooms: state.rooms,
@@ -12,13 +12,14 @@ const props = state => ({
 });
 
 type Props = {
-  rooms: Map,
-  user: Object,
+  rooms?: Map<number, Room>,
+  user?: Object,
 };
 
 @Permission('canCreateRoom', 'canDeleteRoom')
 @Connect(props)
-export default class RoomManagement extends React.Component<void, Props, void> {
+export default class RoomManagement extends React.Component {
+  props: Props;
   static style = {
     wrapper: {
       display: 'flex',
@@ -36,11 +37,11 @@ export default class RoomManagement extends React.Component<void, Props, void> {
     const style = RoomManagement.style;
     return (
       <div style={style.wrapper}>
-        {user.role.canCreateRoom && (
+        {user && user.role.canCreateRoom && (
           <RaisedButton primary style={style.new} onClick={createRoom} label="New Room"/>
         )}
         {
-          rooms.toList().map((room, index) => <Room key={room.id || `i${index}`} room={room}/>).toArray()
+          rooms && rooms.map((room, index) => <RoomComponent key={room.id || `i${index}`} room={room}/>).toArray()
         }
       </div>
     );

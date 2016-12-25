@@ -1,7 +1,7 @@
 // @flow
 import { connect } from 'react-redux';
 
-export function Connect(reducer) {
+export function Connect(reducer: any) {
   const newReducer = (function(old = () => null) {
     return function(state) {
       return {
@@ -11,7 +11,7 @@ export function Connect(reducer) {
     };
   }(reducer));
 
-  return function(component) {
+  return function(component: any) {
     return connect(newReducer)(component);
   };
 }

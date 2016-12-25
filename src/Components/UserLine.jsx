@@ -1,7 +1,8 @@
 // @flow
+/* eslint no-nested-ternary: 0 */
 import { Connect } from '../Helper';
 import { deleteUser, saveRole, saveActive } from '../Actions/user';
-import { Dialog, Paper, DropDownMenu } from 'material-ui';
+import { Dialog, Paper, SelectField, MenuItem } from 'material-ui';
 import { List } from 'immutable';
 import DeleteButton from './DeleteButton';
 import React from 'react';
@@ -17,15 +18,13 @@ const props = state => ({
 });
 
 type Props = {
-  availableRoles: List,
-  ownUser: ClientUser,
-  user: ClientUser,
+  availableRoles?: List<Role>,
+  ownUser?: ClientUser,
+  user?: ClientUser,
 };
 
-/*::`*/
 @Connect(props)
 @Radium
-/*::`*/
 export default class UserLine extends React.Component {
   props: Props;
   static style = {
@@ -43,9 +42,9 @@ export default class UserLine extends React.Component {
   state: State = {
     showDelete: false,
   };
-  handleActiveChange = (e: SyntheticEvent, index: number, menuItem: Object) => {
+  handleActiveChange = (e: SyntheticEvent, index: number, value: bool) => {
     const { user } = this.props;
-    saveActive(user, menuItem.payload);
+    saveActive(user, value);
   };
   handleRoleChange = (e: SyntheticEvent, index: number, menuItem: Object) => {
     const { user } = this.props;
@@ -64,19 +63,11 @@ export default class UserLine extends React.Component {
   render() {
     const style = UserLine.style;
     const { availableRoles, user, ownUser } = this.props;
+    if (!user || !availableRoles || !ownUser || !user.role) {
+      return null;
+    }
     const { showDelete } = this.state;
-    const activeDropdownOptions = {
-      menuItems: [{ payload: true, text: 'active' }, { payload: false, text: 'inactive' }],
-      selectedIndex: user.active ? 0 : 1,
-      onChange: this.handleActiveChange,
-    };
     const selectedRole = availableRoles.findIndex(r => r.name === user.role.name);
-    const roleOptions = {
-      menuItems: availableRoles.map(r => ({ payload: r, text: r.name })).toArray(),
-      selectedIndex: selectedRole,
-      onChange: this.handleRoleChange,
-    };
-    const isActive = (user.active ? 'active' : 'inactive');
     const dialogOptions = [{
       text: 'Cancel',
     }, {
@@ -90,14 +81,23 @@ export default class UserLine extends React.Component {
         <div style={style.col}>
           {
             ownUser.role.canActivateUser ? (
-              <DropDownMenu {...activeDropdownOptions}/>
-            ) : isActive
+              <SelectField value={user.active} onChange={this.handleActiveChange}>
+                <MenuItem value primaryText="active"/>
+                <MenuItem value={false} primaryText="inactive"/>
+              </SelectField>
+            ) : (user.active ? 'active' : 'inactive')
           }
         </div>
         <div style={style.col}>
           {
             ownUser.role.canChangeUserRole && selectedRole !== -1 ? (
-              <DropDownMenu {...roleOptions}/>
+              <SelectField value={selectedRole} onChange={this.handleRoleChange}>
+                {
+                  availableRoles.map((r, index) => (
+                    <MenuItem key={index} value={index} primaryText={r.name}/>
+                  ))
+                }
+              </SelectField>
             ) : user.role.name
           }
         </div>
@@ -110,7 +110,7 @@ export default class UserLine extends React.Component {
             Are you sure you want to delete {user.username}
           </Dialog>,
         ]}
-        </Paper>
-      );
-    }
+      </Paper>
+    );
   }
+}

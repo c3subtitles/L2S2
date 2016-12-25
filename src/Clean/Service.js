@@ -26,17 +26,17 @@ function convertTalk(talk: RawTalk): Talk {
 const config = require(CONFIGPATH).default;
 export const primus = global.Primus.connect(config.primusLocation);
 
-export async function joinReadRoom(roomId: string) {
+export async function joinReadRoom(roomId: number) {
   primus.emit('join', roomId);
   const joinInformation = await axios.get(`/api/rooms/${roomId}/joinRead`);
   return joinInformation.data.lines;
 }
 
-export function leaveReadRoom(roomId: string) {
+export function leaveReadRoom(roomId: number) {
   primus.emit('leave', roomId);
 }
 
-export async function nextTalk(roomId: string): Promise<Talk> {
+export async function nextTalk(roomId: number): Promise<Talk> {
   const talk: RawTalk = (await axios.get(`/api/nextTalk/${roomId}`)).data;
   return convertTalk(talk);
 }

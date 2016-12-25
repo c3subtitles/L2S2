@@ -5,33 +5,28 @@ import React from 'react';
 
 type Props = {
   alwaysUpdate?: bool,
-  fontSize: string|number,
+  fontSize: string,
   lines: List<string>,
 };
 
-type DefaultProps = {
-  fontSize: 38,
-};
-
 @Radium
-export default class ReadLines extends React.Component<DefaultProps, Props, void> {
+export default class ReadLines extends React.Component {
+  props: Props;
   static style = {
     line: {
-      WebkitAlignSelf: 'center',
       alignSelf: 'center',
       display: 'flex',
       fontWeight: 'bold',
-      marginTop: '1em',
       marginBottom: '1em',
+      marginTop: '1em',
     },
     wrapper: {
       display: 'flex',
       flexDirection: 'column',
-      WebkitFlexDirection: 'column',
     },
   };
   static defaultProps = {
-    fontSize: 38,
+    fontSize: '38px',
   };
   shouldComponentUpdate(nextProps: Props): bool {
     return nextProps.alwaysUpdate || this.props.lines !== nextProps.lines;

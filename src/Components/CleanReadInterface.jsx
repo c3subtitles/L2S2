@@ -44,7 +44,7 @@ export default class CleanReadInterface extends React.Component {
         <div style={style.wrapper}>
           {
             lines.map((l, i) => (
-              <div style={style.line} key={i}>
+              <div key={i}>
                 {l}
               </div>
             ))

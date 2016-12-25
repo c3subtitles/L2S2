@@ -11,9 +11,9 @@ const props = state => ({
 });
 
 type Props = {
-  user: Object,
-  Users: Map<any, any>,
-}
+  user?: Object,
+  users?: Map<any, any>,
+};
 
 @Permission('canActivateUser', 'canDeleteUser')
 @Connect(props)
@@ -29,7 +29,8 @@ export default class UserManagement extends React.Component {
   };
   componentWillMount() {
     fetchUsers();
-    if (this.props.user.role.canChangeUserRole) {
+    const { user } = this.props;
+    if (user && user.role.canChangeUserRole) {
       fetchRoles();
     }
   }
@@ -39,7 +40,7 @@ export default class UserManagement extends React.Component {
     return (
       <div style={style.wrapper}>
         {
-          users.sortBy(user => user.username).map(user => <UserLine key={user.username} user={user}/>).toArray()
+          users && users.sortBy(user => user.username).map(user => <UserLine key={user.id} user={user}/>).toArray()
         }
       </div>
     );

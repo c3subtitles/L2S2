@@ -17,10 +17,10 @@ export const logout = createAction('LOGOUT', async () => {
 });
 
 export const login = createAction('LOGIN', async (username: string, password: string) => {
-  const result = await axios.post('/login', {
+  const result = (await axios.post('/login', {
     username,
     password,
-  });
+  })).data;
   localStorage.setItem('sessionId', result.sessionId);
   updateSessionId();
   addSuccess({ title: 'Login successful' });
@@ -30,9 +30,9 @@ export const login = createAction('LOGIN', async (username: string, password: st
 export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
   if (localStorage.sessionId) {
     try {
-      const userFromServer = await axios.post('/userForSessionId', {
+      const userFromServer = (await axios.post('/userForSessionId', {
         sessionId: localStorage.sessionId,
-      });
+      })).data;
       if (userFromServer) {
         return {
           user: userFromServer,
@@ -45,9 +45,9 @@ export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
   }
   if (token) {
     try {
-      const tokenResult = await axios.post('/userForToken', {
+      const tokenResult = (await axios.post('/userForToken', {
         token,
-      });
+      })).data;
       if (tokenResult && tokenResult.sessionId) {
         localStorage.setItem('sessionId', tokenResult.sessionId);
         tokenResult.user.fromToken = true;
@@ -66,25 +66,25 @@ export const fetchUser = createAction('FETCH_USER', async (token: ?string) => {
   };
 });
 export const fetchUsers = createAction('FETCH_USERS', async () => {
-  const users = await axios.get('/users');
+  const users = (await axios.get('/users')).data;
   let userMap: Map<number, ClientUser> = Map();
   users.forEach(user => {
     userMap = userMap.set(user.id, user);
   });
   return userMap;
 });
-export const fetchRoles = createAction('FETCH_ROLES', async () => List(await axios.get('/roles')));
-export const saveRole = createAction('SAVE_ROLE', async (user: ClientUser, role: RoleType) => {
-  const newUser = await axios.put(`/users/${user.id}`, {
+export const fetchRoles = createAction('FETCH_ROLES', async () => List((await axios.get('/roles')).data));
+export const saveRole = createAction('SAVE_ROLE', async (user: ClientUser, role: Role) => {
+  const newUser = (await axios.put(`/users/${user.id}`, {
     role: role.id,
-  });
+  })).data;
   addSuccess({ message: 'Change Saved' });
   return newUser;
 });
 export const saveActive = createAction('SAVE_ACTIVE', async (user: ClientUser, active: bool) => {
-  const newUser = await axios.put(`/users/${user.id}`, {
+  const newUser = (await axios.put(`/users/${user.id}`, {
     active,
-  });
+  })).data;
   addSuccess({ message: 'Change Saved' });
   return newUser;
 });

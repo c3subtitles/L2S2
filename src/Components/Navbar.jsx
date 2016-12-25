@@ -90,11 +90,17 @@ export default class Navbar extends React.Component {
   lockRoom = (e: Event) => {
     e.stopPropagation();
     const { currentRoom } = this.props;
+    if (!currentRoom) {
+      return;
+    }
     lockRoom(currentRoom.id, !currentRoom.locked);
   };
   speechLockRoom = (e: Event) => {
     e.stopPropagation();
     const { currentRoom } = this.props;
+    if (!currentRoom) {
+      return;
+    }
     speechLockRoom(currentRoom.id, !currentRoom.speechLocked);
   };
   profile = () => {
@@ -129,6 +135,9 @@ export default class Navbar extends React.Component {
   getTitle() {
     const style = Navbar.style;
     const { currentRoom, loggedIn, readMode, writeMode, user } = this.props;
+    if (!user) {
+      return null;
+    }
     let conditionalButton;
     if (loggedIn) {
       if (readMode) {
@@ -167,7 +176,7 @@ export default class Navbar extends React.Component {
       }
       iconElementRight = (
         <IconMenu desktop iconButtonElement={
-            <FlatButton style={style.menuButton} label={user.username}/>
+            <FlatButton style={style.menuButton} label={user ? user.username : 'Guest'}/>
           }>
           <MenuItem onClick={this.profile} primaryText="Profile"/>
           <MenuItem onClick={this.write} primaryText="Write"/>

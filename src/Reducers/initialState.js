@@ -8,22 +8,22 @@ const shortcuts = Map({
   '#4': localStorage['sc#4'] || '',
   '#5': localStorage['sc#5'] || '',
   '#6': localStorage['sc#6'] || '',
-  '#g': localStorage['sc#g'] || '*gelächter*',
-  '#a': localStorage['sc#a'] || '*applaus*',
 });
 
-const rawReadGradient = localStorage.readGradient;
+const rawReadGradient = localStorage.getItem('readGradient');
 const readGradient = rawReadGradient ? JSON.parse(rawReadGradient) : false;
+// $FlowFixMe
 const initialState: ReduxState = {
   currentRoom: null,
-  readBackgroundColor: localStorage.readbgColor || '#ffffff',
-  readColor: localStorage.readColor || '#000000',
+  lines: List(),
+  readBackgroundColor: localStorage.getItem('readbgColor') || '#ffffff',
+  readColor: localStorage.getItem('readColor') || '#000000',
   readGradient,
   readLines: List(),
   ready: false,
   roles: List(),
   rooms: Map(),
-  sessionId: localStorage.sessionId || null,
+  sessionId: localStorage.getItem('sessionId') || null,
   shortcuts,
   user: null,
   userInRoom: Map(),
