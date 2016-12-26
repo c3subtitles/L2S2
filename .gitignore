@@ -7,4 +7,3 @@ npm-debug.log
 .DS_Store
 www
 .env
-src/configuration.production.js

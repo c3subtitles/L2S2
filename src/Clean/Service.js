@@ -23,8 +23,7 @@ function convertTalk(talk: RawTalk): Talk {
   };
 }
 
-const config = require(CONFIGPATH).default;
-export const primus = global.Primus.connect(config.primusLocation);
+export const primus = global.Primus.connect('/primus');
 
 export async function joinReadRoom(roomId: number) {
   primus.emit('join', roomId);

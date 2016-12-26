@@ -1,10 +1,9 @@
+// @flow
 /* eslint camelcase: 0 */
-'use strict';
 
 const path = require('path');
 const webpack = require('webpack');
 const node_env = (process.env.NODE_ENV || 'development').trim();
-const configPath = `configuration.${node_env}.js`;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 
@@ -16,7 +15,6 @@ let plugins = [
       NODE_ENV: JSON.stringify(node_env),
     },
     IS_PRODUCTION: JSON.stringify(node_env === 'production'),
-    CONFIGPATH: JSON.stringify(configPath),
   }),
   new HtmlWebpackPlugin({
     filename: 'index.html',
@@ -107,6 +105,7 @@ const webpackConfig = {
 };
 
 if (node_env !== 'production') {
+  // $FlowFixMe
   webpackConfig.devtool = 'cheap-module-source-map';
 }
 

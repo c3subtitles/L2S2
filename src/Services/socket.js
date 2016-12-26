@@ -3,8 +3,7 @@
 import 'imports?this=>window&define=>false!../../primusClient';
 import { reconnected, lineUpdate, newLine, userJoined, userLeft, updateRoom } from '../Actions/rooms';
 
-const config = require(CONFIGPATH).default;
-const primus = global.Primus.connect(config.primusLocation);
+const primus = global.Primus.connect('/primus');
 
 primus.on('open', () => {
   updateSessionId();

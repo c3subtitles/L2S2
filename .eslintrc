@@ -7,7 +7,6 @@
   },
   "globals": {
     "store": false,
-    "CONFIGPATH": false,
     "ClientUser": false,
     "RoleType": false,
     "IS_PRODUCTION": false,
