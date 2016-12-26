@@ -2,7 +2,7 @@
 /* eslint no-nested-ternary: 0 */
 import { Connect } from '../Helper';
 import { deleteUser, saveRole, saveActive } from '../Actions/user';
-import { Dialog, Paper, SelectField, MenuItem } from 'material-ui';
+import { Dialog, Paper, SelectField, MenuItem, FlatButton } from 'material-ui';
 import { List } from 'immutable';
 import DeleteButton from './DeleteButton';
 import React from 'react';
@@ -29,9 +29,9 @@ export default class UserLine extends React.Component {
   props: Props;
   static style = {
     wrapper: {
+      alignItems: 'center',
       display: 'flex',
       marginBottom: 10,
-      alignItems: 'center',
       padding: 5,
     },
     col: {
@@ -46,9 +46,9 @@ export default class UserLine extends React.Component {
     const { user } = this.props;
     saveActive(user, value);
   };
-  handleRoleChange = (e: SyntheticEvent, index: number, menuItem: Object) => {
+  handleRoleChange = (e: SyntheticEvent, index: number, roleId: number) => {
     const { user } = this.props;
-    saveRole(user, menuItem.payload);
+    saveRole(user, roleId);
   };
   handleDelete = () => {
     this.setState({ showDelete: true });
@@ -67,21 +67,22 @@ export default class UserLine extends React.Component {
       return null;
     }
     const { showDelete } = this.state;
-    const selectedRole = availableRoles.findIndex(r => r.name === user.role.name);
-    const dialogOptions = [{
-      text: 'Cancel',
-    }, {
-      text: 'Delete',
-      onClick: this.delete,
-      ref: 'delete',
-    }];
+    const selectedRole = availableRoles.find(r => r.name === user.role.name);
+    if (!selectedRole) {
+      return null;
+    }
+    const dialogOptions = [(
+      <FlatButton label="Cancel" onClick={this.hideDelete}/>
+    ), (
+      <FlatButton label="Delete" onClick={this.delete}/>
+    )];
     return (
       <Paper zDepth={2} style={style.wrapper}>
         <div style={style.col}>{user.username}</div>
         <div style={style.col}>
           {
             ownUser.role.canActivateUser ? (
-              <SelectField value={user.active} onChange={this.handleActiveChange}>
+              <SelectField value={Boolean(user.active)} onChange={this.handleActiveChange}>
                 <MenuItem value primaryText="active"/>
                 <MenuItem value={false} primaryText="inactive"/>
               </SelectField>
@@ -90,11 +91,11 @@ export default class UserLine extends React.Component {
         </div>
         <div style={style.col}>
           {
-            ownUser.role.canChangeUserRole && selectedRole !== -1 ? (
-              <SelectField value={selectedRole} onChange={this.handleRoleChange}>
+            ownUser.role.canChangeUserRole ? (
+              <SelectField value={selectedRole.id} onChange={this.handleRoleChange}>
                 {
                   availableRoles.map((r, index) => (
-                    <MenuItem key={index} value={index} primaryText={r.name}/>
+                    <MenuItem key={index} value={r.id} primaryText={r.name}/>
                   ))
                 }
               </SelectField>

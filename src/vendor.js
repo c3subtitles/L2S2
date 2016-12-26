@@ -21,7 +21,7 @@ axios.interceptors.request.use(requestConfig => {
 
 axios.interceptors.response.use(undefined, response => {
   // $FlowFixMe
-  const data = response.data;
+  const data = response.response.data;
   if (data.message) {
     addError({ title: data.title, message: data.message });
   } else {

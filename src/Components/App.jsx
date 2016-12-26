@@ -39,7 +39,9 @@ if (IS_PRODUCTION) {
     applyMiddleware(() => next => action => {
       // $FlowFixMe
       if (action.payload instanceof Promise) {
+        /* eslint-disable */
         action.payload.catch(err => console.error(err.stack));
+        /* eslint-enable */
       }
       next(action);
     }),

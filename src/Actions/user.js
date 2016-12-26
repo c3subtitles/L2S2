@@ -74,9 +74,9 @@ export const fetchUsers = createAction('FETCH_USERS', async () => {
   return userMap;
 });
 export const fetchRoles = createAction('FETCH_ROLES', async () => List((await axios.get('/roles')).data));
-export const saveRole = createAction('SAVE_ROLE', async (user: ClientUser, role: Role) => {
+export const saveRole = createAction('SAVE_ROLE', async (user: ClientUser, roleId: number) => {
   const newUser = (await axios.put(`/users/${user.id}`, {
-    role: role.id,
+    role: roleId,
   })).data;
   addSuccess({ message: 'Change Saved' });
   return newUser;
