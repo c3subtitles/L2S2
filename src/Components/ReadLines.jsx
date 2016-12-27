@@ -25,9 +25,10 @@ export default class ReadLines extends React.Component {
   static style = {
     line: {
       display: 'flex',
+      flexShrink: 0,
       fontWeight: 'bold',
       overflow: 'hidden',
-      flexShrink: 0,
+      textAlign: 'left',
     },
     wrapper: {
       display: 'flex',
