@@ -84,6 +84,9 @@ export default class Read extends React.Component {
           userId,
           hash,
         });
+        if (lines.length > 20) {
+          lines.shift();
+        }
         this.setState({
           lines,
         });

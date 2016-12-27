@@ -54,7 +54,7 @@ export default class ReadLines extends React.Component {
     if (!nextProps.smooth) {
       return;
     }
-    const addedLines = nextProps.lines.size - this.props.lines.size;
+    const addedLines = (nextProps.lines.size - this.props.lines.size) || 1;
     const addedMargin = addedLines * 75;
     clearTimeout(this.timeout);
     this.setState({
