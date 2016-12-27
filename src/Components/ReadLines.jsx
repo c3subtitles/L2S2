@@ -25,10 +25,13 @@ export default class ReadLines extends React.Component {
   static style = {
     line: {
       display: 'flex',
+      flexDirection: 'column',
       flexShrink: 0,
       fontWeight: 'bold',
       overflow: 'hidden',
       textAlign: 'left',
+      wordWrap: 'break-word',
+      wordBreak: 'break-word',
     },
     wrapper: {
       display: 'flex',
