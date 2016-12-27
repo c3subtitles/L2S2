@@ -40,7 +40,7 @@ export default class UserManagement extends React.Component {
     return (
       <div style={style.wrapper}>
         {
-          users && users.sortBy(user => user.username).map(user => <UserLine key={user.id} user={user}/>).toArray()
+          users && users.sortBy(user => user.username.toLowerCase()).map(user => <UserLine key={user.id} user={user}/>).toArray()
         }
       </div>
     );

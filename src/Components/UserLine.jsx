@@ -33,6 +33,7 @@ export default class UserLine extends React.Component {
       display: 'flex',
       marginBottom: 10,
       padding: 5,
+      flexShrink: 0,
     },
     col: {
       flex: '1 1 0',
