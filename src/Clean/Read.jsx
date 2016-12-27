@@ -107,7 +107,7 @@ export default class Read extends React.Component {
       <div style={[lines.length <= 0 && style.outer]}>
         {
           lines.length > 0 && (<div style={style.wrapper}>
-            <ReadLines fontSize="5em" alwaysUpdate lines={List(lines)}/>
+            <ReadLines fontSize="65px" alwaysUpdate smooth lines={List(lines)}/>
           </div>
         )}
         {/* {lines.length <= 0 && (

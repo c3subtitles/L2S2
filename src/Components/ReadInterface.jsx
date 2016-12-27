@@ -55,7 +55,6 @@ type State = {
 export default class ReadInterface extends React.Component {
   static style = {
     wrapper: {
-      alignItems: 'center',
       display: 'flex',
       flex: '1 1 0',
       flexDirection: 'column',

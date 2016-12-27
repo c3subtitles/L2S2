@@ -15,23 +15,26 @@ export default class WriteArea extends React.Component {
       display: 'flex',
       flex: '1 1 0',
       flexDirection: 'column',
+      flexShrink: 0,
       overflow: 'hidden',
     },
     lineContainer: {
       display: 'flex',
+      flex: '1 1 0',
       flexDirection: 'column',
+      flexShrink: 0,
       justifyContent: 'flex-end',
     },
     inner: {
-      overflowWrap: 'break-word',
-      marginBottom: 5,
       flex: '1 1 0',
+      marginBottom: 5,
       overflow: 'hidden',
+      overflowWrap: 'break-word',
     },
     spacer: {
-      marginTop: 5,
-      marginBottom: 5,
       height: 1,
+      marginBottom: 5,
+      marginTop: 5,
     },
   };
   shouldComponentUpdate(): false {

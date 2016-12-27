@@ -8,6 +8,7 @@ type Props = {
   alwaysUpdate?: bool,
   fontSize: string,
   lines: List<Line>,
+  smooth?: bool,
 };
 
 type State = {
@@ -23,16 +24,15 @@ export default class ReadLines extends React.Component {
   props: Props;
   static style = {
     line: {
-      // alignSelf: 'center',
       display: 'flex',
       fontWeight: 'bold',
-      // marginBottom: '0.2em',
-      // marginTop: '0.2em',
       overflow: 'hidden',
+      flexShrink: 0,
     },
     wrapper: {
       display: 'flex',
       flexDirection: 'column',
+      justifyContent: 'flex-end',
     },
   };
   static defaultProps = {
@@ -42,22 +42,25 @@ export default class ReadLines extends React.Component {
     return nextProps.alwaysUpdate || this.props.lines !== nextProps.lines;
   }
   animate = () => {
-    const newMargin = Math.max(this.state.margin - 6, 0);
+    const newMargin = Math.max(this.state.margin - 7, 0);
     this.setState({
       margin: newMargin,
     });
     if (newMargin > 0) {
-      this.timeout = setTimeout(this.animate, 10);
+      this.timeout = setTimeout(this.animate, 5);
     }
   };
   componentWillReceiveProps(nextProps: Props) {
+    if (!nextProps.smooth) {
+      return;
+    }
     const addedLines = nextProps.lines.size - this.props.lines.size;
-    const addedMargin = addedLines * 92;
+    const addedMargin = addedLines * 75;
     clearTimeout(this.timeout);
     this.setState({
       margin: this.state.margin + addedMargin,
     }, () => {
-      this.timeout = setTimeout(this.animate, 10);
+      this.timeout = setTimeout(this.animate, 5);
     });
   }
   render() {
