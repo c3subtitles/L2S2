@@ -7,7 +7,7 @@ export default class Stats extends React.Component {
   componentWillMount() {
     axios.get('/stats').then(stats => {
       this.setState({
-        stats,
+        stats: stats.data,
       });
     });
   }
