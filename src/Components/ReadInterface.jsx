@@ -9,7 +9,6 @@ import Radium from 'radium';
 import React from 'react';
 import ReadLines from './ReadLines';
 import ReadSettings from './ReadSettings';
-import NextTalk from './NextTalk';
 
 
 function RGBFromRaw(rawColor: string): string {
@@ -164,9 +163,9 @@ export default class ReadInterface extends React.Component {
               ),
             ]
           }
-          {lines.size <= 0 && (
+          {/* {lines.size <= 0 && (
             <NextTalk talk={nextTalk}/>
-          )}
+          )} */}
           {lines.size > 0 && (
             <ReadLines lines={lines}/>
           )}

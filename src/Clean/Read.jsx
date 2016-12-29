@@ -23,6 +23,7 @@ export default class Read extends React.Component {
       flex: '1 1 0',
       flexDirection: 'column',
       justifyContent: 'flex-end',
+      marginBottom: 20,
       marginLeft: 50,
       marginRight: 50,
       overflow: 'hidden',
