@@ -13,6 +13,8 @@ if (global.isDev) {
   window.React = React;
 }
 
+require('./autocomplete');
 setTimeout(() => {
   render(<App/>, document.querySelector('#l2s2'));
+  require('./autocomplete');
 }, 500);
