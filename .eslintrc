@@ -6,11 +6,9 @@
     "es6": true
   },
   "globals": {
+    "primus": false,
     "store": false,
-    "ClientUser": false,
-    "RoleType": false,
     "IS_PRODUCTION": false,
-    "RoomType": false,
     "State": false
   }
 }
