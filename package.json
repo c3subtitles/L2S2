@@ -56,7 +56,7 @@
     "react": "^15.4.1",
     "react-addons-css-transition-group": "^15.4.1",
     "react-dock": "^0.2.3",
-    "react-dom": "^15.4.1",
+    "react-dom": "^16.0.1",
     "react-loader": "^2.0.0",
     "react-notification-system": "^0.2.11",
     "react-redux": "^5.0.1",
